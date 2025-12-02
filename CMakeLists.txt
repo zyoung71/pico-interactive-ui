@@ -8,7 +8,6 @@ if (NOT TARGET pico-interactive-ui)
 
     add_subdirectory(lib/pico-util)
     add_subdirectory(lib/pico-math)
-    add_subdirectory(lib/pico-event-hardware)
 
     target_include_directories(pico-interactive-ui PUBLIC
         include
@@ -18,7 +17,6 @@ if (NOT TARGET pico-interactive-ui)
         hardware_rtc
         pico-util
         pico-math
-        pico-event-hardware
     )
 
 endif()
