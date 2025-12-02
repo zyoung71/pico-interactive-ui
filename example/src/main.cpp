@@ -19,7 +19,7 @@ int main()
 
     // The settings menu may show the time.
     RealTimeClock clock(4, 5, 6, i2c0, nullptr);
-    ClockComponent clock_component(&settings_menu, &clock);
+    ClockComponent clock_component(&settings_menu, &clock, 0);
     settings_menu.AddComponent(&clock_component);
 
     manager.PushScreen(&play_menu);

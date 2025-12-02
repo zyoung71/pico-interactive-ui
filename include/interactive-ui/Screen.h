@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cstdint>
-#include <set>
+#include <vector>
 
 #include <pico/util/queue.h>
 
@@ -15,10 +14,13 @@ class SelectableComponent;
 
 class Screen
 {
+public:
+    static bool _ComponentCompare(const Component* a, const Component* b);
+
 protected:
     const Vec2u32 dimensions;
 
-    std::set<Component*> components;
+    std::vector<Component*> components;
 
     SelectableComponent* selected_widget;
     
@@ -34,7 +36,8 @@ public:
     }
 
     void AddComponent(Component* component);
-    void RemoveComponent(Component* component);
+
+    void SortComponents();
 
     virtual void OnControl(uint32_t control_mask);
     virtual void OnScreenSelect();

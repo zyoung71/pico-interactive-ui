@@ -1,6 +1,7 @@
 #pragma once
 
-class DisplayInterface;
+#include "DisplayInterface.h"
+
 class ScreenManager;
 class Screen;
 

@@ -1,16 +1,16 @@
 #pragma once
 
-#include <interactive-ui/Component.h>
+#include <interactive-ui/components/TextComponent.h>
 #include <rtc/RealTimeClock.h>
 
 // Non-selectable clock in the corner of the screen.
-class ClockComponent : public Component
+class ClockComponent : public TextComponent
 {
 private:
     RealTimeClock* clock;
 
 public:
-    ClockComponent(Screen* screen, RealTimeClock* clock);
+    ClockComponent(Screen* screen, RealTimeClock* clock, int32_t z_layer);
 
     void Update(float dt) override;
     void Draw() override;
