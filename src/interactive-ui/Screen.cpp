@@ -69,30 +69,39 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     // This approach allows for multi-input like moving up and to the right.
     if (control_mask & DIRECTIONAL_UP)
     {
-        ResultOptional opt = selected_widget->GetUpComponent();
-        selected_widget = opt;
-        success = opt.supporting;
+        SelectableComponent* opt = selected_widget->up_component;
+        if (opt != nullptr)
+        {
+            selected_widget = opt;
+            success = true;
+        }
     }
     if (control_mask & DIRECTIONAL_RIGHT)
     {
-        ResultOptional opt = selected_widget->GetRightComponent();
-        selected_widget = opt;
-        if (!success)
-            success = opt.supporting;
+        SelectableComponent* opt = selected_widget->right_component;
+        if (opt != nullptr)
+        {
+            selected_widget = opt;
+            success = true;
+        }
     }
     if (control_mask & DIRECTIONAL_DOWN)
     {
-        ResultOptional opt = selected_widget->GetDownComponent();
-        selected_widget = opt;
-        if (!success)
-            success = opt.supporting;
+        SelectableComponent* opt = selected_widget->down_component;
+        if (opt != nullptr)
+        {
+            selected_widget = opt;
+            success = true;
+        }
     }
     if (control_mask & DIRECTIONAL_LEFT)
     {
-        ResultOptional opt = selected_widget->GetLeftComponent();
-        selected_widget = opt;
-        if (!success)
-            success = opt.supporting;
+        SelectableComponent* opt = selected_widget->left_component;
+        if (opt != nullptr)
+        {
+            selected_widget = opt;
+            success = true;
+        }
     }
     selected_widget->SetSelected(true);
 

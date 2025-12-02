@@ -1,13 +1,11 @@
 #include "Component.h"
 
-#include <util/ResultOptional.h>
-#include <util/ArrayView.h>
-
 class SelectableComponent : public Component
 {
 protected:
     bool is_selected;
 
+public:
     union
     {
         SelectableComponent* neighboring_components[4];
@@ -21,8 +19,9 @@ protected:
     };
 
 public:
-    SelectableComponent();
-    virtual ~SelectableComponent();
+    SelectableComponent(Screen* screen, const Vec2u32& position);
+    SelectableComponent(Screen* screen, float x_percentage, float y_percentage);
+    virtual ~SelectableComponent() = default;
 
     inline void SetSelected(bool is_selected)
     {
@@ -32,42 +31,5 @@ public:
     inline bool IsSelected() const
     {
         return is_selected;
-    }
-
-    inline constexpr ArrayView<SelectableComponent*> GetNeighboringComponents()
-    {
-        return make_array_view(neighboring_components);
-    }
-
-    inline ResultOptional<SelectableComponent*, bool> GetUpComponent()
-    {
-        if (up_component != nullptr)
-            return ResultOptional(up_component, true);
-        
-        return ResultOptional(this, false);
-    }
-
-    inline ResultOptional<SelectableComponent*, bool> GetDownComponent()
-    {
-        if (down_component != nullptr)
-            return ResultOptional(down_component, true);
-        
-        return ResultOptional(this, false);
-    }
-
-    inline ResultOptional<SelectableComponent*, bool> GetLeftComponent()
-    {
-        if (left_component != nullptr)
-            return ResultOptional(left_component, true);
-        
-        return ResultOptional(this, false);
-    }
-
-    inline ResultOptional<SelectableComponent*, bool> GetRightComponent()
-    {
-        if (right_component != nullptr)
-            return ResultOptional(right_component, true);
-        
-        return ResultOptional(this, false);
     }
 };
