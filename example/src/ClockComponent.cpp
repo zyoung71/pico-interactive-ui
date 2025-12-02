@@ -19,5 +19,5 @@ void ClockComponent::Draw()
     // Here, the screen we will want to use will be implemented already.
     // The origin position borders the right wall, and a bit downward from the top.
     // The origin of drawing should be the top left corner of the component, so subtract the draw dimensions.
-    data.display->DrawText(origin_position - draw_dimensions, clock->GetPrettyTime(RealTimeClock::HH_MM));
+    data.display->DrawText(origin_position - draw_dimensions, clock->GetPrettyTime(RealTimeClock::HH_MM), 0);
 }
