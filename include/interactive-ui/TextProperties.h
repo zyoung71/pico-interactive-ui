@@ -5,8 +5,8 @@
 struct TextProperties
 {
     const char* text;
-    uint8_t height;
-    uint8_t width;
-    uint8_t spacing;
-    uint8_t lines;
+    size_t height;
+    size_t width;
+    size_t spacing;
+    size_t lines;
 };

@@ -5,29 +5,55 @@
 TextComponent::TextComponent(Screen* screen, const Vec2u32& origin, const TextProperties& props, int32_t z_layer)
     : SelectableComponent(screen, origin, z_layer), text_properties(props)
 {
-    size_t msg_len = strlen(props.text);
+    const size_t msg_len = strlen(props.text);
     text_properties.lines = 1;
+
+    size_t segment_max = 0;
+    size_t iter = 0;
+
     for (size_t c = 0; c < msg_len; c++) //  <---- DID YOU SEE THAT???
     {
+        size_t len = strcspn(props.text + iter, "\n");
+        if (len > segment_max)
+            segment_max = len;
+
+        iter += len;
+
         if (props.text[c] == '\n')
+        {
+            iter++;
             text_properties.lines++;
+        }
     }
 
-    size_t message_pixel_length = (msg_len * props.width + (msg_len - 1) * props.spacing) / props.lines;
+    size_t message_pixel_length = segment_max * props.width + (segment_max - 1) * props.spacing;
     draw_dimensions = {message_pixel_length, props.height * props.lines + props.spacing * (props.lines - 1)};
 }
 TextComponent::TextComponent(Screen* screen, float x_percentage, float y_percentage, const TextProperties& props, int32_t z_layer)
     : SelectableComponent(screen, x_percentage, y_percentage, z_layer), text_properties(props)
 {
-    size_t msg_len = strlen(props.text);
+    const size_t msg_len = strlen(props.text);
     text_properties.lines = 1;
-    for (size_t c = 0; c < msg_len; c++)
+
+    size_t segment_max = 0;
+    size_t iter = 0;
+
+    for (size_t c = 0; c < msg_len; c++) //  <---- DID YOU SEE THAT???
     {
+        size_t len = strcspn(props.text + iter, "\n");
+        if (len > segment_max)
+            segment_max = len;
+
+        iter += len;
+
         if (props.text[c] == '\n')
+        {
+            iter++;
             text_properties.lines++;
+        }
     }
-    
-    size_t message_pixel_length = (msg_len * props.width + (msg_len - 1) * props.spacing) / props.lines;
+
+    size_t message_pixel_length = segment_max * props.width + (segment_max - 1) * props.spacing;
     draw_dimensions = {message_pixel_length, props.height * props.lines + props.spacing * (props.lines - 1)};
 }
 
@@ -39,7 +65,8 @@ void TextComponent::Draw()
 void TextComponent::DrawSelection()
 {
     // Draw a square around the text.
-    data.display->DrawSquare(origin_position - Vec2u32{1, 1}, draw_dimensions + Vec2u32{1, 1}, color, true);
+    Vec2u32 unit = {1, 1};
+    data.display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);
 }
 
 TextBoxComponent::TextBoxComponent(Screen* screen, const Vec2u32& origin, const Vec2u32& dimensions, const Vec2u32& padding, const TextProperties& props, int32_t z_layer)
