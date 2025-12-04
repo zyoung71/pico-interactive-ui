@@ -15,6 +15,16 @@ public:
 
     void Draw() override;
     void DrawSelection() override;
+
+    inline const TextProperties& GetTextProperties() const
+    {
+        return text_properties;
+    }
+
+    inline void SetText(const char* text)
+    {
+        text_properties.text = text;
+    }
 };
 
 class TextBoxComponent : public TextComponent
