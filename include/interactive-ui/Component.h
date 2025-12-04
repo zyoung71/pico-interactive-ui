@@ -23,6 +23,14 @@ public:
 
     virtual void Draw() = 0;
 
+    inline void SetColor(uint32_t rgba)
+    {
+        color = rgba;
+    }
+    inline uint32_t GetColor() const
+    {
+        return color;
+    }
     inline void SetVisible(bool is_visible)
     {
         this->is_visible = is_visible;

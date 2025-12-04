@@ -32,8 +32,7 @@ public:
 
     virtual void Update(float dt) override;
     
-    
-    virtual void DrawSelection() = 0; // Draw the extra elements when the component is selected.
+    virtual void DrawSelection(); // Draw the extra elements when the component is selected. Default is an outlining square.
     virtual void OnComponentSelected() {};
     virtual void OnComponentDeselected() {};
 

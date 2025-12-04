@@ -16,3 +16,9 @@ void SelectableComponent::Update(float dt)
     if (is_selected)
         DrawSelection();
 }
+
+void SelectableComponent::DrawSelection()
+{
+    Vec2u32 unit{1, 1};
+    data.display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);
+}
