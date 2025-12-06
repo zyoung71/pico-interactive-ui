@@ -65,16 +65,16 @@ void Screen::OnScreenDeselect()
 }
 
 void Screen::Update(float dt)
-{
-    for (auto&& c : components)
-    {
-        c->Update(dt);
-    }
-    
+{   
     uint32_t control_mask;
     if (queue_try_remove(&data.manager->control_queue, &control_mask))
     {
         OnControl(control_mask);
+    }
+
+    for (auto&& c : components) // Draw components last.
+    {
+        c->Update(dt);
     }
 }
 
