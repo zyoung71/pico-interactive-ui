@@ -22,7 +22,7 @@ protected:
 
     std::vector<Component*> components;
 
-    SelectableComponent* selected_widget;
+    SelectableComponent* hovered_component;
     
     ScreenData data;
 
@@ -33,6 +33,11 @@ public:
     inline Vec2u32 GetDimensions() const
     {
         return dimensions;
+    }
+
+    inline SelectableComponent* GetHoveredComponent() const
+    {
+        return hovered_component;
     }
 
     void AddComponent(Component* component);

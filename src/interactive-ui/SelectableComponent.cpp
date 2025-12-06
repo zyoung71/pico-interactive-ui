@@ -2,14 +2,19 @@
 
 #include <cstring>
 
+SelectEvent::SelectEvent(const EventSource* source)
+    : Event(source)
+{
+}
+
 SelectableComponent::SelectableComponent(Screen* screen, const Vec2u32& position, int32_t z_layer)
-    : Component(screen, position, z_layer, true), is_selected(false)
+    : Component(screen, position, z_layer, true), is_hovered(false)
 {
     memset(neighboring_components, 0, sizeof(neighboring_components));   
 }
 
 SelectableComponent::SelectableComponent(Screen* screen, float x_percentage, float y_percentage, int32_t z_layer)
-    : Component(screen, x_percentage, y_percentage, z_layer, true), is_selected(false)
+    : Component(screen, x_percentage, y_percentage, z_layer, true), is_hovered(false)
 {
     memset(neighboring_components, 0, sizeof(neighboring_components));
 }
@@ -17,11 +22,11 @@ SelectableComponent::SelectableComponent(Screen* screen, float x_percentage, flo
 void SelectableComponent::Update(float dt)
 {
     Component::Update(dt);
-    if (is_selected)
-        DrawSelection();
+    if (is_hovered)
+        DrawHover();
 }
 
-void SelectableComponent::DrawSelection()
+void SelectableComponent::DrawHover()
 {
     Vec2u32 unit{1, 1};
     data.display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);

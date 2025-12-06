@@ -12,7 +12,8 @@ protected:
 
     ScreenData data;
 
-    bool is_visible;
+    bool forced_visibility;
+    bool personal_visibility;
 
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
@@ -33,13 +34,17 @@ public:
     {
         return color;
     }
-    inline void SetVisible(bool is_visible)
+    inline void ForceVisibility(bool visibility)
     {
-        this->is_visible = is_visible;
+        forced_visibility = visibility;
+    }
+    inline void SetPersonalVisibility(bool visibility)
+    {
+        personal_visibility = visibility;
     }
     inline bool IsVisible() const
     {
-        return is_visible;
+        return forced_visibility && personal_visibility;
     }
     inline Vec2u32 GetOriginPosition() const
     {

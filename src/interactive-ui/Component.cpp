@@ -1,7 +1,7 @@
 #include <interactive-ui/Component.h>
 
 Component::Component(Screen* screen, const Vec2u32& position, int32_t z_layer, bool selectable)
-    : data(screen->data), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable)
+    : data(screen->data), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
 {
     Vec2u32 screen_dim = screen->GetDimensions();
     origin_position.x = position.x > screen_dim.x ? screen_dim.x : position.x;
@@ -19,6 +19,6 @@ Component::Component(Screen* screen, float x_percentage, float y_percentage, int
 
 void Component::Update(float dt)
 {
-    if (is_visible)
+    if (forced_visibility && personal_visibility)
         Draw();
 }

@@ -15,7 +15,7 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 }
 
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
-    : dimensions(dimensions), data(manager->display, manager, this), selected_widget(nullptr)
+    : dimensions(dimensions), data(manager->display, manager, this), hovered_component(nullptr)
 {
 }
 
@@ -26,16 +26,16 @@ void Screen::AddComponent(Component* component)
 
 void Screen::SortComponents()
 {
-    // Find the first selectable component and select it if there is no selection.
-    if (!selected_widget)
+    // Find the first selectable component and hover it if there is no hover already.
+    if (!hovered_component)
     {
         for (auto&& c : components)
         {
             if (c->selectable)
             {
-                selected_widget = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
-                selected_widget->is_selected = true;
-                selected_widget->OnComponentSelected();
+                hovered_component = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
+                hovered_component->is_hovered = true;
+                hovered_component->OnComponentHovered();
                 break;
             }
         }
@@ -52,7 +52,7 @@ void Screen::OnScreenSelect()
 {
     for (auto&& c : components)
     {
-        c->SetVisible(true);
+        c->ForceVisibility(true);
     }
 }
 
@@ -60,7 +60,7 @@ void Screen::OnScreenDeselect()
 {
     for (auto&& c : components)
     {
-        c->SetVisible(false);
+        c->ForceVisibility(false);
     }
 }
 
@@ -82,55 +82,55 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
 {
     bool success = false;
 
-    // This approach allows for multi-input like moving up and to the right.
+    // This approach allows for multi-input like moving up and to the right on the same update.
     if (control_mask & DIRECTIONAL_UP)
     {
-        SelectableComponent* opt = selected_widget->up_component;
+        SelectableComponent* opt = hovered_component->up_component;
         if (opt != nullptr)
         {
-            selected_widget->is_selected = false;
-            selected_widget->OnComponentDeselected();
-            selected_widget = opt;
+            hovered_component->is_hovered = false;
+            hovered_component->OnComponentUnhovered();
+            hovered_component = opt;
             success = true;
         }
     }
     if (control_mask & DIRECTIONAL_RIGHT)
     {
-        SelectableComponent* opt = selected_widget->right_component;
+        SelectableComponent* opt = hovered_component->right_component;
         if (opt != nullptr)
         {
-            selected_widget->is_selected = false;
-            selected_widget->OnComponentDeselected();
-            selected_widget = opt;
+            hovered_component->is_hovered = false;
+            hovered_component->OnComponentUnhovered();
+            hovered_component = opt;
             success = true;
         }
     }
     if (control_mask & DIRECTIONAL_DOWN)
     {
-        SelectableComponent* opt = selected_widget->down_component;
+        SelectableComponent* opt = hovered_component->down_component;
         if (opt != nullptr)
         {
-            selected_widget->is_selected = false;
-            selected_widget->OnComponentDeselected();
-            selected_widget = opt;
+            hovered_component->is_hovered = false;
+            hovered_component->OnComponentUnhovered();
+            hovered_component = opt;
             success = true;
         }
     }
     if (control_mask & DIRECTIONAL_LEFT)
     {
-        SelectableComponent* opt = selected_widget->left_component;
+        SelectableComponent* opt = hovered_component->left_component;
         if (opt != nullptr)
         {
-            selected_widget->is_selected = false;
-            selected_widget->OnComponentDeselected();
-            selected_widget = opt;
+            hovered_component->is_hovered = false;
+            hovered_component->OnComponentUnhovered();
+            hovered_component = opt;
             success = true;
         }
     }
     if (success)
     {
-        selected_widget->is_selected = true;
-        selected_widget->OnComponentSelected();
+        hovered_component->is_hovered = true;
+        hovered_component->OnComponentHovered();
     }
 
     return success;

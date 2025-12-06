@@ -2,10 +2,18 @@
 
 #include "Component.h"
 
-class SelectableComponent : public Component
+#include <event/Event.h>
+
+class SelectEvent : public Event
+{
+public:
+    SelectEvent(const EventSource* source);
+};
+
+class SelectableComponent : public Component, public EventSource
 {
 protected:
-    bool is_selected;
+    bool is_hovered;
 
 public:
     union
@@ -25,16 +33,16 @@ public:
     SelectableComponent(Screen* screen, float x_percentage, float y_percentage, int32_t z_layer);
     virtual ~SelectableComponent() = default;
 
-    inline bool IsSelected() const
+    inline bool IsHovered() const
     {
-        return is_selected;
+        return is_hovered;
     }
 
     virtual void Update(float dt) override;
     
-    virtual void DrawSelection(); // Draw the extra elements when the component is selected. Default is an outlining square.
-    virtual void OnComponentSelected() {};
-    virtual void OnComponentDeselected() {};
+    virtual void DrawHover(); // Draw the extra elements when the component is hovered. Default is an outlining square.
+    virtual void OnComponentHovered() {};
+    virtual void OnComponentUnhovered() {};
 
     friend Screen;
 };
