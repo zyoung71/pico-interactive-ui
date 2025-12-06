@@ -55,7 +55,6 @@ void Screen::Update(float dt)
     for (auto&& c : components)
     {
         c->Update(dt);
-        c->Draw();
     }
     
     uint32_t control_mask;
