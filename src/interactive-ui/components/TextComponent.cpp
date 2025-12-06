@@ -38,7 +38,7 @@ TextComponent::TextComponent(Screen* screen, float x_percentage, float y_percent
     size_t segment_max = 0;
     size_t iter = 0;
 
-    for (size_t c = 0; c < msg_len; c++) //  <---- DID YOU SEE THAT???
+    for (size_t c = 0; c < msg_len; c++)
     {
         size_t len = strcspn(props.text + iter, "\n");
         if (len > segment_max)
@@ -60,13 +60,6 @@ TextComponent::TextComponent(Screen* screen, float x_percentage, float y_percent
 void TextComponent::Draw()
 {
     data.display->DrawText(origin_position, text_properties, color);
-}
-
-void TextComponent::DrawSelection()
-{
-    // Draw a square around the text.
-    Vec2u32 unit = {1, 1};
-    data.display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);
 }
 
 TextBoxComponent::TextBoxComponent(Screen* screen, const Vec2u32& origin, const Vec2u32& dimensions, const Vec2u32& padding, const TextProperties& props, int32_t z_layer)

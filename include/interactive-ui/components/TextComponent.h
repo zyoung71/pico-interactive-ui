@@ -14,7 +14,6 @@ public:
     TextComponent(Screen* screen, const Vec2u32& origin, const TextProperties& props, int32_t z_layer);
 
     void Draw() override;
-    void DrawSelection() override;
 
     inline const TextProperties& GetTextProperties() const
     {

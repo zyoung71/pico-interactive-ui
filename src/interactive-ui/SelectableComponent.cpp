@@ -2,11 +2,6 @@
 
 #include <cstring>
 
-SelectEvent::SelectEvent(const EventSource* source)
-    : Event(source)
-{
-}
-
 SelectableComponent::SelectableComponent(Screen* screen, const Vec2u32& position, int32_t z_layer)
     : Component(screen, position, z_layer, true), is_hovered(false)
 {
