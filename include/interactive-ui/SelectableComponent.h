@@ -2,15 +2,7 @@
 
 #include "Component.h"
 
-#include <event/Event.h>
-
-class SelectEvent : public Event
-{
-public:
-    SelectEvent(const EventSource* source);
-};
-
-class SelectableComponent : public Component, public EventSource
+class SelectableComponent : public Component
 {
 protected:
     bool is_hovered;
