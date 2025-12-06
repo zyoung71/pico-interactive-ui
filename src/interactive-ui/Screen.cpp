@@ -72,13 +72,10 @@ void Screen::Update(float dt)
     }
     
     uint32_t control_mask;
-    if (this == data.manager->selected_screen)
+    if (queue_try_remove(&data.manager->control_queue, &control_mask))
     {
-        if (queue_try_remove(&data.manager->control_queue, &control_mask))
-        {
-            OnControl(control_mask);
-        }
-    }   
+        OnControl(control_mask);
+    }
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)
