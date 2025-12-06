@@ -15,7 +15,7 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 }
 
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
-    : dimensions(dimensions), data(manager->display, manager, this)
+    : dimensions(dimensions), data(manager->display, manager, this), selected_widget(nullptr)
 {
 }
 
@@ -26,7 +26,19 @@ void Screen::AddComponent(Component* component)
 
 void Screen::SortComponents()
 {
-    
+    // Find the first selectable component and select it if there is no selection.
+    if (!selected_widget)
+    {
+        for (auto&& c : components)
+        {
+            if (c->selectable)
+            {
+                selected_widget = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
+                selected_widget->OnComponentSelected();
+                break;
+            }
+        }
+    }
     std::sort(components.begin(), components.end(), _ComponentCompare);
 }
 
