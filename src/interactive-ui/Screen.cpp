@@ -34,6 +34,7 @@ void Screen::SortComponents()
             if (c->selectable)
             {
                 selected_widget = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
+                selected_widget->is_selected = true;
                 selected_widget->OnComponentSelected();
                 break;
             }
