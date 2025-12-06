@@ -26,6 +26,7 @@ void Screen::AddComponent(Component* component)
 
 void Screen::SortComponents()
 {
+    
     std::sort(components.begin(), components.end(), _ComponentCompare);
 }
 
