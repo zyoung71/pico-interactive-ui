@@ -5,7 +5,6 @@
 
 static constexpr Vec2u32 screen_dimensions = Vec2u32(128, 64);
 
-// Example: Media player
 int main()
 {
     stdio_init_all();
@@ -13,16 +12,19 @@ int main()
     DisplayInterface* display; // The HAL for the actual display screen is implemented by the user externally.
     ScreenManager manager(display);
 
-    Screen play_menu(&manager, screen_dimensions);
-    Screen queue_menu(&manager, screen_dimensions);
-    Screen settings_menu(&manager, screen_dimensions);
+    Screen menu(&manager, screen_dimensions);
 
-    // The settings menu may show the time.
     RealTimeClock clock(4, 5, 6, i2c0);
-    ClockComponent clock_component(&settings_menu, &clock, 0);
-    settings_menu.AddComponent(&clock_component);
+    ClockComponent clock_component(&menu, &clock, 0);
+    menu.AddComponent(&clock_component);
 
-    manager.PushScreen(&play_menu);
+    int id = clock_component.AddAction([](const Event* ev, void* ptr){
+        // When the clock component is selected with any select button or etc.
+        RealTimeClock* clock = (RealTimeClock*)ptr;
+        clock->Use24HourTime(); // Changes to 24-hour time.
+    }, &clock);
+
+    manager.PushScreen(&menu);
 
     while (1)
     {

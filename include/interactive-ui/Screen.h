@@ -51,6 +51,7 @@ public:
     virtual void Update(float dt);
 
     bool NavigateToComponent(uint32_t control_mask);
+    void ActOnComponent(uint32_t control_mask);
 
     friend ScreenManager;
     friend Component;

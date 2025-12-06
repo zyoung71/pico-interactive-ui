@@ -2,7 +2,18 @@
 
 #include "Component.h"
 
-class SelectableComponent : public Component
+#include <event/Event.h>
+
+class ComponentSelectEvent : public Event
+{
+protected:
+    ControlAction control;
+
+public:
+    ComponentSelectEvent(const EventSource* source, ControlAction control);
+};
+
+class SelectableComponent : public Component, public EventSource
 {
 protected:
     bool is_hovered;
@@ -35,6 +46,14 @@ public:
     virtual void DrawHover(); // Draw the extra elements when the component is hovered. Default is an outlining square.
     virtual void OnComponentHovered() {};
     virtual void OnComponentUnhovered() {};
+
+    // What happens when the hovered component is actually selected.
+    // Think of it as a left-click.
+    virtual void Select0();
+
+    // Second action when the hovered component is actually selected.
+    // Think of it as a right-click.
+    virtual void Select1();
 
     friend Screen;
 };

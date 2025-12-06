@@ -24,6 +24,7 @@ void ScreenManager::PopScreen()
     screens.pop();
     selected_screen->OnScreenDeselect();
     selected_screen = screens.top();
+    selected_screen->OnScreenSelect();
 }
 
 void ScreenManager::QueueControl(uint32_t action_mask)

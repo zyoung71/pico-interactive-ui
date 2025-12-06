@@ -7,3 +7,6 @@
 [submodule "example/lib/pico-rtc"]
 	path = example/lib/pico-rtc
 	url = https://github.com/zyoung71/pico-rtc
+[submodule "lib/pico-event-hardware"]
+	path = lib/pico-event-hardware
+	url = https://github.com/zyoung71/pico-event-hardware

@@ -43,9 +43,10 @@ void Screen::SortComponents()
     std::sort(components.begin(), components.end(), _ComponentCompare);
 }
 
-void Screen::OnControl(uint32_t control_mask)
+void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.
 {
     NavigateToComponent(control_mask);
+    ActOnComponent(control_mask);
 }
 
 void Screen::OnScreenSelect()
@@ -134,4 +135,24 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
 
     return success;
+}
+
+void Screen::ActOnComponent(uint32_t control_mask)
+{
+    if (control_mask & SELECT0)
+    {
+        hovered_component->Select0();
+    }
+    if (control_mask & SELECT1)
+    {
+        hovered_component->Select1();
+    }
+    if (control_mask & BACK)
+    {
+        // Backs out the menu if there's one pushed over the main screen.
+        if (data.manager->screens.size() > 1)
+        {
+            data.manager->PopScreen();
+        }
+    }
 }
