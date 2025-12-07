@@ -34,9 +34,13 @@ void Screen::SortComponents()
             if (c->selectable)
             {
                 hovered_component = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
-                hovered_component->is_hovered = true;
-                hovered_component->OnComponentHovered();
-                break;
+                SelectableComponent** neighbors = hovered_component->neighboring_components;
+                if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3]) // Only hover if any neighboring components are set which defines it as something intended to be hovered.
+                {
+                    hovered_component->is_hovered = true;
+                    hovered_component->OnComponentHovered();
+                    break;
+                }
             }
         }
     }
@@ -51,6 +55,9 @@ void Screen::OnControl(uint32_t control_mask) // Trying to keep this function mo
 
 void Screen::OnScreenSelect()
 {
+    // Note: could be needed later but not certain. Will get back to this when necessary.
+    //if (hovered_component)
+    //    hovered_component->OnComponentHovered();
     for (auto&& c : components)
     {
         c->ForceVisibility(true);
@@ -59,6 +66,8 @@ void Screen::OnScreenSelect()
 
 void Screen::OnScreenDeselect()
 {
+    //if (hovered_component)
+    //    hovered_component->OnComponentUnhovered();
     for (auto&& c : components)
     {
         c->ForceVisibility(false);
