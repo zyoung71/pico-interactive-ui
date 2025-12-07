@@ -1,7 +1,7 @@
 #include <interactive-ui/ScreenManager.h>
 
 ScreenManager::ScreenManager(DisplayInterface* display)
-    : display(display)
+    : display(display), selected_screen(nullptr)
 {
     queue_init(&control_queue, sizeof(uint32_t), 4);
 }
@@ -15,7 +15,8 @@ void ScreenManager::PushScreen(Screen* screen)
 {
     screens.push(screen);
     screen->data.manager = this; // Should be set already.
-    selected_screen->OnScreenDeselect();
+    if (selected_screen)
+        selected_screen->OnScreenDeselect();
     selected_screen = screen;
     selected_screen->OnScreenSelect();
     Update();
