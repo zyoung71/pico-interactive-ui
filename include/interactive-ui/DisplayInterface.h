@@ -1,7 +1,7 @@
 #pragma once
 
 #include <math/Vec2.h>
-#include "TextProperties.h"
+#include "Font.h"
 
 class DisplayInterface
 {
@@ -11,7 +11,7 @@ public:
     virtual void UpdateDisplay() = 0;
     virtual void Power(bool power_on) = 0;
     
-    virtual void DrawText(Vec2u32 pos, const TextProperties& props, uint32_t color) = 0;
+    virtual void DrawText(Vec2u32 pos, const char* text, const Font* font, uint32_t color) = 0;
     virtual void DrawPixel(Vec2u32 pos, uint32_t color) = 0;
     virtual void DrawLine(Vec2u32 pos_begin, Vec2u32 pos_end, uint32_t color) = 0;
     virtual void DrawPolygon(const Vec2u32* points, size_t pos_count, uint32_t color, bool is_outline = true) = 0;
