@@ -38,7 +38,6 @@ void Screen::SortComponents()
                 SelectableComponent** neighbors = hovered_component->neighboring_components;
                 if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3]) // Only hover if any neighboring components are set which defines it as something intended to be hovered.
                 {
-                    hovered_component->is_hovered = true;
                     hovered_component->OnComponentHovered();
                     break;
                 }
@@ -86,6 +85,7 @@ void Screen::Update(float dt)
     for (auto&& c : components) // Draw components last.
     {
         c->Update(dt);
+        hovered_component->DrawHover();
     }
 }
 
@@ -99,7 +99,6 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
         SelectableComponent* opt = hovered_component->up_component;
         if (opt != nullptr)
         {
-            hovered_component->is_hovered = false;
             hovered_component->OnComponentUnhovered();
             hovered_component = opt;
             success = true;
@@ -110,7 +109,6 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
         SelectableComponent* opt = hovered_component->right_component;
         if (opt != nullptr)
         {
-            hovered_component->is_hovered = false;
             hovered_component->OnComponentUnhovered();
             hovered_component = opt;
             success = true;
@@ -121,7 +119,6 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
         SelectableComponent* opt = hovered_component->down_component;
         if (opt != nullptr)
         {
-            hovered_component->is_hovered = false;
             hovered_component->OnComponentUnhovered();
             hovered_component = opt;
             success = true;
@@ -132,7 +129,6 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
         SelectableComponent* opt = hovered_component->left_component;
         if (opt != nullptr)
         {
-            hovered_component->is_hovered = false;
             hovered_component->OnComponentUnhovered();
             hovered_component = opt;
             success = true;
@@ -140,7 +136,6 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (success)
     {
-        hovered_component->is_hovered = true;
         hovered_component->OnComponentHovered();
     }
 

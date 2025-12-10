@@ -15,9 +15,6 @@ public:
 
 class SelectableComponent : public Component, public EventSource
 {
-protected:
-    bool is_hovered;
-
 public:
     union
     {
@@ -35,13 +32,6 @@ public:
     SelectableComponent(const Screen* screen, const Vec2u32& position, int32_t z_layer);
     SelectableComponent(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer);
     virtual ~SelectableComponent() = default;
-
-    inline bool IsHovered() const
-    {
-        return is_hovered;
-    }
-
-    virtual void Update(float dt) override;
     
     virtual void DrawHover(); // Draw the extra elements when the component is hovered. Default is an outlining square.
     virtual void OnComponentHovered() {};
@@ -54,6 +44,4 @@ public:
     // Second action when the hovered component is actually selected.
     // Think of it as a right-click.
     virtual void Select1();
-
-    friend Screen;
 };
