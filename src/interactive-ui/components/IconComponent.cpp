@@ -27,11 +27,14 @@ IconComponent::IconComponent(const Screen* screen, float x_percentage, float y_p
 void IconComponent::Draw()
 {
     Vec2u32 end = origin_position + draw_dimensions;
+    uint32_t x_0 = 0, y_0 = 0; // Icon's local coords
     for (uint32_t y = origin_position.y; y < end.y; y++)
     {
         for (uint32_t x = origin_position.x; x < end.x; x++)
         {
-            data.display->DrawPixel(Vec2u32{x, y}, pixel_map(y, x));
+            data.display->DrawPixel(Vec2u32{x, y}, pixel_map(y_0, x_0));
+            x_0++;
         }
+        y_0++;
     }
 }
