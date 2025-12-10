@@ -35,6 +35,7 @@ void IconComponent::Draw()
             data.display->DrawPixel(Vec2u32{x, y}, pixel_map(y_0, x_0));
             x_0++;
         }
+        x_0 = 0;
         y_0++;
     }
 }
