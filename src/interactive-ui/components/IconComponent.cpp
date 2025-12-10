@@ -31,7 +31,7 @@ void IconComponent::Draw()
     {
         for (uint32_t x = origin_position.x; x < end.x; x++)
         {
-            data.display->DrawPixel({x, y}, pixel_map(y, x));
+            data.display->DrawPixel(Vec2u32{x, y}, pixel_map(y, x));
         }
     }
 }
