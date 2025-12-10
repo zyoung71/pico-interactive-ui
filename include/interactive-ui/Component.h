@@ -18,8 +18,8 @@ protected:
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
 
-    Component(Screen* screen, const Vec2u32& position, int32_t z_layer, bool selectable = false);
-    Component(Screen* screen, float x_percentage, float y_percentage, int32_t z_layer, bool selectable = false);
+    Component(const Screen* screen, const Vec2u32& position, int32_t z_layer, bool selectable = false);
+    Component(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer, bool selectable = false);
     virtual ~Component() = default;
 
     virtual void Update(float dt);
@@ -58,4 +58,6 @@ public:
     {
         return z_layer;
     }
+
+    friend Screen;
 };

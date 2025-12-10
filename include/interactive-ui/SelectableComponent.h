@@ -32,8 +32,8 @@ public:
     };
 
 public:
-    SelectableComponent(Screen* screen, const Vec2u32& position, int32_t z_layer);
-    SelectableComponent(Screen* screen, float x_percentage, float y_percentage, int32_t z_layer);
+    SelectableComponent(const Screen* screen, const Vec2u32& position, int32_t z_layer);
+    SelectableComponent(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer);
     virtual ~SelectableComponent() = default;
 
     inline bool IsHovered() const

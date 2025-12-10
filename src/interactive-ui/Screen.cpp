@@ -21,6 +21,7 @@ Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
 
 void Screen::AddComponent(Component* component)
 {
+    component->data.screen = this; // Components may be used across many screens, and ones that do should not use per-screen algorithms.
     components.push_back(component);
 }
 

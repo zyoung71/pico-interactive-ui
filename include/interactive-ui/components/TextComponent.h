@@ -11,8 +11,8 @@ protected:
     size_t message_pixel_length;
 
 public:
-    TextComponent(Screen* screen, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer);
-    TextComponent(Screen* screen, const Vec2u32& origin, const char* text, const Font* font, int32_t z_layer);
+    TextComponent(const Screen* screen, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer);
+    TextComponent(const Screen* screen, const Vec2u32& origin, const char* text, const Font* font, int32_t z_layer);
 
     void Draw() override;
 
@@ -46,10 +46,10 @@ protected:
     Vec2u32 padding;
 
 public:
-    TextBoxComponent(Screen* screen, const Vec2u32& origin, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer);
-    TextBoxComponent(Screen* screen, float x_percentage, float y_percentage, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer);
-    TextBoxComponent(Screen* screen, const Vec2u32& origin, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer);
-    TextBoxComponent(Screen* screen, float x_percentage, float y_percentage, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer);
+    TextBoxComponent(const Screen* screen, const Vec2u32& origin, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer);
+    TextBoxComponent(const Screen* screen, float x_percentage, float y_percentage, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer);
+    TextBoxComponent(const Screen* screen, const Vec2u32& origin, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer);
+    TextBoxComponent(const Screen* screen, float x_percentage, float y_percentage, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer);
 
     void Draw() override;
 };
