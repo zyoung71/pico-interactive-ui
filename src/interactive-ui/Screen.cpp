@@ -34,12 +34,16 @@ void Screen::SortComponents()
         {
             if (c->selectable)
             {
-                hovered_component = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
-                SelectableComponent** neighbors = hovered_component->component_lut[this].neighboring_components;
-                if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3]) // Only hover if any neighboring components are set which defines it as something intended to be hovered.
+                SelectableComponent* sc = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
+                if (sc->component_lut.contains(this))
                 {
-                    hovered_component->OnComponentHovered();
-                    break;
+                    SelectableComponent** neighbors = sc->component_lut[this].neighboring_components;
+                    if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3]) // Only hover if any neighboring components are set which defines it as something intended to be hovered.
+                    {
+                        hovered_component = sc;
+                        hovered_component->OnComponentHovered();
+                        break;
+                    }
                 }
             }
         }
