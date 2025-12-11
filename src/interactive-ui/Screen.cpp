@@ -35,7 +35,7 @@ void Screen::SortComponents()
             if (c->selectable)
             {
                 hovered_component = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
-                SelectableComponent** neighbors = hovered_component->neighboring_components;
+                SelectableComponent** neighbors = hovered_component->component_lut[this].neighboring_components;
                 if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3]) // Only hover if any neighboring components are set which defines it as something intended to be hovered.
                 {
                     hovered_component->OnComponentHovered();
@@ -92,11 +92,12 @@ void Screen::Update(float dt)
 bool Screen::NavigateToComponent(uint32_t control_mask)
 {
     bool success = false;
+    SelectionTable& table = hovered_component->component_lut[this];
 
     // This approach allows for multi-input like moving up and to the right on the same update.
     if (control_mask & DIRECTIONAL_UP)
     {
-        SelectableComponent* opt = hovered_component->up_component;
+        SelectableComponent* opt = table.up_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();
@@ -106,7 +107,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_RIGHT)
     {
-        SelectableComponent* opt = hovered_component->right_component;
+        SelectableComponent* opt = table.right_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();
@@ -116,7 +117,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_DOWN)
     {
-        SelectableComponent* opt = hovered_component->down_component;
+        SelectableComponent* opt = table.down_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();
@@ -126,7 +127,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_LEFT)
     {
-        SelectableComponent* opt = hovered_component->left_component;
+        SelectableComponent* opt = table.left_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();

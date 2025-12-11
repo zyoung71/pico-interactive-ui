@@ -10,13 +10,19 @@ ComponentSelectEvent::ComponentSelectEvent(const EventSource* source, ControlAct
 SelectableComponent::SelectableComponent(const Screen* screen, const Vec2u32& position, int32_t z_layer)
     : Component(screen, position, z_layer, true)
 {
-    memset(neighboring_components, 0, sizeof(neighboring_components));   
+    if (screen)
+    {
+        component_lut.emplace(screen, SelectionTable{nullptr, nullptr, nullptr, nullptr});
+    }  
 }
 
 SelectableComponent::SelectableComponent(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer)
     : Component(screen, x_percentage, y_percentage, z_layer, true)
 {
-    memset(neighboring_components, 0, sizeof(neighboring_components));
+    if (screen)
+    {
+        component_lut.emplace(screen, SelectionTable{nullptr, nullptr, nullptr, nullptr});
+    }  
 }
 
 void SelectableComponent::DrawHover()
