@@ -25,6 +25,22 @@ SelectableComponent::SelectableComponent(const Screen* screen, float x_percentag
     }  
 }
 
+void SelectableComponent::AddComponentTable(const Screen* screen, SelectableComponent* up, SelectableComponent* down, SelectableComponent* left, SelectableComponent* right)
+{
+    if (screen)
+    {
+        component_lut.emplace(screen, SelectionTable{up, down, left, right});
+    }
+}
+
+void SelectableComponent::AddComponentTable(const Screen* screen, SelectableComponent** neighbors)
+{
+    if (screen)
+    {
+        component_lut.emplace(screen, SelectionTable{neighbors[0], neighbors[1], neighbors[2], neighbors[3]});
+    }
+}
+
 void SelectableComponent::DrawHover()
 {
     Vec2u32 unit{1, 1};
