@@ -11,8 +11,8 @@ protected:
     size_t message_pixel_length;
 
 public:
-    TextComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
-    TextComponent(const ScreenManager* manager, const Vec2u32& origin, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen);
+    TextComponent(const ScreenManager* manager, const Vec2u32& origin, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
+    TextComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen);
 
     void Draw() override;
 
