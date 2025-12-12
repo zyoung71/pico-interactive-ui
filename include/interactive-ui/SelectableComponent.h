@@ -37,8 +37,8 @@ public:
     std::unordered_map<const Screen*, SelectionTable> component_lut;
 
 public:
-    SelectableComponent(const Screen* screen, const Vec2u32& position, int32_t z_layer);
-    SelectableComponent(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer);
+    SelectableComponent(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen = nullptr);
+    SelectableComponent(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen);
     virtual ~SelectableComponent() = default;
 
     void AddComponentTable(const Screen* screen, SelectableComponent* up = nullptr, SelectableComponent* down = nullptr, SelectableComponent* left = nullptr, SelectableComponent* right = nullptr);

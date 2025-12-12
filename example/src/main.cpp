@@ -15,7 +15,7 @@ int main()
     Screen menu(&manager, screen_dimensions);
 
     RealTimeClock clock(4, 5, 6, i2c0);
-    ClockComponent clock_component(&menu, &clock, 0);
+    ClockComponent clock_component(&manager, &clock, 0);
     menu.AddComponent(&clock_component);
 
     int id = clock_component.AddAction([](const Event* ev, void* ptr){

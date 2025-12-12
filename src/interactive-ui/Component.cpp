@@ -1,11 +1,11 @@
 #include <interactive-ui/Component.h>
 
-Component::Component(const Screen* screen, const Vec2u32& position, int32_t z_layer, bool selectable)
-    : data(screen->data), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
+Component::Component(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen, bool selectable)
+    : manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
 {
-    if (screen)
+    if (initial_screen)
     {
-        Vec2u32 screen_dim = screen->GetDimensions();
+        Vec2u32 screen_dim = initial_screen->GetDimensions();
         origin_position.x = position.x > screen_dim.x ? screen_dim.x : position.x;   
         origin_position.y = position.y > screen_dim.y ? screen_dim.y : position.y;
     }
@@ -13,11 +13,11 @@ Component::Component(const Screen* screen, const Vec2u32& position, int32_t z_la
         origin_position = position;
 }
 
-Component::Component(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer, bool selectable)
-    : Component(screen, {
-        static_cast<uint32_t>(screen->GetDimensions().x * x_percentage),
-        static_cast<uint32_t>(screen->GetDimensions().y * y_percentage)
-    }, z_layer, selectable)
+Component::Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable)
+    : Component(manager, {
+        static_cast<uint32_t>(initial_screen->GetDimensions().x * x_percentage),
+        static_cast<uint32_t>(initial_screen->GetDimensions().y * y_percentage)
+    }, z_layer, initial_screen, selectable)
 {
 }
 

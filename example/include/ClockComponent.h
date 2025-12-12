@@ -13,7 +13,7 @@ private:
     RealTimeClock* clock;
 
 public:
-    ClockComponent(Screen* screen, RealTimeClock* clock, int32_t z_layer);
+    ClockComponent(const ScreenManager* screen, RealTimeClock* clock, int32_t z_layer);
 
     void Update(float dt) override;
     void Draw() override;

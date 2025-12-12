@@ -2,15 +2,17 @@
 
 #include <stack>
 #include <pico/time.h>
+#include <pico/util/queue.h>
 
 #include "DisplayInterface.h"
-#include "Screen.h"
+
+class Screen;
 
 class ScreenManager
 {
 private:
 
-    DisplayInterface* display;
+    DisplayInterface* const display;
     std::stack<Screen*> screens; 
     Screen* selected_screen;
 
@@ -18,8 +20,13 @@ private:
     absolute_time_t then = 0;
     
 public:
-    ScreenManager(DisplayInterface* display);
+    ScreenManager(DisplayInterface* const display);
     ~ScreenManager();
+
+    inline DisplayInterface* const GetDisplay() const
+    {
+        return display;
+    }
 
     void PushScreen(Screen* screen);
     void PopScreen();

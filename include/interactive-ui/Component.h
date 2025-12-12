@@ -10,7 +10,8 @@ protected:
     int32_t z_layer;
     uint32_t color;
 
-    ScreenData data;
+    DisplayInterface* display;
+    const ScreenManager* manager;
 
     bool forced_visibility;
     bool personal_visibility;
@@ -18,8 +19,8 @@ protected:
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
 
-    Component(const Screen* screen, const Vec2u32& position, int32_t z_layer, bool selectable = false);
-    Component(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer, bool selectable = false);
+    Component(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen = nullptr, bool selectable = false);
+    Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable = false);
     virtual ~Component() = default;
 
     virtual void Update(float dt);

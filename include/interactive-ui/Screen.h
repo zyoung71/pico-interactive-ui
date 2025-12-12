@@ -2,12 +2,10 @@
 
 #include <vector>
 
-#include <pico/util/queue.h>
-
 #include <math/Vec2.h>
 #include "ControlAction.h"
 
-#include "ScreenData.h"
+#include "ScreenManager.h"
 
 class Component;
 class SelectableComponent;
@@ -24,7 +22,8 @@ protected:
 
     SelectableComponent* hovered_component;
     
-    ScreenData data;
+    DisplayInterface* display;
+    ScreenManager* manager;
 
 public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);

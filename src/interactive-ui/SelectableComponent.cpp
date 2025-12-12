@@ -7,21 +7,21 @@ ComponentSelectEvent::ComponentSelectEvent(const EventSource* source, ControlAct
 {
 }
 
-SelectableComponent::SelectableComponent(const Screen* screen, const Vec2u32& position, int32_t z_layer)
-    : Component(screen, position, z_layer, true)
+SelectableComponent::SelectableComponent(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen)
+    : Component(manager, position, z_layer, initial_screen, true)
 {
-    if (screen)
+    if (initial_screen)
     {
-        component_lut.emplace(screen, SelectionTable{nullptr, nullptr, nullptr, nullptr});
+        component_lut.emplace(initial_screen, SelectionTable{nullptr, nullptr, nullptr, nullptr});
     }  
 }
 
-SelectableComponent::SelectableComponent(const Screen* screen, float x_percentage, float y_percentage, int32_t z_layer)
-    : Component(screen, x_percentage, y_percentage, z_layer, true)
+SelectableComponent::SelectableComponent(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen)
+    : Component(manager, x_percentage, y_percentage, z_layer, initial_screen, true)
 {
-    if (screen)
+    if (initial_screen)
     {
-        component_lut.emplace(screen, SelectionTable{nullptr, nullptr, nullptr, nullptr});
+        component_lut.emplace(initial_screen, SelectionTable{nullptr, nullptr, nullptr, nullptr});
     }  
 }
 
@@ -44,7 +44,7 @@ void SelectableComponent::AddComponentTable(const Screen* screen, SelectableComp
 void SelectableComponent::DrawHover()
 {
     Vec2u32 unit{1, 1};
-    data.display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);
+    display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);
 }
 
 void SelectableComponent::Select0()

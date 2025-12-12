@@ -15,13 +15,12 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 }
 
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
-    : dimensions(dimensions), data(manager->display, manager, this), hovered_component(nullptr)
+    : dimensions(dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
 {
 }
 
 void Screen::AddComponent(Component* component)
 {
-    component->data.screen = this; // Components may be used across many screens, and ones that do should not use per-screen algorithms.
     components.push_back(component);
 }
 
@@ -81,7 +80,7 @@ void Screen::OnScreenDeselect()
 void Screen::Update(float dt)
 {   
     uint32_t control_mask;
-    if (queue_try_remove(&data.manager->control_queue, &control_mask))
+    if (queue_try_remove(&manager->control_queue, &control_mask))
     {
         OnControl(control_mask);
     }
@@ -160,9 +159,9 @@ void Screen::ActOnComponent(uint32_t control_mask)
     if (control_mask & BACK)
     {
         // Backs out the menu if there's one pushed over the main screen.
-        if (data.manager->screens.size() > 1)
+        if (manager->screens.size() > 1)
         {
-            data.manager->PopScreen();
+            manager->PopScreen();
         }
     }
 }
