@@ -41,6 +41,7 @@ public:
 
     void AddComponent(Component* component);
 
+    void SelectDefaultComponent();
     void SortComponents();
 
     virtual void OnControl(uint32_t control_mask);

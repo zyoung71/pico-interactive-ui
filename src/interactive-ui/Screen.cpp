@@ -24,7 +24,7 @@ void Screen::AddComponent(Component* component)
     components.push_back(component);
 }
 
-void Screen::SortComponents()
+void Screen::SelectDefaultComponent()
 {
     // Find the first selectable component and hover it if there is no hover already.
     if (!hovered_component)
@@ -47,13 +47,21 @@ void Screen::SortComponents()
             }
         }
     }
+}
+
+void Screen::SortComponents()
+{
+    SelectDefaultComponent();
     std::sort(components.begin(), components.end(), _ComponentCompare);
 }
 
 void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.
 {
-    NavigateToComponent(control_mask);
-    ActOnComponent(control_mask);
+    if (hovered_component)
+    {
+        NavigateToComponent(control_mask);
+        ActOnComponent(control_mask);
+    }
 }
 
 void Screen::OnScreenSelect()

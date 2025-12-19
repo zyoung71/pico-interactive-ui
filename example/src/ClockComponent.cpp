@@ -1,7 +1,7 @@
 #include <ClockComponent.h>
 
-ClockComponent::ClockComponent(const ScreenManager* manager, RealTimeClock* clock, int32_t z_layer)
-    : TextComponent(manager, 1.0, 0.1, clock->GetTimeString(), &clock_font, z_layer), clock(clock) // Aiming for top-right corner. 100% x-axis, 10% y-axis.
+ClockComponent::ClockComponent(const ScreenManager* manager, RealTimeClock* clock, int32_t z_layer, const Screen* initial_screen)
+    : TextComponent(manager, 1.0, 0.1, clock->GetTimeString(), &clock_font, z_layer, initial_screen), clock(clock) // Aiming for top-right corner. 100% x-axis, 10% y-axis.
 {
     draw_dimensions = {30, 6};
 }
