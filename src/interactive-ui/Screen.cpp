@@ -106,11 +106,11 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
         return false;
 
     bool success = false;
-    SelectionTable& table = hovered_component->component_lut[this];
 
     // This approach allows for multi-input like moving up and to the right on the same update.
     if (control_mask & DIRECTIONAL_UP)
     {
+        SelectionTable& table = hovered_component->component_lut[this];
         SelectableComponent* opt = table.up_component;
         if (opt != nullptr)
         {
@@ -121,6 +121,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_RIGHT)
     {
+        SelectionTable& table = hovered_component->component_lut[this];
         SelectableComponent* opt = table.right_component;
         if (opt != nullptr)
         {
@@ -131,6 +132,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_DOWN)
     {
+        SelectionTable& table = hovered_component->component_lut[this];
         SelectableComponent* opt = table.down_component;
         if (opt != nullptr)
         {
@@ -141,6 +143,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_LEFT)
     {
+        SelectionTable& table = hovered_component->component_lut[this];
         SelectableComponent* opt = table.left_component;
         if (opt != nullptr)
         {

@@ -31,6 +31,11 @@ public:
     void PushScreen(Screen* screen);
     void PopScreen();
 
+    inline size_t GetScreenCount() const
+    {
+        return screens.size();
+    }
+
     void QueueControl(uint32_t action_mask);
     
     void Update();
