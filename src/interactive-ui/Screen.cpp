@@ -97,8 +97,10 @@ void Screen::Update(float dt)
     for (auto&& c : components) // Draw components last.
     {
         c->Update(dt);
-        hovered_component->DrawHover();
     }
+    
+    if (hovered_component)
+        hovered_component->DrawHover();
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)
