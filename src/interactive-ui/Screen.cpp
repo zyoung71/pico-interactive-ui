@@ -58,11 +58,8 @@ void Screen::SortComponents()
 
 void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.
 {
-    if (hovered_component)
-    {
-        NavigateToComponent(control_mask);
-        ActOnComponent(control_mask);
-    }
+    NavigateToComponent(control_mask);
+    ActOnComponent(control_mask);
 }
 
 void Screen::OnScreenSelect()
@@ -105,6 +102,9 @@ void Screen::Update(float dt)
 
 bool Screen::NavigateToComponent(uint32_t control_mask)
 {
+    if (!hovered_component)
+        return false;
+
     bool success = false;
     SelectionTable& table = hovered_component->component_lut[this];
 
@@ -159,14 +159,19 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
 
 void Screen::ActOnComponent(uint32_t control_mask)
 {
-    if (control_mask & SELECT0)
+    if (hovered_component)
     {
-        hovered_component->Select0();
+        if (control_mask & SELECT0)
+        {
+            hovered_component->Select0();
+        }
+        if (control_mask & SELECT1)
+        {
+            hovered_component->Select1();
+        }
     }
-    if (control_mask & SELECT1)
-    {
-        hovered_component->Select1();
-    }
+    
+    // Does not require an active hovered component.
     if (control_mask & BACK)
     {
         // Backs out the menu if there's one pushed over the main screen.
