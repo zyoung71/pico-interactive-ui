@@ -29,8 +29,9 @@ void Screen::SelectDefaultComponent()
     // Find the first selectable component and hover it if there is no hover already.
     if (!hovered_component)
     {
-        for (auto&& c : components)
+        for (auto it = components.rbegin(); it != components.rend(); ++it) // We should find something with the highest Z number.
         {
+            Component* c = *it;
             if (c->selectable)
             {
                 SelectableComponent* sc = (SelectableComponent*)c; // A little dangerous, but only if you are dumb enough to make it dangerous.
@@ -51,8 +52,8 @@ void Screen::SelectDefaultComponent()
 
 void Screen::SortComponents()
 {
-    SelectDefaultComponent();
     std::sort(components.begin(), components.end(), _ComponentCompare);
+    SelectDefaultComponent();
 }
 
 void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.
