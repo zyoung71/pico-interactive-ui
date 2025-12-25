@@ -8,14 +8,14 @@ ComponentSelectEvent::ComponentSelectEvent(const EventSource* source, ControlAct
 }
 
 SelectableComponent::SelectableComponent(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen)
-    : Component(manager, position, z_layer, initial_screen, true)
+    : Component(manager, position, z_layer, initial_screen, true), allow_hover_draw(true)
 {
     if (initial_screen)
         component_lut[initial_screen] = SelectionTable{nullptr, nullptr, nullptr, nullptr};
 }
 
 SelectableComponent::SelectableComponent(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen)
-    : Component(manager, x_percentage, y_percentage, z_layer, initial_screen, true)
+    : Component(manager, x_percentage, y_percentage, z_layer, initial_screen, true), allow_hover_draw(true)
 {
     if (initial_screen)
         component_lut[initial_screen] = SelectionTable{nullptr, nullptr, nullptr, nullptr};
