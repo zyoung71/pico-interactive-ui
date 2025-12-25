@@ -32,6 +32,9 @@ struct SelectionTable
 
 class SelectableComponent : public Component, public EventSource
 {
+protected:
+    bool allow_hover_draw;
+
 public:
     // Contains a 4-directional table for other components for each screen. Some components may be used across screens, so a map is necessary.
     std::unordered_map<const Screen*, SelectionTable> component_lut;
@@ -55,4 +58,6 @@ public:
     // Second action when the hovered component is actually selected.
     // Think of it as a right-click.
     virtual void Select1();
+
+    friend Screen;
 };

@@ -64,9 +64,11 @@ void Screen::OnControl(uint32_t control_mask) // Trying to keep this function mo
 
 void Screen::OnScreenSelect()
 {
-    // Note: could be needed later but not certain. Will get back to this when necessary.
-    //if (hovered_component)
-    //    hovered_component->OnComponentHovered();
+    if (hovered_component)
+    {
+        hovered_component->allow_hover_draw = true;
+        //hovered_component->OnComponentHovered();
+    }
     for (auto&& c : components)
     {
         c->ForceVisibility(true);
@@ -75,8 +77,11 @@ void Screen::OnScreenSelect()
 
 void Screen::OnScreenDeselect()
 {
-    //if (hovered_component)
-    //    hovered_component->OnComponentUnhovered();
+    if (hovered_component)
+    {
+        hovered_component->allow_hover_draw = false;
+        //hovered_component->OnComponentUnhovered();
+    }
     for (auto&& c : components)
     {
         c->ForceVisibility(false);
@@ -97,7 +102,10 @@ void Screen::Update(float dt)
     }
     
     if (hovered_component)
-        hovered_component->DrawHover();
+    {
+        if (hovered_component->allow_hover_draw)
+            hovered_component->DrawHover();
+    }
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)
