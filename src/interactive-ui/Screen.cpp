@@ -86,7 +86,7 @@ void Screen::OnScreenDeselect()
 void Screen::Update(float dt)
 {   
     uint32_t control_mask;
-    if (queue_try_remove(&manager->control_queue, &control_mask))
+    while (queue_try_remove(&manager->control_queue, &control_mask))
     {
         OnControl(control_mask);
     }
