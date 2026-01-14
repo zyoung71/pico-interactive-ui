@@ -39,6 +39,7 @@ public:
     void QueueControl(uint32_t action_mask);
     
     void Update();
+    void UpdateIfAnyComponentMoving();
 
     friend Screen;
 };

@@ -17,6 +17,8 @@ public:
     virtual void DrawPolygon(const Vec2u32* points, size_t pos_count, uint32_t color, bool is_outline = true) = 0;
     virtual void DrawSquare(Vec2u32 pos, Vec2u32 size, uint32_t color, bool is_outline = true) = 0;
 
+    virtual void DrawScrollingText(Vec2u32 pos, const char* text, bool move_left, const Font* font, uint32_t color) = 0;
+
     virtual void DisplayBitmap(const uint8_t* bitmap_buff, size_t bitmap_size) = 0;
     virtual void ClearDisplay() = 0;
     virtual void InvertColors() = 0;

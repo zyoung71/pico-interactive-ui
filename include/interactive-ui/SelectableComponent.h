@@ -10,7 +10,7 @@ protected:
     ControlAction control;
 
 public:
-    ComponentSelectEvent(const EventSource* source, ControlAction control);
+    ComponentSelectEvent(EventSource* source, ControlAction control);
 };
 
 class SelectableComponent;

@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-ComponentSelectEvent::ComponentSelectEvent(const EventSource* source, ControlAction control)
+ComponentSelectEvent::ComponentSelectEvent(EventSource* source, ControlAction control)
     : Event(source), control(control)
 {
 }

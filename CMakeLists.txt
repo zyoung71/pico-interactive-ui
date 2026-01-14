@@ -10,7 +10,6 @@ if (NOT TARGET pico-interactive-ui)
         src/interactive-ui/components/TextComponent.cpp
     )
 
-    add_subdirectory(lib/pico-util)
     add_subdirectory(lib/pico-math)
     add_subdirectory(lib/pico-event-hardware)
 
@@ -19,7 +18,6 @@ if (NOT TARGET pico-interactive-ui)
     )
 
     target_link_libraries(pico-interactive-ui
-        pico-util
         pico-math
         pico-event-hardware
     )

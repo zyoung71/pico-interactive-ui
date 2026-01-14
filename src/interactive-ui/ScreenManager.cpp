@@ -1,5 +1,6 @@
 #include <interactive-ui/ScreenManager.h>
 #include <interactive-ui/Screen.h>
+#include <interactive-ui/Component.h>
 
 ScreenManager::ScreenManager(DisplayInterface* const display)
     : display(display), selected_screen(nullptr)
@@ -45,4 +46,16 @@ void ScreenManager::Update()
     selected_screen->Update(dt_us * 1e-6f);
     display->UpdateDisplay();
     then = now;
+}
+
+void ScreenManager::UpdateIfAnyComponentMoving()
+{
+    size_t size = selected_screen->components.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        if (selected_screen->components[i]->IsMoving())
+        {
+            Update();
+        }
+    }
 }

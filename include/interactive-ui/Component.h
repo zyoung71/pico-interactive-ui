@@ -1,6 +1,34 @@
 #pragma once
 
 #include "Screen.h"
+#include <math/Graphics.h>
+
+class Component;
+
+struct MovementAnimation
+{
+private:
+    Vec2u32 start_pos;
+    float elapsed = 0.f;
+
+public:
+    Vec2u32 end_pos;
+    float duration;
+    bool moving = true;
+    bool pos_set_latch = false;
+
+    const std::array<float, graphics::easing::lut_size>& easing_func;
+
+    MovementAnimation(const std::array<float, graphics::easing::lut_size>& easing_func)
+        : easing_func(easing_func) {}
+
+    inline void SetPositionByDelta(const Vec2u32& delta)
+    {
+        end_pos = start_pos + delta;
+    }
+
+    friend Component;
+};
 
 class Component
 {
@@ -16,16 +44,21 @@ protected:
     bool forced_visibility;
     bool personal_visibility;
 
+    queue_t moving_queue;
+    bool moving;
+
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
 
     Component(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen = nullptr, bool selectable = false);
     Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable = false);
-    virtual ~Component() = default;
+    virtual ~Component();
 
     virtual void Update(float dt);
 
     virtual void Draw() = 0;
+
+    bool Move(MovementAnimation* animation);
 
     inline void SetColor(uint32_t rgba)
     {
@@ -58,6 +91,10 @@ public:
     inline int32_t GetZLayer() const
     {
         return z_layer;
+    }
+    inline bool IsMoving() const
+    {
+        return moving;
     }
 
     friend Screen;
