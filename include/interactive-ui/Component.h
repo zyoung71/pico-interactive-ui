@@ -10,12 +10,12 @@ struct MovementAnimation
 private:
     Vec2u32 start_pos;
     float elapsed = 0.f;
+    bool pos_set_latch = false;
 
 public:
     Vec2u32 end_pos;
     float duration;
     bool moving = true;
-    bool pos_set_latch = false;
 
     const std::array<float, graphics::easing::lut_size>& easing_func;
 
@@ -44,7 +44,7 @@ protected:
     bool forced_visibility;
     bool personal_visibility;
 
-    queue_t moving_queue;
+    queue_t moving_queue; // queue containing animation objects. NOT pointers, but values
     bool moving;
 
 public:
@@ -58,7 +58,7 @@ public:
 
     virtual void Draw() = 0;
 
-    bool Move(MovementAnimation* animation);
+    bool Move(const MovementAnimation* animation);
 
     inline void SetColor(uint32_t rgba)
     {

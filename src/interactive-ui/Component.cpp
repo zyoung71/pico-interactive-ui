@@ -13,7 +13,7 @@ Component::Component(const ScreenManager* manager, const Vec2u32& position, int3
     else
         origin_position = position;
 
-    queue_init(&moving_queue, sizeof(MovementAnimation*), 4);
+    queue_init(&moving_queue, sizeof(MovementAnimation), 4);
 }
 
 Component::Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable)
@@ -81,7 +81,7 @@ void Component::Update(float dt)
         Draw(); // draw last
 }
 
-bool Component::Move(MovementAnimation* animation)
+bool Component::Move(const MovementAnimation* animation)
 {
-    return queue_try_add(&moving_queue, &animation);
+    return queue_try_add(&moving_queue, animation);
 }
