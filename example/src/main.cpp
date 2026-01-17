@@ -34,7 +34,7 @@ int main()
     int id2 = text.AddAction([](const Event* ev, void* ptr){
         // When the text box is selected with a button or etc.
         ClockComponent* clk = (ClockComponent*)ptr;
-        MovementAnimation animation(graphics::easing::lut_cubic_in_out);
+        MovementAnimation animation(clk, graphics::easing::lut_cubic_in_out);
         animation.duration = 1.f;
         animation.end_pos = Vec2u32{50, 40};
         clk->Move(&animation);

@@ -1,6 +1,16 @@
 #include <interactive-ui/Component.h>
 #include <cstring>
 
+MovementAnimation::MovementAnimation(const Component* component, const std::array<float, graphics::easing::lut_size>& easing_func)
+    : start_pos(component->GetOriginPosition()), easing_func(easing_func)
+{
+}
+
+MovementAnimation::MovementAnimation()
+    : start_pos(0, 0), easing_func(graphics::easing::lut_sine_in_out)
+{
+}
+
 Component::Component(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen, bool selectable)
     : manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
 {
@@ -13,7 +23,7 @@ Component::Component(const ScreenManager* manager, const Vec2u32& position, int3
     else
         origin_position = position;
 
-    queue_init(&moving_queue, sizeof(MovementAnimation), 4);
+    queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
 
 Component::Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable)
@@ -31,50 +41,43 @@ Component::~Component()
 
 void Component::Update(float dt)
 {
-    MovementAnimation* animation;
-    MovementAnimation* ani_arr[4]; // This is here to avoid recursion and allow multiple movements to be queued again
-    memset(ani_arr, 0, sizeof(MovementAnimation*) * 4);
+    MovementAnimation animation;
+    MovementAnimation* ani_arr[moving_queue_size]; // This is here to avoid recursion and allow multiple movements to be queued again
+    memset(ani_arr, 0, sizeof(ani_arr));
     uint8_t idx;
-    while (queue_try_remove(&moving_queue, animation))
+
+    // no single animation will be found in the same queue twice. if only one animation
+    // is in progress, the queue will stay at a size of one until the animation is complete
+    while (queue_try_remove(&moving_queue, &animation))
     {
-        if (!animation->moving)
+        if (!animation.moving)
             continue;
 
         float k, eased;
 
-        if (!animation->pos_set_latch)
-        {
-            animation->pos_set_latch = true;
-            animation->start_pos = origin_position;
-        }
-
-        animation->elapsed += dt;
+        animation.elapsed += dt;
         
-        k = animation->elapsed / animation->duration; // time ratio
+        k = animation.elapsed / animation.duration; // time ratio
         if (k >= 1.f)
         {
             k = 1.f;
-            animation->moving = false;
+            animation.moving = false;
         }
         else
-            ani_arr[idx++] = animation;
-
+            ani_arr[idx++] = &animation; // add to array for later use
+        
         size_t lut_idx = static_cast<size_t>(k * (graphics::easing::lut_size - 1));
-        eased = animation->easing_func[lut_idx];
+        eased = animation.easing_func[lut_idx];
 
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
-        origin_position += static_cast<Vec2u32>(((Vec2f)animation->end_pos) * k);
+        origin_position = animation.start_pos + (Vec2f)animation.GetDelta() * eased;
     }
 
-    moving = false;
-    for (uint8_t i = 0; i < 4; i++)
+    for (uint8_t i = 0; i < moving_queue_size; i++)
     {
         MovementAnimation* ani = ani_arr[i];
         if (ani->moving)
-        {
-            queue_try_add(&moving_queue, &ani); // if not done, add to queue again
-            moving = true;
-        }
+            queue_try_add(&moving_queue, ani); // if not done, add to queue again. must be done outside while loop
     }
 
     if (forced_visibility && personal_visibility)
@@ -84,4 +87,9 @@ void Component::Update(float dt)
 bool Component::Move(const MovementAnimation* animation)
 {
     return queue_try_add(&moving_queue, animation);
+}
+
+bool Component::IsMoving() const
+{
+    return !queue_is_empty(&moving_queue);
 }

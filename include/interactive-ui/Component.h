@@ -8,23 +8,22 @@ class Component;
 struct MovementAnimation
 {
 private:
-    Vec2u32 start_pos;
     float elapsed = 0.f;
-    bool pos_set_latch = false;
 
 public:
-    Vec2u32 end_pos;
-    float duration;
+    Vec2u32 start_pos;
+    Vec2u32 end_pos = {0, 0};
+    float duration = 1.f;
     bool moving = true;
 
     const std::array<float, graphics::easing::lut_size>& easing_func;
 
-    MovementAnimation(const std::array<float, graphics::easing::lut_size>& easing_func)
-        : easing_func(easing_func) {}
+    MovementAnimation(const Component* component, const std::array<float, graphics::easing::lut_size>& easing_func);
+    MovementAnimation();
 
-    inline void SetPositionByDelta(const Vec2u32& delta)
+    inline Vec2u32 GetDelta() const
     {
-        end_pos = start_pos + delta;
+        return end_pos - start_pos;
     }
 
     friend Component;
@@ -32,6 +31,9 @@ public:
 
 class Component
 {
+private:
+    static constexpr size_t moving_queue_size = 4;
+
 protected:
     Vec2u32 origin_position;
     Vec2u32 draw_dimensions;
@@ -44,8 +46,7 @@ protected:
     bool forced_visibility;
     bool personal_visibility;
 
-    queue_t moving_queue; // queue containing animation objects. NOT pointers, but values
-    bool moving;
+    mutable queue_t moving_queue; // queue containing animation objects. NOT pointers, but values
 
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
@@ -59,6 +60,8 @@ public:
     virtual void Draw() = 0;
 
     bool Move(const MovementAnimation* animation);
+
+    bool IsMoving() const;
 
     inline void SetColor(uint32_t rgba)
     {
@@ -91,10 +94,6 @@ public:
     inline int32_t GetZLayer() const
     {
         return z_layer;
-    }
-    inline bool IsMoving() const
-    {
-        return moving;
     }
 
     friend Screen;

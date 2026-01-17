@@ -56,6 +56,7 @@ void ScreenManager::UpdateIfAnyComponentMoving()
         if (selected_screen->components[i]->IsMoving())
         {
             Update();
+            break;
         }
     }
 }
