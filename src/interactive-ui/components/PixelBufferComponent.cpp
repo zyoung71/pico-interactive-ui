@@ -12,7 +12,7 @@ PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, float x
     draw_dimensions = dimensions;
 }
 
-PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const Pixel* initial_buffer, size_t buff_length, int32_t z_layer, const Screen* initial_screen = nullptr)
+PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const Pixel* initial_buffer, size_t buff_length, int32_t z_layer, const Screen* initial_screen)
     : PixelBufferComponent(manager, origin, Vec2u32{}, z_layer, initial_screen)
 {
     uint32_t m_x = 0, m_y = 0;
@@ -26,7 +26,7 @@ PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const V
     draw_dimensions = Vec2u32{m_x, m_y};
 }
 
-PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen = nullptr)
+PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen)
     : PixelBufferComponent(manager, origin, Vec2u32{}, z_layer, initial_screen)
 {
     uint32_t m_x = 0, m_y = 0;

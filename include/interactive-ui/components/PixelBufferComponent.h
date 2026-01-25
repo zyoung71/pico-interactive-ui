@@ -1,14 +1,7 @@
 #pragma once
 
 #include "../SelectableComponent.h"
-
-#include <map>
-
-struct Pixel
-{
-    Vec2u32 position;
-    uint32_t color;
-};
+#include "../Pixel.h"
 
 /**
  * Colors in specific pixels based on the vector positions given. Unlike BitmapComponent,
@@ -18,7 +11,7 @@ struct Pixel
 class PixelBufferComponent : public SelectableComponent
 {
 protected:
-    std::map<Vec2u32, uint32_t> pixels;
+    std::unordered_map<Vec2u32, uint32_t> pixels;
 
 public:
     PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const Vec2u32& dimensions, int32_t z_layer, const Screen* initial_screen = nullptr);
