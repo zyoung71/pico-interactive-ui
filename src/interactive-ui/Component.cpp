@@ -76,6 +76,8 @@ void Component::Update(float dt)
     for (uint8_t i = 0; i < moving_queue_size; i++)
     {
         MovementAnimation* ani = ani_arr[i];
+        if (!ani)
+            break; // no need to check the other indecies as a nullptr guarantees the rest are as well
         if (ani->moving)
             queue_try_add(&moving_queue, ani); // if not done, add to queue again. must be done outside while loop
     }
