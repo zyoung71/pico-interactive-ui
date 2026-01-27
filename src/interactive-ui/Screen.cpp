@@ -29,7 +29,11 @@ void Screen::HoverComponent(const SelectableComponent* comp)
     for (auto& c : components)
     {
         if (comp == c)
+        {
+            hovered_component->OnComponentUnhovered();
             hovered_component = (SelectableComponent*)c; // casting is fine here
+            hovered_component->OnComponentHovered();
+        }
     }
 }
 
