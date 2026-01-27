@@ -24,7 +24,16 @@ void Screen::AddComponent(Component* component)
     components.push_back(component);
 }
 
-void Screen::SelectDefaultComponent()
+void Screen::HoverComponent(const SelectableComponent* comp)
+{
+    for (auto& c : components)
+    {
+        if (comp == c)
+            hovered_component = (SelectableComponent*)c; // casting is fine here
+    }
+}
+
+void Screen::HoverDefaultComponent()
 {
     // Find the first selectable component and hover it if there is no hover already.
     if (!hovered_component)
@@ -53,7 +62,7 @@ void Screen::SelectDefaultComponent()
 void Screen::SortComponents()
 {
     std::sort(components.begin(), components.end(), _ComponentCompare);
-    SelectDefaultComponent();
+    HoverDefaultComponent();
 }
 
 void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.

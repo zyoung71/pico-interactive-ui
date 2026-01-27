@@ -31,6 +31,11 @@ public:
     void PushScreen(Screen* screen);
     void PopScreen();
 
+    inline Screen* GetCurrentScreen() const
+    {
+        return selected_screen;
+    }
+
     inline size_t GetScreenCount() const
     {
         return screens.size();

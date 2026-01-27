@@ -41,7 +41,8 @@ public:
 
     void AddComponent(Component* component);
 
-    void SelectDefaultComponent();
+    void HoverComponent(const SelectableComponent* comp);
+    void HoverDefaultComponent();
     void SortComponents();
 
     virtual void OnControl(uint32_t control_mask);

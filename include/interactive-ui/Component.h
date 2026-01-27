@@ -16,9 +16,11 @@ public:
     float duration = 1.f;
     bool moving = true;
 
-    const std::array<float, graphics::easing::lut_size>& easing_func;
+    typedef std::array<float, graphics::easing::lut_size> EasingFunctionLUT;
 
-    MovementAnimation(const Component* component, const std::array<float, graphics::easing::lut_size>& easing_func);
+    const EasingFunctionLUT& easing_func;
+
+    MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func);
     MovementAnimation();
 
     inline Vec2u32 GetDelta() const
@@ -43,8 +45,8 @@ protected:
     DisplayInterface* display;
     const ScreenManager* manager;
 
-    bool forced_visibility;
-    bool personal_visibility;
+    bool forced_visibility; // master visibility, controlled by screens and managers
+    bool personal_visibility; // personal visibility, for hiding and showing on its own
 
     mutable queue_t moving_queue; // queue containing animation objects. NOT pointers, but values
 
@@ -78,6 +80,14 @@ public:
     inline void SetPersonalVisibility(bool visibility)
     {
         personal_visibility = visibility;
+    }
+    inline bool GetForcedVisibility() const
+    {
+        return forced_visibility;
+    }
+    inline bool GetPersonalVisibility() const
+    {
+        return personal_visibility;
     }
     inline bool IsVisible() const
     {

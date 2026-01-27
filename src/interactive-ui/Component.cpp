@@ -1,7 +1,7 @@
 #include <interactive-ui/Component.h>
 #include <cstring>
 
-MovementAnimation::MovementAnimation(const Component* component, const std::array<float, graphics::easing::lut_size>& easing_func)
+MovementAnimation::MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func)
     : start_pos(component->GetOriginPosition()), easing_func(easing_func)
 {
 }
