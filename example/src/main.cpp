@@ -5,7 +5,7 @@
 
 #include <math/Graphics.h>
 
-static constexpr Vec2u32 screen_dimensions = Vec2u32(128, 64);
+static constexpr Vec2i32 screen_dimensions = Vec2i32(128, 64);
 
 int main()
 {
@@ -20,7 +20,7 @@ int main()
     ClockComponent clock_component(&manager, &clock, 0, &menu);
     menu.AddComponent(&clock_component);
 
-    TextBoxComponent text(&manager, Vec2u32{0, 0}, Vec2u32{31, 15}, Vec2u32{2, 2}, "TEXT", nullptr, 1);
+    TextBoxComponent text(&manager, Vec2i32{0, 0}, Vec2i32{31, 15}, Vec2i32{2, 2}, "TEXT", nullptr, 1);
     
     text.AddComponentTable(&menu, nullptr, nullptr, nullptr, &clock_component);
     clock_component.AddComponentTable(&menu, nullptr, nullptr, &text, nullptr);
@@ -34,9 +34,9 @@ int main()
     int id2 = text.AddAction([](const Event* ev, void* ptr){
         // When the text box is selected with a button or etc.
         ClockComponent* clk = (ClockComponent*)ptr;
-        MovementAnimation animation(clk, graphics::easing::lut_cubic_in_out);
+        MovementAnimation animation(clk, graphics::easing::lut_sine_in_out);
         animation.duration = 1.f;
-        animation.end_pos = Vec2u32{50, 40};
+        animation.end_pos = Vec2i32{50, 40};
         clk->Move(&animation);
     }, &clock_component);
 

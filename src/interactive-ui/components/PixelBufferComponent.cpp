@@ -1,21 +1,21 @@
 #include <interactive-ui/components/PixelBufferComponent.h>
 
-PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const Vec2u32& dimensions, int32_t z_layer, const Screen* initial_screen)
+PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, int32_t z_layer, const Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen)
 {
     draw_dimensions = dimensions;
 }
 
-PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2u32& dimensions, int32_t z_layer, const Screen* initial_screen)
+PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, int32_t z_layer, const Screen* initial_screen)
     : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen)
 {
     draw_dimensions = dimensions;
 }
 
-PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const Pixel* initial_buffer, size_t buff_length, int32_t z_layer, const Screen* initial_screen)
-    : PixelBufferComponent(manager, origin, Vec2u32{}, z_layer, initial_screen)
+PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2i32& origin, const Pixel* initial_buffer, size_t buff_length, int32_t z_layer, const Screen* initial_screen)
+    : PixelBufferComponent(manager, origin, Vec2i32{}, z_layer, initial_screen)
 {
-    uint32_t m_x = 0, m_y = 0;
+    int32_t m_x = 0, m_y = 0;
     for (size_t i = 0; i < buff_length; i++)
     {
         const Pixel& p = initial_buffer[i];
@@ -23,13 +23,13 @@ PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const V
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2u32{m_x, m_y};
+    draw_dimensions = Vec2i32{m_x, m_y};
 }
 
-PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2u32& origin, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen)
-    : PixelBufferComponent(manager, origin, Vec2u32{}, z_layer, initial_screen)
+PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const Vec2i32& origin, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen)
+    : PixelBufferComponent(manager, origin, Vec2i32{}, z_layer, initial_screen)
 {
-    uint32_t m_x = 0, m_y = 0;
+    int32_t m_x = 0, m_y = 0;
     for (size_t i = 0; i < initial_buffer.length; i++)
     {
         const Pixel& p = initial_buffer[i];
@@ -37,13 +37,13 @@ PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, const V
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2u32{m_x, m_y};
+    draw_dimensions = Vec2i32{m_x, m_y};
 }
 
 PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Pixel* initial_buffer, size_t buff_length, const Screen* initial_screen)
-    : PixelBufferComponent(manager, x_percentage, y_percentage, Vec2u32{}, z_layer, initial_screen)
+    : PixelBufferComponent(manager, x_percentage, y_percentage, Vec2i32{}, z_layer, initial_screen)
 {
-    uint32_t m_x = 0, m_y = 0;
+    int32_t m_x = 0, m_y = 0;
     for (size_t i = 0; i < buff_length; i++)
     {
         const Pixel& p = initial_buffer[i];
@@ -51,13 +51,13 @@ PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, float x
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2u32{m_x, m_y};
+    draw_dimensions = Vec2i32{m_x, m_y};
 }
 
 PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen)
-    : PixelBufferComponent(manager, x_percentage, y_percentage, Vec2u32{}, z_layer, initial_screen)
+    : PixelBufferComponent(manager, x_percentage, y_percentage, Vec2i32{}, z_layer, initial_screen)
 {
-    uint32_t m_x = 0, m_y = 0;
+    int32_t m_x = 0, m_y = 0;
     for (size_t i = 0; i < initial_buffer.length; i++)
     {
         const Pixel& p = initial_buffer[i];
@@ -65,7 +65,7 @@ PixelBufferComponent::PixelBufferComponent(const ScreenManager* manager, float x
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2u32{m_x, m_y};
+    draw_dimensions = Vec2i32{m_x, m_y};
 }
 
 void PixelBufferComponent::SetPixel(Pixel p)

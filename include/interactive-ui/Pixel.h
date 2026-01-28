@@ -4,6 +4,6 @@
 
 struct Pixel
 {
-    Vec2u32 position;
+    Vec2i32 position;
     uint32_t color;
 };

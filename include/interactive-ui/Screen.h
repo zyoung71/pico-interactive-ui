@@ -29,7 +29,7 @@ public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);
     Screen(ScreenManager* manager, const Vec2u32& dimensions);
 
-    inline Vec2u32 GetDimensions() const
+    inline Vec2i32 GetDimensions() const
     {
         return dimensions;
     }

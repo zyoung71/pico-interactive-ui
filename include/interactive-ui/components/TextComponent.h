@@ -11,7 +11,7 @@ protected:
     size_t message_pixel_length;
 
 public:
-    TextComponent(const ScreenManager* manager, const Vec2u32& origin, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
+    TextComponent(const ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
     TextComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen);
 
     void Draw() override;
@@ -43,13 +43,13 @@ public:
 class TextBoxComponent : public TextComponent
 {
 protected:
-    Vec2u32 padding;
+    Vec2i32 padding;
 
 public:
-    TextBoxComponent(const ScreenManager* manager, const Vec2u32& origin, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
-    TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen);
-    TextBoxComponent(const ScreenManager* manager, const Vec2u32& origin, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
-    TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen);
+    TextBoxComponent(const ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
+    TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen);
+    TextBoxComponent(const ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen = nullptr);
+    TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen);
 
     void Draw() override;
 };

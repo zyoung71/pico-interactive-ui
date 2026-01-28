@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-TextComponent::TextComponent(const ScreenManager* manager, const Vec2u32& origin, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
+TextComponent::TextComponent(const ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen), text(text), font(font)
 {
     const size_t msg_len = strlen(text);
@@ -27,7 +27,7 @@ TextComponent::TextComponent(const ScreenManager* manager, const Vec2u32& origin
     }
 
     size_t message_pixel_length = segment_max * font->char_width + (segment_max - 1) * font->char_spacing;
-    draw_dimensions = {message_pixel_length, font->char_height * lines + font->char_spacing * (lines - 1)};
+    draw_dimensions = {(int32_t)message_pixel_length, static_cast<int32_t>(font->char_height * lines + font->char_spacing * (lines - 1))};
 }
 TextComponent::TextComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
     : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen), text(text), font(font)
@@ -54,7 +54,7 @@ TextComponent::TextComponent(const ScreenManager* manager, float x_percentage, f
     }
 
     size_t message_pixel_length = segment_max * font->char_width + (segment_max - 1) * font->char_spacing;
-    draw_dimensions = {message_pixel_length, font->char_height * lines + font->char_spacing * (lines - 1)};
+    draw_dimensions = {(int32_t)message_pixel_length, static_cast<int32_t>(font->char_height * lines + font->char_spacing * (lines - 1))};
 }
 
 void TextComponent::Draw()
@@ -62,23 +62,23 @@ void TextComponent::Draw()
     display->DrawText(origin_position, text, font, color);
 }
 
-TextBoxComponent::TextBoxComponent(const ScreenManager* manager, const Vec2u32& origin, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
+TextBoxComponent::TextBoxComponent(const ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
     : TextComponent(manager, origin, text, font, z_layer, initial_screen), padding(padding)
 {
     draw_dimensions = dimensions;
 }
-TextBoxComponent::TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2u32& dimensions, const Vec2u32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
+TextBoxComponent::TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
     : TextComponent(manager, x_percentage, y_percentage, text, font, z_layer, initial_screen), padding(padding)
 {
     draw_dimensions = dimensions;
 }
-TextBoxComponent::TextBoxComponent(const ScreenManager* manager, const Vec2u32& origin, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
-    : TextComponent(manager, origin, text, font, z_layer, initial_screen), padding({static_cast<uint32_t>(dimensions.x * x_pad_percentage), static_cast<uint32_t>(dimensions.y * y_pad_percentage)})
+TextBoxComponent::TextBoxComponent(const ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
+    : TextComponent(manager, origin, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(dimensions.x * x_pad_percentage), static_cast<int32_t>(dimensions.y * y_pad_percentage)})
 {
     draw_dimensions = dimensions;
 }
-TextBoxComponent::TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2u32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
-    : TextComponent(manager, x_percentage, y_percentage, text, font, z_layer, initial_screen), padding({static_cast<uint32_t>(dimensions.x * x_pad_percentage), static_cast<uint32_t>(dimensions.y * y_pad_percentage)})
+TextBoxComponent::TextBoxComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, const Screen* initial_screen)
+    : TextComponent(manager, x_percentage, y_percentage, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(dimensions.x * x_pad_percentage), static_cast<int32_t>(dimensions.y * y_pad_percentage)})
 {
     draw_dimensions = dimensions;
 }

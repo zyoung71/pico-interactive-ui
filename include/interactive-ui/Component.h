@@ -11,8 +11,8 @@ private:
     float elapsed = 0.f;
 
 public:
-    Vec2u32 start_pos;
-    Vec2u32 end_pos = {0, 0};
+    Vec2i32 start_pos;
+    Vec2i32 end_pos = {0, 0};
     float duration = 1.f;
     bool moving = true;
 
@@ -23,7 +23,7 @@ public:
     MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func);
     MovementAnimation();
 
-    inline Vec2u32 GetDelta() const
+    inline Vec2i32 GetDelta() const
     {
         return end_pos - start_pos;
     }
@@ -37,8 +37,8 @@ private:
     static constexpr size_t moving_queue_size = 4;
 
 protected:
-    Vec2u32 origin_position;
-    Vec2u32 draw_dimensions;
+    Vec2i32 origin_position;
+    Vec2i32 draw_dimensions;
     int32_t z_layer;
     uint32_t color;
 
@@ -53,7 +53,7 @@ protected:
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
 
-    Component(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen = nullptr, bool selectable = false);
+    Component(const ScreenManager* manager, const Vec2i32& position, int32_t z_layer, const Screen* initial_screen = nullptr, bool selectable = false);
     Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable = false);
     virtual ~Component();
 
@@ -93,11 +93,11 @@ public:
     {
         return forced_visibility && personal_visibility;
     }
-    inline Vec2u32 GetOriginPosition() const
+    inline Vec2i32 GetOriginPosition() const
     {
         return origin_position;
     }
-    inline Vec2u32 GetDrawDimensions() const
+    inline Vec2i32 GetDrawDimensions() const
     {
         return draw_dimensions;
     }

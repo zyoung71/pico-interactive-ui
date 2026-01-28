@@ -7,7 +7,7 @@ ComponentSelectEvent::ComponentSelectEvent(EventSource* source, ControlAction co
 {
 }
 
-SelectableComponent::SelectableComponent(const ScreenManager* manager, const Vec2u32& position, int32_t z_layer, const Screen* initial_screen)
+SelectableComponent::SelectableComponent(const ScreenManager* manager, const Vec2i32& position, int32_t z_layer, const Screen* initial_screen)
     : Component(manager, position, z_layer, initial_screen, true), allow_hover_draw(true)
 {
     if (initial_screen)
@@ -35,7 +35,7 @@ void SelectableComponent::AddComponentTable(const Screen* screen, SelectableComp
 
 void SelectableComponent::DrawHover()
 {
-    Vec2u32 unit{1, 1};
+    Vec2i32 unit{1, 1};
     display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);
 }
 
