@@ -5,6 +5,7 @@
 
 class Component;
 
+using graphics::easing::EasingFunctionLUT; // maybe not the best idea to throw in a header? eh dont care enough
 struct MovementAnimation
 {
 private:
@@ -15,8 +16,6 @@ public:
     Vec2i32 end_pos = {0, 0};
     float duration = 1.f;
     bool moving = true;
-
-    typedef std::array<float, graphics::easing::lut_size> EasingFunctionLUT;
 
     const EasingFunctionLUT& easing_func;
 
