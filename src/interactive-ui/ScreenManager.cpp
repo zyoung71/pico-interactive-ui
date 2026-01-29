@@ -50,13 +50,6 @@ void ScreenManager::Update()
 
 void ScreenManager::UpdateIfAnyComponentMoving()
 {
-    size_t size = selected_screen->components.size();
-    for (size_t i = 0; i < size; i++)
-    {
-        if (selected_screen->components[i]->IsMoving())
-        {
-            Update();
-            break;
-        }
-    }
+    if (component_moving_reference_count > 0)
+        Update();
 }

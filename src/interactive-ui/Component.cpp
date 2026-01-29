@@ -71,6 +71,7 @@ void Component::Update(float dt)
             {
                 k = 0.f;
                 animation.moving = false;
+                manager->component_moving_reference_count--;
                 if (animation.on_animation_end && animation.enable_callbacks)
                     animation.on_animation_end();
             }
@@ -83,6 +84,7 @@ void Component::Update(float dt)
             {
                 k = 1.f;
                 animation.moving = false;
+                manager->component_moving_reference_count--;
                 if (animation.on_animation_end && animation.enable_callbacks)
                     animation.on_animation_end();
             }
@@ -113,6 +115,7 @@ bool Component::Move(MovementAnimation animation, bool reversed, bool enable_cal
 {
     animation.reversed = reversed;
     animation.enable_callbacks = enable_callbacks;
+    manager->component_moving_reference_count++;
     return queue_try_add(&moving_queue, &animation);
 }
 

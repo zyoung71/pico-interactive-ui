@@ -7,11 +7,11 @@
 #include "DisplayInterface.h"
 
 class Screen;
+class Component;
 
 class ScreenManager
 {
 private:
-
     DisplayInterface* const display;
     std::stack<Screen*> screens; 
     Screen* selected_screen;
@@ -19,6 +19,8 @@ private:
     queue_t control_queue;
     absolute_time_t then = 0;
     
+    mutable int component_moving_reference_count = 0;
+
 public:
     ScreenManager(DisplayInterface* const display);
     ~ScreenManager();
@@ -47,4 +49,5 @@ public:
     void UpdateIfAnyComponentMoving();
 
     friend Screen;
+    friend Component;
 };

@@ -12,12 +12,12 @@ private:
     float elapsed = 0.f;
     bool reversed = false;
     bool enable_callbacks = true;
+    bool moving = true;
 
 public:
     Vec2i32 start_pos;
     Vec2i32 end_pos = {0, 0};
     float duration = 1.f;
-    bool moving = true;
 
     const EasingFunctionLUT& easing_func;
 
