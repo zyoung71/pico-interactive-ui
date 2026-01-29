@@ -83,6 +83,8 @@ void Component::Update(float dt)
             {
                 k = 1.f;
                 animation.moving = false;
+                if (animation.on_animation_end)
+                    animation.on_animation_end();
             }
             else
                 ani_arr[idx++] = &animation;
