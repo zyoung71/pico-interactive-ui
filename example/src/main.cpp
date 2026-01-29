@@ -35,6 +35,12 @@ int main()
         // When the text box is selected with a button or etc.
         ClockComponent* clk = (ClockComponent*)ptr;
         MovementAnimation animation(clk, graphics::easing::lut_sine_in_out);
+        animation.on_animation_begin = [](){
+            puts("animation has begun");
+        };
+        animation.on_animation_end = [](){
+            puts("animation has ended");
+        };
         animation.duration = 1.f;
         animation.end_pos = Vec2i32{50, 40};
         clk->Move(animation);

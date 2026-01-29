@@ -20,6 +20,11 @@ public:
 
     const EasingFunctionLUT& easing_func;
 
+    typedef void(*AnimationStateCallback)();
+
+    AnimationStateCallback on_animation_begin = nullptr;
+    AnimationStateCallback on_animation_end = nullptr;
+
     MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func);
     MovementAnimation();
 

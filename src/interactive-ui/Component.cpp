@@ -53,6 +53,12 @@ void Component::Update(float dt)
         if (!animation.moving)
             continue;
 
+        if (animation.elapsed <= 0.f)
+        {
+            if (animation.on_animation_begin)
+                animation.on_animation_begin();
+        }
+
         float k, eased;
 
         animation.elapsed += dt;
@@ -65,6 +71,8 @@ void Component::Update(float dt)
             {
                 k = 0.f;
                 animation.moving = false;
+                if (animation.on_animation_end)
+                    animation.on_animation_end();
             }
             else
                 ani_arr[idx++] = &animation; // add to array for later use
