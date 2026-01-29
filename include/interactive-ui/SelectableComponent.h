@@ -34,6 +34,7 @@ class SelectableComponent : public Component, public EventSource
 {
 protected:
     bool allow_hover_draw;
+    bool cancel_master_back_action;
 
 public:
     // Contains a 4-directional table for other components for each screen. Some components may be used across screens, so a map is necessary.
@@ -51,13 +52,12 @@ public:
     virtual void OnComponentHovered() {};
     virtual void OnComponentUnhovered() {};
 
-    // What happens when the hovered component is actually selected.
-    // Think of it as a left-click.
-    virtual void Select0();
+    virtual void Control(ControlAction action);
 
-    // Second action when the hovered component is actually selected.
-    // Think of it as a right-click.
-    virtual void Select1();
+    inline void CancelMasterBackAction(bool cancel = true)
+    {
+        cancel_master_back_action = cancel;
+    }
 
     friend Screen;
 };

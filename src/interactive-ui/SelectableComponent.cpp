@@ -8,14 +8,14 @@ ComponentSelectEvent::ComponentSelectEvent(EventSource* source, ControlAction co
 }
 
 SelectableComponent::SelectableComponent(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen)
-    : Component(manager, position, z_layer, initial_screen, true), allow_hover_draw(true)
+    : Component(manager, position, z_layer, initial_screen, true), allow_hover_draw(true), cancel_master_back_action(false)
 {
     if (initial_screen)
         component_lut[initial_screen] = SelectionTable{nullptr, nullptr, nullptr, nullptr};
 }
 
 SelectableComponent::SelectableComponent(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, Screen* initial_screen)
-    : Component(manager, x_percentage, y_percentage, z_layer, initial_screen, true), allow_hover_draw(true)
+    : Component(manager, x_percentage, y_percentage, z_layer, initial_screen, true), allow_hover_draw(true), cancel_master_back_action(false)
 {
     if (initial_screen)
         component_lut[initial_screen] = SelectionTable{nullptr, nullptr, nullptr, nullptr};
@@ -39,14 +39,8 @@ void SelectableComponent::DrawHover()
     display->DrawSquare(origin_position - unit, draw_dimensions + unit, color, true);
 }
 
-void SelectableComponent::Select0()
+void SelectableComponent::Control(ControlAction action)
 {
-    Event* ev = new ComponentSelectEvent(this, SELECT0);
-    queue_try_add(&Event::event_queue, &ev);
-}
-
-void SelectableComponent::Select1()
-{
-    Event* ev = new ComponentSelectEvent(this, SELECT1);
+    Event* ev = new ComponentSelectEvent(this, action);
     queue_try_add(&Event::event_queue, &ev);
 }

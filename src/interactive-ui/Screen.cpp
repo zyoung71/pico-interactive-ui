@@ -185,14 +185,15 @@ void Screen::ActOnComponent(uint32_t control_mask)
 {
     if (hovered_component)
     {
-        if (control_mask & SELECT0)
+        for (decltype(control_mask) i = 0; i < sizeof(control_mask) * 8; i++)
         {
-            hovered_component->Select0();
+            decltype(control_mask) binrep = 1 << i;
+            if (control_mask & binrep)
+                hovered_component->Control((ControlAction)binrep);
         }
-        if (control_mask & SELECT1)
-        {
-            hovered_component->Select1();
-        }
+
+        if (hovered_component->cancel_master_back_action)
+            return;
     }
     
     // Does not require an active hovered component.

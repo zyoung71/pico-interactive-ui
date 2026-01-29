@@ -9,8 +9,8 @@ class BitmapComponent : public SelectableComponent
 protected:
     ArrayView2D<uint32_t> pixel_map;
 
-    bool mirror_vertically = false;
-    bool mirror_horizontally = false;
+    bool mirror_vertically;
+    bool mirror_horizontally;
 
 public:
     BitmapComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, uint32_t* pixels, int32_t z_layer, Screen* initial_screen = nullptr);
