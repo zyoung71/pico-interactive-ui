@@ -11,6 +11,7 @@ struct MovementAnimation
 private:
     float elapsed = 0.f;
     bool reversed = false;
+    bool enable_callbacks = true;
 
 public:
     Vec2i32 start_pos;
@@ -66,7 +67,7 @@ public:
 
     virtual void Draw() = 0;
 
-    bool Move(MovementAnimation animation, bool reversed = false);
+    bool Move(MovementAnimation animation, bool reversed = false, bool enable_callbacks = true);
 
     bool IsMoving() const;
 

@@ -55,7 +55,7 @@ void Component::Update(float dt)
 
         if (animation.elapsed <= 0.f)
         {
-            if (animation.on_animation_begin)
+            if (animation.on_animation_begin && animation.enable_callbacks)
                 animation.on_animation_begin();
         }
 
@@ -71,7 +71,7 @@ void Component::Update(float dt)
             {
                 k = 0.f;
                 animation.moving = false;
-                if (animation.on_animation_end)
+                if (animation.on_animation_end && animation.enable_callbacks)
                     animation.on_animation_end();
             }
             else
@@ -83,7 +83,7 @@ void Component::Update(float dt)
             {
                 k = 1.f;
                 animation.moving = false;
-                if (animation.on_animation_end)
+                if (animation.on_animation_end && animation.enable_callbacks)
                     animation.on_animation_end();
             }
             else
@@ -109,9 +109,10 @@ void Component::Update(float dt)
         Draw(); // draw last
 }
 
-bool Component::Move(MovementAnimation animation, bool reversed)
+bool Component::Move(MovementAnimation animation, bool reversed, bool enable_callbacks)
 {
     animation.reversed = reversed;
+    animation.enable_callbacks = enable_callbacks;
     return queue_try_add(&moving_queue, &animation);
 }
 
