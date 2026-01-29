@@ -99,9 +99,17 @@ public:
     {
         return forced_visibility && personal_visibility;
     }
+    inline void SetOriginPosition(const Vec2i32& pos)
+    {
+        origin_position = pos;
+    }
     inline Vec2i32 GetOriginPosition() const
     {
         return origin_position;
+    }
+    inline void SetDrawDimensions(const Vec2i32& draw)
+    {
+        draw_dimensions = draw;
     }
     inline Vec2i32 GetDrawDimensions() const
     {
