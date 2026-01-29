@@ -70,7 +70,10 @@ void Component::Update(float dt)
         eased = animation.easing_func[lut_idx];
 
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
-        origin_position = animation.start_pos + (Vec2f)animation.GetDelta() * eased;
+        if (animation.reverse)
+            origin_position = animation.end_pos + (Vec2f)animation.GetDelta() * eased;
+        else
+            origin_position = animation.start_pos + (Vec2f)animation.GetDelta() * eased;
     }
 
     for (uint8_t i = 0; i < moving_queue_size; i++)

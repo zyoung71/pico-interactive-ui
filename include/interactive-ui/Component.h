@@ -16,6 +16,7 @@ public:
     Vec2i32 end_pos = {0, 0};
     float duration = 1.f;
     bool moving = true;
+    bool reverse = false;
 
     const EasingFunctionLUT& easing_func;
 
@@ -24,6 +25,8 @@ public:
 
     inline Vec2i32 GetDelta() const
     {
+        if (reverse)
+            return start_pos - end_pos;
         return end_pos - start_pos;
     }
 
