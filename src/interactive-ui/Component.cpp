@@ -11,22 +11,16 @@ MovementAnimation::MovementAnimation()
 {
 }
 
-Component::Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, const Screen* initial_screen, bool selectable)
-    : manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
+Component::Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen, bool selectable)
+    : origin_position(position), manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
 {
     if (initial_screen)
-    {
-        Vec2i32 screen_dim = initial_screen->GetDimensions();
-        origin_position.x = position.x > screen_dim.x ? screen_dim.x : position.x;   
-        origin_position.y = position.y > screen_dim.y ? screen_dim.y : position.y;
-    }
-    else
-        origin_position = position;
+        initial_screen->AddComponent(this);
 
     queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
 
-Component::Component(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable)
+Component::Component(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, Screen* initial_screen, bool selectable)
     : Component(manager, {
         static_cast<int32_t>(initial_screen->GetDimensions().x * x_percentage),
         static_cast<int32_t>(initial_screen->GetDimensions().y * y_percentage)
