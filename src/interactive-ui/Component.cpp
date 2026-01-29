@@ -44,7 +44,7 @@ void Component::Update(float dt)
     MovementAnimation animation;
     MovementAnimation* ani_arr[moving_queue_size]; // This is here to avoid recursion and allow multiple movements to be queued again
     memset(ani_arr, 0, sizeof(ani_arr));
-    uint8_t idx;
+    uint8_t idx = 0;
 
     // no single animation will be found in the same queue twice. if only one animation
     // is in progress, the queue will stay at a size of one until the animation is complete
@@ -58,22 +58,32 @@ void Component::Update(float dt)
         animation.elapsed += dt;
         
         k = animation.elapsed / animation.duration; // time ratio
-        if (k >= 1.f)
+        if (animation.reversed)
         {
-            k = 1.f;
-            animation.moving = false;
+            k = 1.f - k;
+            if (k <= 0.f)
+            {
+                k = 0.f;
+                animation.moving = false;
+            }
+            else
+                ani_arr[idx++] = &animation; // add to array for later use
         }
         else
-            ani_arr[idx++] = &animation; // add to array for later use
-        
+        {
+            if (k >= 1.f)
+            {
+                k = 1.f;
+                animation.moving = false;
+            }
+            else
+                ani_arr[idx++] = &animation;
+        }
         size_t lut_idx = static_cast<size_t>(k * (graphics::easing::lut_size - 1));
         eased = animation.easing_func[lut_idx];
 
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
-        if (animation.reverse)
-            origin_position = animation.end_pos + (Vec2f)animation.GetDelta() * eased;
-        else
-            origin_position = animation.start_pos + (Vec2f)animation.GetDelta() * eased;
+        origin_position = animation.start_pos + (Vec2f)animation.GetDelta() * eased;
     }
 
     for (uint8_t i = 0; i < moving_queue_size; i++)
@@ -82,16 +92,17 @@ void Component::Update(float dt)
         if (!ani)
             break; // no need to check the other indecies as a nullptr guarantees the rest are as well
         if (ani->moving)
-            queue_try_add(&moving_queue, ani); // if not done, add to queue again. must be done outside while loop
+            queue_try_add(&moving_queue, ani); // if not done, add to queue again. must be done outside the while loop
     }
 
     if (forced_visibility && personal_visibility)
         Draw(); // draw last
 }
 
-bool Component::Move(const MovementAnimation* animation)
+bool Component::Move(MovementAnimation animation, bool reversed)
 {
-    return queue_try_add(&moving_queue, animation);
+    animation.reversed = reversed;
+    return queue_try_add(&moving_queue, &animation);
 }
 
 bool Component::IsMoving() const

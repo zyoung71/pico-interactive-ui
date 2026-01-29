@@ -37,7 +37,7 @@ int main()
         MovementAnimation animation(clk, graphics::easing::lut_sine_in_out);
         animation.duration = 1.f;
         animation.end_pos = Vec2i32{50, 40};
-        clk->Move(&animation);
+        clk->Move(animation);
     }, &clock_component);
 
     manager.PushScreen(&menu);
