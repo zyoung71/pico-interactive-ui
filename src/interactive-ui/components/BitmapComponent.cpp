@@ -28,14 +28,64 @@ void BitmapComponent::Draw()
 {
     Vec2i32 end = origin_position + draw_dimensions;
     int32_t x_0 = 0, y_0 = 0; // Bitmap's local coords
-    for (int32_t y = origin_position.y; y < end.y; y++)
+
+    // so... much... boilerplate... all for optimization
+    if (mirror_horizontally)
     {
-        for (int32_t x = origin_position.x; x < end.x; x++)
+        if (mirror_vertically)
         {
-            display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
-            x_0++;
+            for (int32_t y = end.y - 1; y >= origin_position.y; y--)
+            {
+                for (int32_t x = end.x - 1; x >= origin_position.x; x--)
+                {
+                    display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
+                    x_0++;
+                }
+                x_0 = 0;
+                y_0++;
+            }
         }
-        x_0 = 0;
-        y_0++;
+        else
+        {
+            for (int32_t y = end.y - 1; y >= origin_position.y; y--)
+            {
+                for (int32_t x = origin_position.x; x < end.x; x++)
+                {
+                    display->DrawPixel(Vec2i32{x, y}, pixel_map(x_0, y_0));
+                    x_0++;
+                }
+                x_0 = 0;
+                y_0++;
+            }
+        }
+    }
+    else
+    {
+        if (mirror_vertically)
+        {
+            for (int32_t y = origin_position.y; y < end.y; y++)
+            {
+                for (int32_t x = end.x - 1; x >= origin_position.x; x--)
+                {
+                    display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
+                    x_0++;
+                }
+                x_0 = 0;
+                y_0++;
+            }
+        }
+        else
+        {
+            for (int32_t y = origin_position.y; y < end.y; y++)
+            {
+                for (int32_t x = origin_position.x; x < end.x; x++)
+                {
+                    display->DrawPixel(Vec2i32{x, y}, pixel_map(x_0, y_0));
+                    x_0++;
+                }
+                x_0 = 0;
+                y_0++;
+            }
+        }
     }
 }
