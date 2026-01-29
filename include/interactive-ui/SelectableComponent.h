@@ -11,6 +11,13 @@ protected:
 
 public:
     ComponentSelectEvent(EventSource* source, ControlAction control);
+
+    // Will guarantee only ONE control. For actions that caused multiple control queues at once, it will repeatedly
+    // call the callbacks that this event is found in.
+    ControlAction GetControl() const
+    {
+        return control;
+    }
 };
 
 class SelectableComponent;
@@ -32,6 +39,9 @@ struct SelectionTable
 
 class SelectableComponent : public Component, public EventSource
 {
+public:
+    typedef ComponentSelectEvent EventType;
+
 protected:
     bool allow_hover_draw;
     bool cancel_master_back_action;
