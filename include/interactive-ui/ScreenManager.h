@@ -19,7 +19,7 @@ private:
     queue_t control_queue;
     float last_dt = 0.f;
     
-    mutable int component_moving_reference_count = 0;
+    int component_moving_reference_count = 0;
 
 public:
     ScreenManager(DisplayInterface* const display);

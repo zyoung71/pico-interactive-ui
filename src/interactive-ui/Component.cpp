@@ -120,6 +120,7 @@ bool Component::Move(MovementAnimation animation, bool reversed, bool enable_cal
     animation.reversed = reversed;
     animation.enable_callbacks = enable_callbacks;
     manager->component_moving_reference_count++;
+    manager->UpdateDeltaTime();
     return queue_try_add(&moving_queue, &animation);
 }
 
