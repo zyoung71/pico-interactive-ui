@@ -17,7 +17,7 @@ private:
     Screen* selected_screen;
 
     queue_t control_queue;
-    absolute_time_t then = 0;
+    float last_dt = 0.f;
     
     mutable int component_moving_reference_count = 0;
 
@@ -45,6 +45,7 @@ public:
 
     void QueueControl(uint32_t action_mask);
     
+    void UpdateDeltaTime();
     void Update();
     void UpdateIfAnyComponentMoving();
 

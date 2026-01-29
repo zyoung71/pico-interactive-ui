@@ -38,14 +38,22 @@ void ScreenManager::QueueControl(uint32_t action_mask)
     queue_try_add(&control_queue, &action_mask);
 }
 
-void ScreenManager::Update()
+void ScreenManager::UpdateDeltaTime()
 {
+    static absolute_time_t then = 0;
     absolute_time_t now = to_us_since_boot(get_absolute_time());
     absolute_time_t dt_us = absolute_time_diff_us(then, now);
-    display->ClearDisplay();
-    selected_screen->Update(dt_us * 1e-6f);
-    display->UpdateDisplay();
+    last_dt = dt_us * 1e-6f;
     then = now;
+}
+
+void ScreenManager::Update()
+{
+    UpdateDeltaTime();
+    
+    display->ClearDisplay();
+    selected_screen->Update(last_dt);
+    display->UpdateDisplay();
 }
 
 void ScreenManager::UpdateIfAnyComponentMoving()

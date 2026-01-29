@@ -11,7 +11,7 @@ MovementAnimation::MovementAnimation()
 {
 }
 
-Component::Component(const ScreenManager* manager, const Vec2i32& position, int32_t z_layer, const Screen* initial_screen, bool selectable)
+Component::Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, const Screen* initial_screen, bool selectable)
     : manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
 {
     if (initial_screen)
@@ -26,7 +26,7 @@ Component::Component(const ScreenManager* manager, const Vec2i32& position, int3
     queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
 
-Component::Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable)
+Component::Component(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable)
     : Component(manager, {
         static_cast<int32_t>(initial_screen->GetDimensions().x * x_percentage),
         static_cast<int32_t>(initial_screen->GetDimensions().y * y_percentage)

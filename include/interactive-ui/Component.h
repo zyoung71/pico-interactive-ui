@@ -49,7 +49,7 @@ protected:
     uint32_t color;
 
     DisplayInterface* display;
-    const ScreenManager* manager;
+    ScreenManager* manager;
 
     bool forced_visibility; // master visibility, controlled by screens and managers
     bool personal_visibility; // personal visibility, for hiding and showing on its own
@@ -59,8 +59,8 @@ protected:
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
 
-    Component(const ScreenManager* manager, const Vec2i32& position, int32_t z_layer, const Screen* initial_screen = nullptr, bool selectable = false);
-    Component(const ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable = false);
+    Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, const Screen* initial_screen = nullptr, bool selectable = false);
+    Component(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, const Screen* initial_screen, bool selectable = false);
     virtual ~Component();
 
     virtual void Update(float dt);

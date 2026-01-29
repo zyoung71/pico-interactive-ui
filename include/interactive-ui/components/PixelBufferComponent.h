@@ -14,12 +14,12 @@ protected:
     std::unordered_map<Vec2i32, uint32_t> pixels;
 
 public:
-    PixelBufferComponent(const ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, int32_t z_layer, const Screen* initial_screen = nullptr);
-    PixelBufferComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, int32_t z_layer, const Screen* initial_screen);
-    PixelBufferComponent(const ScreenManager* manager, const Vec2i32& origin, const Pixel* initial_buffer, size_t buff_length, int32_t z_layer, const Screen* initial_screen = nullptr);
-    PixelBufferComponent(const ScreenManager* manager, const Vec2i32& origin, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen = nullptr);
-    PixelBufferComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const Pixel* initial_buffer, size_t buff_length, const Screen* initial_screen);
-    PixelBufferComponent(const ScreenManager* manager, float x_percentage, float y_percentage, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen);
+    PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, int32_t z_layer, const Screen* initial_screen = nullptr);
+    PixelBufferComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, int32_t z_layer, const Screen* initial_screen);
+    PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const Pixel* initial_buffer, size_t buff_length, int32_t z_layer, const Screen* initial_screen = nullptr);
+    PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen = nullptr);
+    PixelBufferComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Pixel* initial_buffer, size_t buff_length, const Screen* initial_screen);
+    PixelBufferComponent(ScreenManager* manager, float x_percentage, float y_percentage, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, const Screen* initial_screen);
 
     virtual ~PixelBufferComponent() = default;
 
