@@ -42,6 +42,7 @@ public:
     void AddComponent(Component* component);
 
     void HoverComponent(const SelectableComponent* comp);
+    void UnhoverComponent();
     void HoverDefaultComponent();
     void SortComponents();
 

@@ -37,6 +37,15 @@ void Screen::HoverComponent(const SelectableComponent* comp)
     }
 }
 
+void Screen::UnhoverComponent()
+{
+    if (hovered_component)
+    {
+        hovered_component->OnComponentUnhovered();
+        hovered_component = nullptr;
+    }
+}
+
 void Screen::HoverDefaultComponent()
 {
     // Find the first selectable component and hover it if there is no hover already.
