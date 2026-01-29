@@ -74,9 +74,10 @@ void Component::Update(float dt)
                 manager->component_moving_reference_count--;
                 if (animation.on_animation_end && animation.enable_callbacks)
                     animation.on_animation_end();
+                
+                origin_position = animation.start_pos;
+                continue;
             }
-            else
-                ani_arr[idx++] = &animation; // add to array for later use
         }
         else
         {
@@ -87,10 +88,13 @@ void Component::Update(float dt)
                 manager->component_moving_reference_count--;
                 if (animation.on_animation_end && animation.enable_callbacks)
                     animation.on_animation_end();
+
+                origin_position = animation.end_pos;
+                continue;
             }
-            else
-                ani_arr[idx++] = &animation;
         }
+        ani_arr[idx++] = &animation; // add to array for later use
+
         size_t lut_idx = static_cast<size_t>(k * (graphics::easing::lut_size - 1));
         eased = animation.easing_func[lut_idx];
 
