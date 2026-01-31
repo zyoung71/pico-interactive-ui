@@ -47,9 +47,9 @@ void BitmapComponent::Draw()
         }
         else
         {
-            for (int32_t y = end.y - 1; y >= origin_position.y; y--)
+            for (int32_t y = origin_position.y; y < end.y; y++)
             {
-                for (int32_t x = origin_position.x; x < end.x; x++)
+                for (int32_t x = end.x - 1; x >= origin_position.x; x--)
                 {
                     display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
                     x_0++;
@@ -63,9 +63,9 @@ void BitmapComponent::Draw()
     {
         if (mirror_vertically)
         {
-            for (int32_t y = origin_position.y; y < end.y; y++)
+            for (int32_t y = end.y - 1; y >= origin_position.y; y--)
             {
-                for (int32_t x = end.x - 1; x >= origin_position.x; x--)
+                for (int32_t x = origin_position.x; x < end.x; x++)
                 {
                     display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
                     x_0++;
