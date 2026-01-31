@@ -2,6 +2,7 @@
 
 #include "Screen.h"
 #include <math/Graphics.h>
+#include <math/AABB.h>
 
 class Component;
 
@@ -55,7 +56,7 @@ private:
 
 protected:
     Vec2i32 origin_position;
-    Vec2i32 draw_dimensions;
+    AABBi32 draw_dimensions; // most of the time this will be treated as a single vector, specifically the max
     int32_t z_layer;
     uint32_t color;
 
@@ -96,11 +97,11 @@ public:
     {
         return color;
     }
-    inline void ForceVisibility(bool visibility)
+    virtual inline void ForceVisibility(bool visibility)
     {
         forced_visibility = visibility;
     }
-    inline void SetPersonalVisibility(bool visibility)
+    virtual inline void SetPersonalVisibility(bool visibility)
     {
         personal_visibility = visibility;
     }
@@ -124,11 +125,11 @@ public:
     {
         return origin_position;
     }
-    inline void SetDrawDimensions(const Vec2i32& draw)
+    inline void SetDrawDimensions(const AABBi32& draw)
     {
         draw_dimensions = draw;
     }
-    inline Vec2i32 GetDrawDimensions() const
+    inline AABBi32 GetDrawDimensions() const
     {
         return draw_dimensions;
     }

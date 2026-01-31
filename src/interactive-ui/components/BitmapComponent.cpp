@@ -3,30 +3,30 @@
 BitmapComponent::BitmapComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, uint32_t* pixels, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen), pixel_map(make_array_view(pixels, dimensions.y, dimensions.x)), mirror_horizontally(false), mirror_vertically(false)
 {
-    draw_dimensions = dimensions;
+    draw_dimensions.max = dimensions;
 }
 
 BitmapComponent::BitmapComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, uint32_t* pixels, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen), pixel_map(make_array_view(pixels, dimensions.y, dimensions.x)), mirror_horizontally(false), mirror_vertically(false)
 {
-    draw_dimensions = dimensions;
+    draw_dimensions.max = dimensions;
 }
 
 BitmapComponent::BitmapComponent(ScreenManager* manager, const Vec2i32& origin, const ArrayView2D<uint32_t>& pixels, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen), pixel_map(pixels), mirror_horizontally(false), mirror_vertically(false)
 {
-    draw_dimensions = Vec2i32{(int32_t)pixels.cols, (int32_t)pixels.rows};
+    draw_dimensions.max = Vec2i32{(int32_t)pixels.cols, (int32_t)pixels.rows};
 }
 
 BitmapComponent::BitmapComponent(ScreenManager* manager, float x_percentage, float y_percentage, const ArrayView2D<uint32_t>& pixels, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen), mirror_horizontally(false), mirror_vertically(false)
 {
-    draw_dimensions = Vec2i32{(int32_t)pixels.cols, (int32_t)pixels.rows};
+    draw_dimensions.max = Vec2i32{(int32_t)pixels.cols, (int32_t)pixels.rows};
 }
 
 void BitmapComponent::Draw()
 {
-    Vec2i32 end = origin_position + draw_dimensions;
+    Vec2i32 end = origin_position + draw_dimensions.max;
     int32_t x_0 = 0, y_0 = 0; // Bitmap's local coords
 
     // so... much... boilerplate... all for optimization

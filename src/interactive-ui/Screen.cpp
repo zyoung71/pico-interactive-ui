@@ -35,6 +35,7 @@ void Screen::HoverComponent(const SelectableComponent* comp)
 
             hovered_component = (SelectableComponent*)c; // casting is fine here
             hovered_component->OnComponentHovered();
+            return;
         }
     }
 }
@@ -66,7 +67,7 @@ void Screen::HoverDefaultComponent()
                     {
                         hovered_component = sc;
                         hovered_component->OnComponentHovered();
-                        break;
+                        return;
                     }
                 }
             }
@@ -78,6 +79,19 @@ void Screen::SortComponents()
 {
     std::sort(components.begin(), components.end(), _ComponentCompare);
     HoverDefaultComponent();
+}
+
+void Screen::SetComponentZLayer(const Component* comp, int32_t z_layer)
+{
+    for (auto c : components)
+    {
+        if (comp == c)
+        {
+            c->z_layer = z_layer;
+            SortComponents();
+            return;
+        }
+    }
 }
 
 void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.

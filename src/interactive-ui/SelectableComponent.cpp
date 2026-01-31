@@ -35,8 +35,8 @@ void SelectableComponent::AddComponentTable(const Screen* screen, SelectableComp
 
 void SelectableComponent::DrawHover()
 {
-    // draw_dimensions is inclusive of the origin position, so the bounds must extend 2 pixels on the ending side
-    display->DrawSquare(origin_position - Vec2i32{1, 1}, draw_dimensions + Vec2i32{2, 2}, color, true);
+    // draw_dimensions is inclusive of the origin position pixel, so the bounds must extend 2 pixels on the ending side
+    display->DrawSquare(origin_position + draw_dimensions.min - Vec2i32{1, 1}, origin_position + draw_dimensions.max + Vec2i32{2, 2}, color, true);
 }
 
 void SelectableComponent::Control(ControlAction action)

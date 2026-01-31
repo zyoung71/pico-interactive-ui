@@ -45,6 +45,7 @@ public:
     void UnhoverComponent();
     void HoverDefaultComponent();
     void SortComponents();
+    void SetComponentZLayer(const Component* comp, int32_t z_layer);
 
     virtual void OnControl(uint32_t control_mask);
     virtual void OnScreenSelect();

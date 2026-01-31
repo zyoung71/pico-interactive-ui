@@ -3,13 +3,13 @@
 PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen)
 {
-    draw_dimensions = dimensions;
+    draw_dimensions.max = dimensions;
 }
 
 PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& dimensions, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen)
 {
-    draw_dimensions = dimensions;
+    draw_dimensions.max = dimensions;
 }
 
 PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const Pixel* initial_buffer, size_t buff_length, int32_t z_layer, Screen* initial_screen)
@@ -23,7 +23,7 @@ PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, const Vec2i32
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2i32{m_x, m_y};
+    draw_dimensions.max = Vec2i32{m_x, m_y};
 }
 
 PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, Screen* initial_screen)
@@ -37,7 +37,7 @@ PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, const Vec2i32
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2i32{m_x, m_y};
+    draw_dimensions.max = Vec2i32{m_x, m_y};
 }
 
 PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Pixel* initial_buffer, size_t buff_length, Screen* initial_screen)
@@ -51,7 +51,7 @@ PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, float x_perce
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2i32{m_x, m_y};
+    draw_dimensions.max = Vec2i32{m_x, m_y};
 }
 
 PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, float x_percentage, float y_percentage, const ArrayView<Pixel>& initial_buffer, int32_t z_layer, Screen* initial_screen)
@@ -65,13 +65,13 @@ PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, float x_perce
         m_x = p.position.x > m_x ? p.position.x : m_x;
         m_y = p.position.y > m_y ? p.position.y : m_y;
     }
-    draw_dimensions = Vec2i32{m_x, m_y};
+    draw_dimensions.max = Vec2i32{m_x, m_y};
 }
 
 void PixelBufferComponent::SetPixel(Pixel p)
 {
-    p.position.x = p.position.x > draw_dimensions.x ? draw_dimensions.x : p.position.x;
-    p.position.y = p.position.y > draw_dimensions.y ? draw_dimensions.y : p.position.y;
+    p.position.x = p.position.x > draw_dimensions.max.x ? draw_dimensions.max.x : p.position.x;
+    p.position.y = p.position.y > draw_dimensions.max.y ? draw_dimensions.max.y : p.position.y;
     pixels[p.position] = p.color;
 }
 
