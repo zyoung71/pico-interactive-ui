@@ -15,13 +15,21 @@ private:
     bool moving = true;
 
 public:
+    enum Type
+    {
+        NORMAL,
+        ENDLESS,
+        ENDLESS_WITH_REVERSION
+    };
+
     Vec2i32 start_pos;
-    Vec2i32 end_pos = {0, 0};
+    Vec2i32 end_pos;
     float duration = 1.f;
+    Type type = NORMAL;
 
     const EasingFunctionLUT& easing_func;
 
-    typedef void(*AnimationStateCallback)();
+    typedef void(*AnimationStateCallback)(const MovementAnimation*);
 
     AnimationStateCallback on_animation_begin = nullptr;
     AnimationStateCallback on_animation_end = nullptr;
@@ -42,6 +50,9 @@ class Component
 private:
     static constexpr size_t moving_queue_size = 4;
 
+private:
+    bool cancel_movements_flag;
+
 protected:
     Vec2i32 origin_position;
     Vec2i32 draw_dimensions;
@@ -50,6 +61,8 @@ protected:
 
     DisplayInterface* display;
     ScreenManager* manager;
+
+    Screen* initial_screen_if_any;
 
     bool forced_visibility; // master visibility, controlled by screens and managers
     bool personal_visibility; // personal visibility, for hiding and showing on its own
@@ -61,6 +74,7 @@ public:
 
     Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen = nullptr, bool selectable = false);
     Component(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, Screen* initial_screen, bool selectable = false);
+    Component(const Component& to_copy);
     virtual ~Component();
 
     virtual void Update(float dt);
@@ -68,8 +82,11 @@ public:
     virtual void Draw() = 0;
 
     bool Move(MovementAnimation animation, bool reversed = false, bool enable_callbacks = true);
-
     bool IsMoving() const;
+    inline void CancelMovementsNextUpdate() // needed to stop endless loops
+    {
+        cancel_movements_flag = true;
+    }
 
     inline void SetColor(uint32_t rgba)
     {

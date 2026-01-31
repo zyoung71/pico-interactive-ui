@@ -4,6 +4,9 @@
 
 class TextComponent : public SelectableComponent
 {
+private:
+    size_t UpdateDrawDimensions();
+
 protected:
     const char* text;
     const Font* font;
@@ -23,6 +26,7 @@ public:
     inline void SetText(const char* text)
     {
         this->text = text;
+        UpdateDrawDimensions();
     }
 
     inline const Font* GetFont() const

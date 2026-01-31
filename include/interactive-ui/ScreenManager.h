@@ -25,7 +25,7 @@ public:
     ScreenManager(DisplayInterface* const display);
     ~ScreenManager();
 
-    inline DisplayInterface* const GetDisplay() const
+    inline DisplayInterface* GetDisplay() const
     {
         return display;
     }

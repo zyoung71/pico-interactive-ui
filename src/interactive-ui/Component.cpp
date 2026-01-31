@@ -12,7 +12,8 @@ MovementAnimation::MovementAnimation()
 }
 
 Component::Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen, bool selectable)
-    : origin_position(position), manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF), selectable(selectable), forced_visibility(false), personal_visibility(true)
+    : origin_position(position), manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF),
+    selectable(selectable), forced_visibility(false), personal_visibility(true), initial_screen_if_any(initial_screen)
 {
     if (initial_screen)
         initial_screen->AddComponent(this);
@@ -26,6 +27,18 @@ Component::Component(ScreenManager* manager, float x_percentage, float y_percent
         static_cast<int32_t>(initial_screen->GetDimensions().y * y_percentage)
     }, z_layer, initial_screen, selectable)
 {
+}
+
+Component::Component(const Component& to_copy)
+    : origin_position(to_copy.origin_position), manager(to_copy.manager), display(to_copy.display),
+    z_layer(to_copy.z_layer), color(to_copy.color), selectable(to_copy.selectable), forced_visibility(to_copy.forced_visibility),
+    personal_visibility(to_copy.personal_visibility), initial_screen_if_any(to_copy.initial_screen_if_any), draw_dimensions(to_copy.draw_dimensions),
+    cancel_movements_flag(to_copy.cancel_movements_flag)
+{
+    if (initial_screen_if_any)
+        initial_screen_if_any->AddComponent(this);
+
+    queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
 
 Component::~Component()
@@ -47,10 +60,19 @@ void Component::Update(float dt)
         if (!animation.moving)
             continue;
 
+        if (cancel_movements_flag)
+        {
+            animation.moving = false;
+            if (animation.on_animation_end && animation.enable_callbacks)
+                animation.on_animation_end(&animation);
+
+            continue;
+        }
+
         if (animation.elapsed <= 0.f)
         {
             if (animation.on_animation_begin && animation.enable_callbacks)
-                animation.on_animation_begin();
+                animation.on_animation_begin(&animation);
         }
 
         float k, eased;
@@ -58,35 +80,66 @@ void Component::Update(float dt)
         animation.elapsed += dt;
         
         k = animation.elapsed / animation.duration; // time ratio
+
+        // i know there's boilerplate here but minimalizing it won't optimise performance
         if (animation.reversed)
         {
             k = 1.f - k;
             if (k <= 0.f)
             {
-                k = 0.f;
-                animation.moving = false;
-                manager->component_moving_reference_count--;
-                if (animation.on_animation_end && animation.enable_callbacks)
-                    animation.on_animation_end();
-                
-                origin_position = animation.start_pos;
-                continue;
+                // initial animation finish
+                switch (animation.type)
+                {
+                    case MovementAnimation::Type::NORMAL : {
+                        animation.moving = false;
+                        manager->component_moving_reference_count--;
+                        if (animation.on_animation_end && animation.enable_callbacks)
+                            animation.on_animation_end(&animation);
+                        
+                        origin_position = animation.start_pos;
+                        continue;
+                    };
+                    case MovementAnimation::Type::ENDLESS : {
+                        animation.elapsed = 0.f;
+                        break;
+                    };
+                    case MovementAnimation::Type::ENDLESS_WITH_REVERSION : {
+                        animation.elapsed = 0.f;
+                        animation.reversed = !animation.reversed;
+                        break;
+                    };
+                }
             }
         }
         else
         {
             if (k >= 1.f)
             {
-                k = 1.f;
-                animation.moving = false;
-                manager->component_moving_reference_count--;
-                if (animation.on_animation_end && animation.enable_callbacks)
-                    animation.on_animation_end();
-
-                origin_position = animation.end_pos;
-                continue;
+                switch (animation.type)
+                {
+                    case MovementAnimation::Type::NORMAL : {
+                        animation.moving = false;
+                        manager->component_moving_reference_count--;
+                        if (animation.on_animation_end && animation.enable_callbacks)
+                            animation.on_animation_end(&animation);
+                        
+                        origin_position = animation.end_pos;
+                        continue;
+                    };
+                    case MovementAnimation::Type::ENDLESS : {
+                        animation.elapsed = 0.f;
+                        break;
+                    };
+                    case MovementAnimation::Type::ENDLESS_WITH_REVERSION : {
+                        animation.elapsed = 0.f;
+                        animation.reversed = !animation.reversed;
+                        break;
+                    };
+                }
             }
         }
+        // if an animation is done playing for good, the code below should NOT be ran
+
         ani_arr[idx++] = &animation; // add to array for later use
 
         size_t lut_idx = static_cast<size_t>(k * (graphics::easing::lut_size - 1));
@@ -95,6 +148,9 @@ void Component::Update(float dt)
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
         origin_position = animation.start_pos + (Vec2f)animation.GetDelta() * eased;
     }
+
+    if (cancel_movements_flag)
+        cancel_movements_flag = false;
 
     for (uint8_t i = 0; i < moving_queue_size; i++)
     {
