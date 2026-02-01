@@ -58,12 +58,16 @@ void ScreenManager::Update()
 
 void ScreenManager::UpdateIfAnyComponentMoving()
 {
+    // at least one component globally is moving.
+    // this function is intended to be called in the main loop
+    // therefore it is ideal we guard the set search
     if (master_component_moving_reference_count > 0)
     {
+        UpdateDeltaTime();
         for (auto s : screen_set)
         {
-            if (s->component_moving_reference_count > 0)
-                s->Update(UpdateDeltaTime());
+            if (s->HasMovingComponent())
+                s->Update(last_dt);
         }        
     }
 }

@@ -21,8 +21,11 @@ Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
 
 void Screen::AddComponent(Component* component)
 {
-    components.push_back(component);
-    component_set.insert(component);
+    if (component_set.insert(component).second)
+    {
+        components.push_back(component);
+        component->screen_set.insert(this);
+    }
 }
 
 void Screen::RemoveComponent(Component* comp)
