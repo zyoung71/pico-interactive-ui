@@ -46,6 +46,20 @@ public:
     friend Component;
 };
 
+enum class AlignmentVertical
+{
+    TOP,
+    CENTER,
+    BOTTOM
+};
+
+enum class AlignmentHorizontal
+{
+    LEFT,
+    CENTER,
+    RIGHT
+};
+
 class Component
 {
 private:
@@ -58,10 +72,12 @@ private:
     bool cancel_movements_flag;
 
 protected:
-    Vec2i32 origin_position;
     AABBi32 draw_dimensions; // most of the time this will be treated as a single vector, specifically the max
+    Vec2i32 origin_position;
     int32_t z_layer;
     uint32_t color;
+    AlignmentVertical vertical_alignment = AlignmentVertical::TOP;
+    AlignmentHorizontal horizontal_alignment = AlignmentHorizontal::LEFT;
 
     DisplayInterface* display;
     ScreenManager* manager;
@@ -82,8 +98,12 @@ public:
     virtual ~Component();
 
     virtual void Update(float dt);
-
     virtual void Draw() = 0;
+
+    virtual void Align();
+
+    void SetVerticalAlignment(AlignmentVertical align_v);
+    void SetHorizontalAlignment(AlignmentHorizontal align_h);
 
     bool Move(MovementAnimation animation, bool reversed = false, bool enable_callbacks = true);
     bool IsMoving() const;
@@ -139,6 +159,22 @@ public:
     inline int32_t GetZLayer() const
     {
         return z_layer;
+    }
+    inline DisplayInterface* GetDisplay() const
+    {
+        return display;
+    }
+    inline ScreenManager* GetManager() const
+    {
+        return manager;
+    }
+    inline AlignmentVertical GetVerticalAlignment() const
+    {
+        return vertical_alignment;
+    }
+    inline AlignmentHorizontal GetHorizontalAlignment() const
+    {
+        return horizontal_alignment;
     }
 
     friend Screen;

@@ -13,5 +13,5 @@ PaddingComponent::PaddingComponent(ScreenManager* manager, float x_percentage, f
 
 void PaddingComponent::Draw()
 {
-    display->DrawSquare(origin_position, draw_dimensions.max, color);
+    display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.max - draw_dimensions.min, color);
 }

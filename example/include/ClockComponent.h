@@ -16,5 +16,4 @@ public:
     ClockComponent(ScreenManager* screen, RealTimeClock* clock, int32_t z_layer, Screen* initial_screen);
 
     void Update(float dt) override;
-    void Draw() override;
 };

@@ -79,6 +79,6 @@ void PixelBufferComponent::Draw()
 {
     for (const auto& [p, c] : pixels)
     {
-        display->DrawPixel(p + origin_position, c);
+        display->DrawPixel(p + origin_position + draw_dimensions.min, c);
     }
 }

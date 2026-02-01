@@ -38,7 +38,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = end.x - 1; x >= origin_position.x; x--)
                 {
-                    display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
+                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;
@@ -51,7 +51,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = end.x - 1; x >= origin_position.x; x--)
                 {
-                    display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
+                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;
@@ -67,7 +67,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = origin_position.x; x < end.x; x++)
                 {
-                    display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
+                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;
@@ -80,7 +80,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = origin_position.x; x < end.x; x++)
                 {
-                    display->DrawPixel(Vec2i32{x, y}, pixel_map(y_0, x_0));
+                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;

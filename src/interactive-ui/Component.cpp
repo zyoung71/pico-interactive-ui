@@ -181,6 +181,62 @@ void Component::Update(float dt)
         Draw(); // draw last
 }
 
+void Component::Align()
+{
+    Vec2i32 component_size = draw_dimensions.max - draw_dimensions.min;
+
+    switch (vertical_alignment)
+    {
+        case AlignmentVertical::TOP: {
+            draw_dimensions.ymin = 0;
+            draw_dimensions.ymax = component_size.y;
+            break;
+        }
+        case AlignmentVertical::CENTER: {
+            int32_t offset_y = component_size.y / 2;
+            draw_dimensions.ymin = -offset_y;
+            draw_dimensions.ymax = component_size.y - offset_y;
+            break;
+        }
+        case AlignmentVertical::BOTTOM: {
+            draw_dimensions.ymin = -component_size.y;
+            draw_dimensions.ymax = 0;
+            break;
+        }
+    }
+    switch (horizontal_alignment)
+    {
+        case AlignmentHorizontal::LEFT: {
+            draw_dimensions.xmin = 0;
+            draw_dimensions.xmax = component_size.x;
+            break;
+        }
+        case AlignmentHorizontal::CENTER: {
+            int32_t offset_x = component_size.x / 2;
+            draw_dimensions.xmin = -offset_x;
+            draw_dimensions.xmax = component_size.x - offset_x;
+            break;
+        }
+        case AlignmentHorizontal::RIGHT: {
+            draw_dimensions.xmin = -component_size.x;
+            draw_dimensions.xmax = 0;
+            break;
+        }
+    }
+}
+
+void Component::SetVerticalAlignment(AlignmentVertical align_v)
+{
+    vertical_alignment = align_v;
+    Align();
+}
+
+void Component::SetHorizontalAlignment(AlignmentHorizontal align_h)
+{
+    horizontal_alignment = align_h;
+    Align();
+}
+
 bool Component::Move(MovementAnimation animation, bool reversed, bool enable_callbacks)
 {
     if (animation.duration <= 0.f)
