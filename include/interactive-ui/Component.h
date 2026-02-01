@@ -51,6 +51,9 @@ class Component
 private:
     static constexpr size_t moving_queue_size = 4;
 
+    void MoveRefInc();
+    void MoveRefDec();
+    
 private:
     bool cancel_movements_flag;
 
@@ -63,7 +66,7 @@ protected:
     DisplayInterface* display;
     ScreenManager* manager;
 
-    Screen* initial_screen_if_any;
+    std::unordered_set<Screen*> screen_set;
 
     bool forced_visibility; // master visibility, controlled by screens and managers
     bool personal_visibility; // personal visibility, for hiding and showing on its own

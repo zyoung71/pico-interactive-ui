@@ -15,6 +15,11 @@ class Screen
 public:
     static bool _ComponentCompare(const Component* a, const Component* b);
 
+private:
+    std::unordered_set<Component*> component_set; // stores the same values the vector does, but intended for searching
+
+    int component_moving_reference_count = 0;
+
 protected:
     const Vec2u32 dimensions;
 
@@ -40,12 +45,13 @@ public:
     }
 
     void AddComponent(Component* component);
+    void RemoveComponent(Component* component);
 
-    void HoverComponent(const SelectableComponent* comp);
+    void HoverComponent(SelectableComponent* comp);
     void UnhoverComponent();
     void HoverDefaultComponent();
     void SortComponents();
-    void SetComponentZLayer(const Component* comp, int32_t z_layer);
+    void SetComponentZLayer(Component* comp, int32_t z_layer);
 
     virtual void OnControl(uint32_t control_mask);
     virtual void OnScreenSelect();
@@ -55,6 +61,11 @@ public:
 
     bool NavigateToComponent(uint32_t control_mask);
     void ActOnComponent(uint32_t control_mask);
+
+    inline bool HasMovingComponent() const
+    {
+        return component_moving_reference_count > 0;
+    }
 
     friend ScreenManager;
     friend Component;

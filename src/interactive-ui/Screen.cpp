@@ -22,21 +22,27 @@ Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
 void Screen::AddComponent(Component* component)
 {
     components.push_back(component);
+    component_set.insert(component);
 }
 
-void Screen::HoverComponent(const SelectableComponent* comp)
+void Screen::RemoveComponent(Component* comp)
 {
-    for (auto c : components)
+    if (component_set.erase(comp))
     {
-        if (comp == c)
-        {
-            if (hovered_component)
+        std::erase(components, comp);
+        comp->screen_set.erase(this);
+    }
+}
+
+void Screen::HoverComponent(SelectableComponent* comp)
+{
+    if (component_set.contains((Component*)comp))
+    {
+        if (hovered_component)
                 hovered_component->OnComponentUnhovered();
 
-            hovered_component = (SelectableComponent*)c; // casting is fine here
-            hovered_component->OnComponentHovered();
-            return;
-        }
+        hovered_component = comp; // casting is fine here
+        hovered_component->OnComponentHovered();
     }
 }
 
@@ -81,16 +87,11 @@ void Screen::SortComponents()
     HoverDefaultComponent();
 }
 
-void Screen::SetComponentZLayer(const Component* comp, int32_t z_layer)
+void Screen::SetComponentZLayer(Component* comp, int32_t z_layer)
 {
-    for (auto c : components)
+    if (component_set.contains(comp))
     {
-        if (comp == c)
-        {
-            c->z_layer = z_layer;
-            SortComponents();
-            return;
-        }
+        comp->z_layer = z_layer;
     }
 }
 

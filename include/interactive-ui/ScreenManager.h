@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stack>
+#include <unordered_set>
 #include <pico/time.h>
 #include <pico/util/queue.h>
 
@@ -13,13 +14,15 @@ class ScreenManager
 {
 private:
     DisplayInterface* const display;
-    std::stack<Screen*> screens; 
+
+    std::stack<Screen*> screens;
+    std::unordered_set<Screen*> screen_set; // stacks cannot be traversed, so there is this. it keeps a record of all screens that have been added
     Screen* selected_screen;
 
     queue_t control_queue;
     float last_dt = 0.f;
-    
-    int component_moving_reference_count = 0;
+
+    int master_component_moving_reference_count = 0;
 
 public:
     ScreenManager(DisplayInterface* const display);
@@ -45,7 +48,7 @@ public:
 
     void QueueControl(uint32_t action_mask);
     
-    void UpdateDeltaTime();
+    float UpdateDeltaTime();
     void Update();
     void UpdateIfAnyComponentMoving();
 

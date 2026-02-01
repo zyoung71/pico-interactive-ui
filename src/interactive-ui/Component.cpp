@@ -11,12 +11,29 @@ MovementAnimation::MovementAnimation()
 {
 }
 
+void Component::MoveRefInc()
+{
+    manager->master_component_moving_reference_count++;
+    for (auto s : screen_set)
+        s->component_moving_reference_count++;
+}
+
+void Component::MoveRefDec()
+{
+    manager->master_component_moving_reference_count--;
+    for (auto s : screen_set)
+        s->component_moving_reference_count--;
+}
+
 Component::Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen, bool selectable)
     : origin_position(position), manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF),
-    selectable(selectable), forced_visibility(false), personal_visibility(true), initial_screen_if_any(initial_screen)
+    selectable(selectable), forced_visibility(false), personal_visibility(true)
 {
     if (initial_screen)
+    {
         initial_screen->AddComponent(this);
+        screen_set.insert(initial_screen);
+    }
 
     queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
@@ -32,11 +49,11 @@ Component::Component(ScreenManager* manager, float x_percentage, float y_percent
 Component::Component(const Component& to_copy)
     : origin_position(to_copy.origin_position), manager(to_copy.manager), display(to_copy.display),
     z_layer(to_copy.z_layer), color(to_copy.color), selectable(to_copy.selectable), forced_visibility(to_copy.forced_visibility),
-    personal_visibility(to_copy.personal_visibility), initial_screen_if_any(to_copy.initial_screen_if_any), draw_dimensions(to_copy.draw_dimensions),
+    personal_visibility(to_copy.personal_visibility), screen_set(to_copy.screen_set), draw_dimensions(to_copy.draw_dimensions),
     cancel_movements_flag(to_copy.cancel_movements_flag)
 {
-    if (initial_screen_if_any)
-        initial_screen_if_any->AddComponent(this);
+    for (auto s : screen_set)
+        s->AddComponent(this);
 
     queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
@@ -63,6 +80,8 @@ void Component::Update(float dt)
         if (cancel_movements_flag)
         {
             animation.moving = false;
+            MoveRefDec();
+            
             if (animation.on_animation_end && animation.enable_callbacks)
                 animation.on_animation_end(&animation);
 
@@ -92,7 +111,7 @@ void Component::Update(float dt)
                 {
                     case MovementAnimation::Type::NORMAL : {
                         animation.moving = false;
-                        manager->component_moving_reference_count--;
+                        MoveRefDec();
                         if (animation.on_animation_end && animation.enable_callbacks)
                             animation.on_animation_end(&animation);
                         
@@ -119,7 +138,7 @@ void Component::Update(float dt)
                 {
                     case MovementAnimation::Type::NORMAL : {
                         animation.moving = false;
-                        manager->component_moving_reference_count--;
+                        MoveRefDec();
                         if (animation.on_animation_end && animation.enable_callbacks)
                             animation.on_animation_end(&animation);
                         
@@ -170,7 +189,9 @@ bool Component::Move(MovementAnimation animation, bool reversed, bool enable_cal
 {
     animation.reversed = reversed;
     animation.enable_callbacks = enable_callbacks;
-    manager->component_moving_reference_count++;
+
+    MoveRefInc();
+    
     manager->UpdateDeltaTime();
     return queue_try_add(&moving_queue, &animation);
 }
