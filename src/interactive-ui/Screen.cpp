@@ -16,7 +16,6 @@ void Screen::HoverChange(bool instant)
 
     if (hovered_component->allow_hover_draw)
     {
-        hover_design->ForceVisibility(true);
         if (instant || animation_hover_duration <= 0.f)
         {
             hover_design->origin_position = hovered_component->origin_position;
@@ -152,7 +151,6 @@ void Screen::OnScreenSelect()
     if (hovered_component)
     {
         hovered_component->allow_hover_draw = true;
-        hover_design->ForceVisibility(true);
         //hovered_component->OnComponentHovered(); // not used, but could be later
     }
     for (auto&& c : components)
@@ -173,7 +171,6 @@ void Screen::OnScreenDeselect()
     {
         c->ForceVisibility(false);
     }
-    hover_design->ForceVisibility(false);
 }
 
 void Screen::Update(float dt)
@@ -190,7 +187,10 @@ void Screen::Update(float dt)
     }
     
     if (hovered_component)
-        hover_design->Draw();
+    {
+        if (hovered_component->allow_hover_draw) // i have NO IDEA why this works but forcing visibility doesn't
+            hover_design->Draw();
+    }
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)
