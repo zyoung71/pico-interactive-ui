@@ -6,9 +6,9 @@ ClockComponent::ClockComponent(ScreenManager* manager, RealTimeClock* clock, int
     Align();
 }
 
-void ClockComponent::Update(float dt)
+void ClockComponent::Update(float dt, const Screen* screen)
 {
     Align();
-    Component::Update(dt);
+    Component::Update(dt, screen);
     clock->UpdateDateAndTime();
 }

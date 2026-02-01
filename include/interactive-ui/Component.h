@@ -97,7 +97,7 @@ public:
     Component(const Component& to_copy);
     virtual ~Component();
 
-    virtual void Update(float dt);
+    virtual void Update(float dt, const Screen* screen);
     virtual void Draw() = 0;
 
     virtual void Align();

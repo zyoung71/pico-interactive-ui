@@ -140,7 +140,7 @@ void Screen::Update(float dt)
 
     for (auto&& c : components) // Draw components last.
     {
-        c->Update(dt);
+        c->Update(dt, this);
     }
     
     if (hovered_component)

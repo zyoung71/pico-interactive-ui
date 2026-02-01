@@ -60,7 +60,7 @@ Component::~Component()
     queue_free(&moving_queue);
 }
 
-void Component::Update(float dt)
+void Component::Update(float dt, const Screen* screen)
 {
     MovementAnimation animation;
     MovementAnimation* ani_arr[moving_queue_size]; // This is here to avoid recursion and allow multiple movements to be queued again
@@ -178,9 +178,10 @@ void Component::Update(float dt)
 
     if (forced_visibility && personal_visibility)
     {
-        // only draw if the components's AABB intersects with the screen dimensions
-        if (draw_dimensions.Intersects(manager->selected_screen->dimensions))
+        if (draw_dimensions.Intersects(screen->dimensions))
+        {
             Draw(); // draw last
+        }
     }
 }
 
