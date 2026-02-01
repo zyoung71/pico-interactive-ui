@@ -12,22 +12,25 @@ bool Screen::_ComponentCompare(const Component* a, const Component* b)
 
 void Screen::HoverChange(bool instant)
 {
+    constexpr Vec2i32 hover_outline_width = Vec2i32{2, 2};
+
     if (hovered_component->allow_hover_draw)
     {
+        hover_design->ForceVisibility(true);
         if (instant || animation_hover_duration <= 0.f)
         {
             hover_design->origin_position = hovered_component->origin_position;
             hover_design->draw_dimensions = hovered_component->draw_dimensions;
-            hover_design->draw_dimensions.min -= Vec2i32{2, 2};
-            hover_design->draw_dimensions.max += Vec2i32{3, 3};
+            hover_design->draw_dimensions.min -= hover_outline_width;
+            hover_design->draw_dimensions.max += hover_outline_width;
             return;
         }
         MovementAnimation move(hover_design, graphics::easing::lut_quad_out);
         move.duration = animation_hover_duration;
         move.end_pos = hovered_component->origin_position;
         move.end_scale = hovered_component->draw_dimensions;
-        move.end_scale.min -= Vec2i32{2, 2};
-        move.end_scale.max += Vec2i32{3, 3};
+        move.end_scale.min -= hover_outline_width;
+        move.end_scale.max += hover_outline_width;
         move.transpose = true;
         move.scale = true;
         hover_design->Move(move);
@@ -43,6 +46,13 @@ Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
     : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
 {
     hover_design = new PaddingComponent(manager, {-1, 1}, {0, 0}, true, INT32_MAX, this);
+}
+
+Screen::Screen(const Screen& to_copy)
+    : dimensions(to_copy.dimensions), components(to_copy.components), component_set(to_copy.component_set),
+    component_moving_reference_count(0), hovered_component(to_copy.hovered_component), animation_hover_duration(to_copy.animation_hover_duration),
+    display(to_copy.display), manager(to_copy.manager), hover_design(new PaddingComponent(to_copy.manager, {-1, -1}, {0, 0}, true, INT32_MAX, this))
+{
 }
 
 Screen::~Screen()
@@ -142,7 +152,7 @@ void Screen::OnScreenSelect()
     if (hovered_component)
     {
         hovered_component->allow_hover_draw = true;
-        hover_design->forced_visibility = true;
+        hover_design->ForceVisibility(true);
         //hovered_component->OnComponentHovered(); // not used, but could be later
     }
     for (auto&& c : components)
@@ -153,7 +163,6 @@ void Screen::OnScreenSelect()
 
 void Screen::OnScreenDeselect()
 {
-    hover_design->forced_visibility = false;
 
     if (hovered_component)
     {
@@ -164,6 +173,7 @@ void Screen::OnScreenDeselect()
     {
         c->ForceVisibility(false);
     }
+    hover_design->ForceVisibility(false);
 }
 
 void Screen::Update(float dt)
