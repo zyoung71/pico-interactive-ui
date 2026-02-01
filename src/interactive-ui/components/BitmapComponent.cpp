@@ -26,7 +26,7 @@ BitmapComponent::BitmapComponent(ScreenManager* manager, float x_percentage, flo
 
 void BitmapComponent::Draw()
 {
-    Vec2i32 end = origin_position + draw_dimensions.max;
+    Vec2i32 end = origin_position + draw_dimensions.max - draw_dimensions.min;
     int32_t x_0 = 0, y_0 = 0; // Bitmap's local coords
 
     // so... much... boilerplate... all for optimization
