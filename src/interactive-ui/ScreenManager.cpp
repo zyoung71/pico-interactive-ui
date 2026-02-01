@@ -66,13 +66,15 @@ void ScreenManager::UpdateIfAnyComponentMoving()
         UpdateDeltaTime();
         for (auto s : screen_set)
         {
-            if (s == screens.top())
-            {
-                Update();
-                continue;
-            }
             if (s->HasMovingComponent())
+            {
+                if (s == screens.top())
+                {
+                    Update();
+                    continue;
+                }
                 s->Update(last_dt);
+            }
         }        
     }
 }
