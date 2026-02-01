@@ -34,7 +34,21 @@ void TextComponent::UpdateTextDimensions()
     message_pixel_dimensions.y = static_cast<int32_t>(font->char_height * lines + font->char_spacing * (lines - 1));
 }
 
-void TextComponent::DrawTextWithAlignment(AlignmentHorizontal align_h)
+TextComponent::TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+    : SelectableComponent(manager, origin, z_layer, initial_screen), text(text), font(font)
+{
+    UpdateTextDimensions();
+    draw_dimensions.max = message_pixel_dimensions;
+}
+
+TextComponent::TextComponent(ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+    : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen), text(text), font(font)
+{
+    UpdateTextDimensions();
+    draw_dimensions.max = message_pixel_dimensions;   
+}
+
+void TextComponent::Draw()
 {
     size_t len = strlen(text) + 1;
     char vbuff[len];
@@ -67,7 +81,7 @@ void TextComponent::DrawTextWithAlignment(AlignmentHorizontal align_h)
 
         Vec2i32 text_offset = text_base_offset;
         text_offset.y += static_cast<int32_t>((line++) * (font->char_spacing + font->char_height));
-        switch (align_h)
+        switch (text_horizontal_alignment)
         {
             case AlignmentHorizontal::LEFT: break;
             case AlignmentHorizontal::CENTER: {
@@ -85,25 +99,6 @@ void TextComponent::DrawTextWithAlignment(AlignmentHorizontal align_h)
     }
 }
 
-TextComponent::TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : SelectableComponent(manager, origin, z_layer, initial_screen), text(text), font(font)
-{
-    UpdateTextDimensions();
-    draw_dimensions.max = message_pixel_dimensions;
-}
-
-TextComponent::TextComponent(ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen), text(text), font(font)
-{
-    UpdateTextDimensions();
-    draw_dimensions.max = message_pixel_dimensions;   
-}
-
-void TextComponent::Draw()
-{
-    DrawTextWithAlignment(horizontal_alignment);
-}
-
 void TextComponent::Align()
 {
     Component::Align();
@@ -116,10 +111,22 @@ void TextComponent::SetText(const char* text)
     UpdateTextDimensions();
 }
 
+void TextComponent::SetTextVerticalAlignment(AlignmentVertical align_v)
+{
+    text_vertical_alignment = align_v;
+    Align();
+}
+
+void TextComponent::SetTextHorizontalAlignment(AlignmentHorizontal align_h)
+{
+    text_horizontal_alignment = align_h;
+    Align();
+}
+
 void TextBoxComponent::UpdateTextDimensions()
 {
     TextComponent::UpdateTextDimensions();
-    switch (vertical_alignment)
+    switch (text_vertical_alignment)
     {
         case AlignmentVertical::TOP: {
             text_base_offset.y = padding.y;
@@ -134,7 +141,7 @@ void TextBoxComponent::UpdateTextDimensions()
             break;
         }
     }
-    switch (horizontal_alignment)
+    switch (text_horizontal_alignment)
     {
         case AlignmentHorizontal::LEFT: { 
             text_base_offset.x = padding.x;
@@ -179,18 +186,6 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, float x_percentage, f
 
 void TextBoxComponent::Draw()
 {
-    DrawTextWithAlignment(text_horizontal_alignment);
+    TextComponent::Draw();
     display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.max - draw_dimensions.min, color, true); // box
-}
-
-void TextBoxComponent::SetTextVerticalAlignment(AlignmentVertical align_v)
-{
-    text_vertical_alignment = align_v;
-    Align();
-}
-
-void TextBoxComponent::SetTextHorizontalAlignment(AlignmentHorizontal align_h)
-{
-    text_horizontal_alignment = align_h;
-    Align();
 }

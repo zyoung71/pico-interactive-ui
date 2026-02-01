@@ -9,9 +9,10 @@ protected:
     const Font* font;
     Vec2i32 message_pixel_dimensions;
     Vec2i32 text_base_offset; // the offset from the min of the draw dimensions
+    AlignmentVertical text_vertical_alignment;
+    AlignmentHorizontal text_horizontal_alignment;
 
     virtual void UpdateTextDimensions();
-    void DrawTextWithAlignment(AlignmentHorizontal align_h);
 
 public:
     TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
@@ -21,7 +22,17 @@ public:
     virtual void Align() override;
 
     void SetText(const char* text);
+    void SetTextVerticalAlignment(AlignmentVertical align_v);
+    void SetTextHorizontalAlignment(AlignmentHorizontal align_h);
 
+    inline AlignmentVertical GetTextVerticalAlignment() const
+    {
+        return text_vertical_alignment;
+    }
+    inline AlignmentHorizontal GetTextHorizontalAlignment() const
+    {
+        return text_horizontal_alignment;
+    }
     inline const char* GetText() const
     {
         return text;
@@ -40,8 +51,6 @@ class TextBoxComponent : public TextComponent
 {
 protected:
     Vec2i32 padding;
-    AlignmentVertical text_vertical_alignment;
-    AlignmentHorizontal text_horizontal_alignment;
 
     virtual void UpdateTextDimensions() override;
 
@@ -52,16 +61,4 @@ public:
     TextBoxComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen);
 
     virtual void Draw() override;
-
-    void SetTextVerticalAlignment(AlignmentVertical align_v);
-    void SetTextHorizontalAlignment(AlignmentHorizontal align_h);
-
-    inline AlignmentVertical GetTextVerticalAlignment() const
-    {
-        return text_vertical_alignment;
-    }
-    inline AlignmentHorizontal GetTextHorizontalAlignment() const
-    {
-        return text_horizontal_alignment;
-    }
 };
