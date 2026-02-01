@@ -176,9 +176,12 @@ void Component::Update(float dt)
             queue_try_add(&moving_queue, ani); // if not done, add to queue again. must be done outside the while loop
     }
 
-    // only draw if the components's AABB intersects with the screen dimensions
-    if (forced_visibility && personal_visibility && origin_position.x + draw_dimensions.xmax > 0 && origin_position.y + draw_dimensions.ymax > 0)
-        Draw(); // draw last
+    if (forced_visibility && personal_visibility)
+    {
+        // only draw if the components's AABB intersects with the screen dimensions
+        if (draw_dimensions.Intersects(manager->selected_screen->dimensions))
+            Draw(); // draw last
+    }
 }
 
 void Component::Align()

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <math/Vec2.h>
+#include <math/AABB.h>
 #include "ControlAction.h"
 
 #include "ScreenManager.h"
@@ -21,7 +21,7 @@ private:
     int component_moving_reference_count = 0;
 
 protected:
-    const Vec2u32 dimensions;
+    const AABBi32 dimensions;
 
     std::vector<Component*> components;
 
@@ -36,7 +36,7 @@ public:
 
     inline Vec2i32 GetDimensions() const
     {
-        return dimensions;
+        return dimensions.max;
     }
 
     inline SelectableComponent* GetHoveredComponent() const

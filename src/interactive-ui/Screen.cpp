@@ -15,7 +15,7 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 }
 
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
-    : dimensions(dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
+    : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
 {
 }
 
