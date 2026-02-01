@@ -27,13 +27,10 @@ void Component::MoveRefDec()
 
 Component::Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen, bool selectable)
     : origin_position(position), manager(manager), display(manager->GetDisplay()), z_layer(z_layer), color(0xFFFFFFFF),
-    selectable(selectable), forced_visibility(false), personal_visibility(true)
+    selectable(selectable), forced_visibility(false), personal_visibility(true), cancel_movements_flag(false)
 {
     if (initial_screen)
-    {
         initial_screen->AddComponent(this);
-        screen_set.insert(initial_screen);
-    }
 
     queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
@@ -97,7 +94,6 @@ void Component::Update(float dt)
         float k, eased;
 
         animation.elapsed += dt;
-        
         k = animation.elapsed / animation.duration; // time ratio
 
         // i know there's boilerplate here but minimalizing it won't optimise performance
@@ -187,6 +183,20 @@ void Component::Update(float dt)
 
 bool Component::Move(MovementAnimation animation, bool reversed, bool enable_callbacks)
 {
+    if (animation.duration <= 0.f)
+    {
+        origin_position = reversed ? animation.start_pos : animation.end_pos;
+        if (enable_callbacks)
+        {
+            if (animation.on_animation_begin)
+                animation.on_animation_begin(&animation);
+            if (animation.on_animation_end)
+                animation.on_animation_end(&animation);
+        }
+        manager->Update();
+        return true;
+    }
+
     animation.reversed = reversed;
     animation.enable_callbacks = enable_callbacks;
 
