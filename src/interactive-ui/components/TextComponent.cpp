@@ -2,10 +2,10 @@
 
 #include <cstring>
 
-void TextComponent::UpdateTextDimensionsAndOrigin()
+void TextComponent::UpdateTextDimensions()
 {
     const size_t msg_len = strlen(text);
-    lines = 1;
+    size_t lines = 1;
 
     size_t segment_max = 0;
     size_t iter = 0;
@@ -32,43 +32,20 @@ void TextComponent::UpdateTextDimensionsAndOrigin()
     }
     message_pixel_dimensions.x = static_cast<int32_t>(segment_max * font->char_width + (segment_max - 1) * font->char_spacing);
     message_pixel_dimensions.y = static_cast<int32_t>(font->char_height * lines + font->char_spacing * (lines - 1));
-
-    switch (vertical_alignment)
-    {
-        case AlignmentVertical::TOP: break;
-        case AlignmentVertical::CENTER: {
-            text_base_offset.y = (draw_dimensions.ymax - draw_dimensions.ymin) / 2 - message_pixel_dimensions.y / 2;
-            break;
-        }
-        case AlignmentVertical::BOTTOM: {
-            text_base_offset.y = (draw_dimensions.ymax - draw_dimensions.ymin) - message_pixel_dimensions.y;
-            break;
-        }
-    }
-    switch (horizontal_alignment)
-    {
-        case AlignmentHorizontal::LEFT: break;
-        case AlignmentHorizontal::CENTER: {
-            text_base_offset.x = (draw_dimensions.xmax - draw_dimensions.xmin) / 2 - message_pixel_dimensions.x / 2;
-            break;
-        }
-        case AlignmentHorizontal::RIGHT: {
-            text_base_offset.x = (draw_dimensions.xmax - draw_dimensions.xmin) - message_pixel_dimensions.x;
-            break;
-        }
-    }
 }
 
 TextComponent::TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen), text(text), font(font)
 {
-    UpdateTextDimensionsAndOrigin();
+    UpdateTextDimensions();
+    draw_dimensions.max = message_pixel_dimensions;
 }
 
 TextComponent::TextComponent(ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen), text(text), font(font)
 {
-    UpdateTextDimensionsAndOrigin();    
+    UpdateTextDimensions();
+    draw_dimensions.max = message_pixel_dimensions;   
 }
 
 void TextComponent::Draw()
@@ -125,38 +102,74 @@ void TextComponent::Draw()
 void TextComponent::Align()
 {
     Component::Align();
-    UpdateTextDimensionsAndOrigin();
+    UpdateTextDimensions();
 }
 
 void TextComponent::SetText(const char* text)
 {
     this->text = text;
-    UpdateTextDimensionsAndOrigin();
+    UpdateTextDimensions();
+}
+
+void TextBoxComponent::UpdateTextDimensions()
+{
+    TextComponent::UpdateTextDimensions();
+    switch (vertical_alignment)
+    {
+        case AlignmentVertical::TOP: {
+            text_base_offset.y = padding.y;
+            break;
+        }
+        case AlignmentVertical::CENTER: {
+            text_base_offset.y = (draw_dimensions.ymax - draw_dimensions.ymin) / 2 - message_pixel_dimensions.y / 2;
+            break;
+        }
+        case AlignmentVertical::BOTTOM: {
+            text_base_offset.y = (draw_dimensions.ymax - draw_dimensions.ymin) - message_pixel_dimensions.y - padding.y;
+            break;
+        }
+    }
+    switch (horizontal_alignment)
+    {
+        case AlignmentHorizontal::LEFT: { 
+            text_base_offset.x = padding.x;
+            break;
+        }
+        case AlignmentHorizontal::CENTER: { 
+            text_base_offset.x = (draw_dimensions.xmax - draw_dimensions.xmin) / 2 - message_pixel_dimensions.x / 2;
+            
+            break;
+        }
+        case AlignmentHorizontal::RIGHT: {
+            text_base_offset.x = (draw_dimensions.xmax - draw_dimensions.xmin) - message_pixel_dimensions.x - padding.x;
+            break;
+        }
+    }
 }
 
 TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
     : TextComponent(manager, origin, text, font, z_layer, initial_screen), padding(padding)
 {
     draw_dimensions.max = box_dimensions;
-    UpdateTextDimensionsAndOrigin();
+    UpdateTextDimensions();
 }
 TextBoxComponent::TextBoxComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
     : TextComponent(manager, x_percentage, y_percentage, text, font, z_layer, initial_screen), padding(padding)
 {
     draw_dimensions.max = box_dimensions;
-    UpdateTextDimensionsAndOrigin();
+    UpdateTextDimensions();
 }
 TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
     : TextComponent(manager, origin, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(box_dimensions.x * x_pad_percentage), static_cast<int32_t>(box_dimensions.y * y_pad_percentage)})
 {
     draw_dimensions.max = box_dimensions;
-    UpdateTextDimensionsAndOrigin();
+    UpdateTextDimensions();
 }
 TextBoxComponent::TextBoxComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
     : TextComponent(manager, x_percentage, y_percentage, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(box_dimensions.x * x_pad_percentage), static_cast<int32_t>(box_dimensions.y * y_pad_percentage)})
 {
     draw_dimensions.max = box_dimensions;
-    UpdateTextDimensionsAndOrigin();
+    UpdateTextDimensions();
 }
 
 void TextBoxComponent::Draw()

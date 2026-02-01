@@ -7,11 +7,10 @@ class TextComponent : public SelectableComponent
 protected:
     const char* text;
     const Font* font;
-    size_t lines;
     Vec2i32 message_pixel_dimensions;
     Vec2i32 text_base_offset; // the offset from the min of the draw dimensions
 
-    void UpdateTextDimensionsAndOrigin();
+    virtual void UpdateTextDimensions();
 
 public:
     TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
@@ -34,16 +33,14 @@ public:
     {
         this->font = font;
     }
-    inline size_t GetTextLines() const
-    {
-        return lines;
-    }
 };
 
 class TextBoxComponent : public TextComponent
 {
 protected:
     Vec2i32 padding;
+
+    virtual void UpdateTextDimensions() override;
 
 public:
     TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
