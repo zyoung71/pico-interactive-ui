@@ -8,6 +8,7 @@
 #include "ScreenManager.h"
 
 class Component;
+class PaddingComponent;
 class SelectableComponent;
 
 class Screen
@@ -25,14 +26,20 @@ protected:
 
     std::vector<Component*> components;
 
+    PaddingComponent* hover_design;
     SelectableComponent* hovered_component;
     
     DisplayInterface* display;
     ScreenManager* manager;
 
+    float animation_hover_duration = 1.f;
+
+    void HoverChange(bool instant = false);
+
 public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);
     Screen(ScreenManager* manager, const Vec2u32& dimensions);
+    virtual ~Screen();
 
     inline Vec2i32 GetDimensions() const
     {
@@ -50,6 +57,11 @@ public:
     void HoverComponent(SelectableComponent* comp);
     void UnhoverComponent();
     void HoverDefaultComponent();
+    inline void SetHoverAnimationDuration(float duration_s)
+    {
+        animation_hover_duration = duration_s;
+    }
+
     void SortComponents();
     void SetComponentZLayer(Component* comp, int32_t z_layer);
 

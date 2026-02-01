@@ -2,7 +2,7 @@
 #include <cstring>
 
 MovementAnimation::MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func)
-    : start_pos(component->GetOriginPosition()), easing_func(easing_func)
+    : start_pos(component->GetOriginPosition()), easing_func(easing_func), start_scale(component->GetDrawDimensions())
 {
 }
 
@@ -91,7 +91,7 @@ void Component::Update(float dt, const Screen* screen)
                 animation.on_animation_begin(&animation);
         }
 
-        float k, eased;
+        float k, eased, scaled;
 
         animation.elapsed += dt;
         k = animation.elapsed / animation.duration; // time ratio
@@ -161,7 +161,10 @@ void Component::Update(float dt, const Screen* screen)
         eased = animation.easing_func[lut_idx];
 
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
-        origin_position = animation.start_pos + (Vec2f)animation.GetDelta() * eased;
+        if (animation.transpose)
+            origin_position = animation.start_pos + (Vec2f)animation.GetTransposeDelta() * eased;
+        if (animation.scale)
+            draw_dimensions.vec = animation.start_scale.vec + (Vec4f)animation.GetScaleDelta() * eased; 
     }
 
     if (cancel_movements_flag)

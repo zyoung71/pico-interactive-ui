@@ -1,4 +1,5 @@
 #include <interactive-ui/Screen.h>
+#include <interactive-ui/components/PaddingComponent.h>
 #include <interactive-ui/SelectableComponent.h>
 #include <interactive-ui/ScreenManager.h>
 
@@ -9,6 +10,30 @@ bool Screen::_ComponentCompare(const Component* a, const Component* b)
     return a->GetZLayer() < b->GetZLayer();
 }
 
+void Screen::HoverChange(bool instant)
+{
+    if (hovered_component->allow_hover_draw)
+    {
+        if (instant || animation_hover_duration <= 0.f)
+        {
+            hover_design->origin_position = hovered_component->origin_position;
+            hover_design->draw_dimensions = hovered_component->draw_dimensions;
+            hover_design->draw_dimensions.min -= Vec2i32{2, 2};
+            hover_design->draw_dimensions.max += Vec2i32{3, 3};
+            return;
+        }
+        MovementAnimation move(hover_design, graphics::easing::lut_quad_out);
+        move.duration = animation_hover_duration;
+        move.end_pos = hovered_component->origin_position;
+        move.end_scale = hovered_component->draw_dimensions;
+        move.end_scale.min -= Vec2i32{2, 2};
+        move.end_scale.max += Vec2i32{3, 3};
+        move.transpose = true;
+        move.scale = true;
+        hover_design->Move(move);
+    }
+}
+
 Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
     : Screen(manager, Vec2u32(width, height))
 {
@@ -17,6 +42,12 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
     : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
 {
+    hover_design = new PaddingComponent(manager, {-1, 1}, {0, 0}, true, INT32_MAX, this);
+}
+
+Screen::~Screen()
+{
+    delete hover_design;
 }
 
 void Screen::AddComponent(Component* component)
@@ -44,8 +75,9 @@ void Screen::HoverComponent(SelectableComponent* comp)
         if (hovered_component)
                 hovered_component->OnComponentUnhovered();
 
-        hovered_component = comp; // casting is fine here
+        hovered_component = comp;
         hovered_component->OnComponentHovered();
+        HoverChange();
     }
 }
 
@@ -109,7 +141,7 @@ void Screen::OnScreenSelect()
     if (hovered_component)
     {
         hovered_component->allow_hover_draw = true;
-        //hovered_component->OnComponentHovered();
+        //hovered_component->OnComponentHovered(); // not used, but could be later
     }
     for (auto&& c : components)
     {
@@ -122,7 +154,7 @@ void Screen::OnScreenDeselect()
     if (hovered_component)
     {
         hovered_component->allow_hover_draw = false;
-        //hovered_component->OnComponentUnhovered();
+        //hovered_component->OnComponentUnhovered(); // not used, but could be later
     }
     for (auto&& c : components)
     {
@@ -144,10 +176,7 @@ void Screen::Update(float dt)
     }
     
     if (hovered_component)
-    {
-        if (hovered_component->allow_hover_draw)
-            hovered_component->DrawHover();
-    }
+        hover_design->Draw();
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)
@@ -205,6 +234,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     if (success)
     {
         hovered_component->OnComponentHovered();
+        HoverChange();
     }
 
     return success;

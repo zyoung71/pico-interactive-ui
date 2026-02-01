@@ -23,10 +23,14 @@ public:
         ENDLESS_WITH_REVERSION
     };
 
+    AABBi32 start_scale;
+    AABBi32 end_scale;
     Vec2i32 start_pos;
     Vec2i32 end_pos;
     float duration = 1.f;
     Type type = NORMAL;
+    bool transpose = true;
+    bool scale = false;
 
     const EasingFunctionLUT& easing_func;
 
@@ -38,9 +42,13 @@ public:
     MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func);
     MovementAnimation();
 
-    inline Vec2i32 GetDelta() const
+    inline Vec2i32 GetTransposeDelta() const
     {
         return end_pos - start_pos;
+    }
+    inline Vec4i32 GetScaleDelta() const
+    {
+        return end_scale.vec - start_scale.vec;
     }
 
     friend Component;
@@ -101,6 +109,7 @@ public:
     virtual void Draw() = 0;
 
     virtual void Align();
+    virtual void Scale() {} // Scaling support is only available to classes that implement it
 
     void SetVerticalAlignment(AlignmentVertical align_v);
     void SetHorizontalAlignment(AlignmentHorizontal align_h);
