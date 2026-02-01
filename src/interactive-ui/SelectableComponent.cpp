@@ -33,12 +33,6 @@ void SelectableComponent::AddComponentTable(const Screen* screen, SelectableComp
         component_lut[screen] = SelectionTable{neighbors[0], neighbors[1], neighbors[2], neighbors[3]};
 }
 
-void SelectableComponent::DrawHover()
-{
-    // draw_dimensions is inclusive of the origin position pixel, so the bounds must extend 2 pixels on the ending side
-    display->DrawSquare(origin_position + draw_dimensions.min - Vec2i32{1, 1}, draw_dimensions.max - draw_dimensions.min + Vec2i32{2, 2}, color, true);
-}
-
 void SelectableComponent::Control(ControlAction action)
 {
     Event* ev = new ComponentSelectEvent(this, action);

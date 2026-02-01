@@ -1,4 +1,5 @@
 #include <interactive-ui/Component.h>
+#include <interactive-ui/components/PaddingComponent.h>
 #include <cstring>
 
 MovementAnimation::MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func)
@@ -111,7 +112,11 @@ void Component::Update(float dt, const Screen* screen)
                         if (animation.on_animation_end && animation.enable_callbacks)
                             animation.on_animation_end(&animation);
                         
-                        origin_position = animation.start_pos;
+                        if (animation.transpose)
+                            origin_position = animation.start_pos;
+                        if (animation.scale)
+                            draw_dimensions = animation.start_scale;
+                            
                         continue;
                     };
                     case MovementAnimation::Type::ENDLESS : {
@@ -138,7 +143,11 @@ void Component::Update(float dt, const Screen* screen)
                         if (animation.on_animation_end && animation.enable_callbacks)
                             animation.on_animation_end(&animation);
                         
-                        origin_position = animation.end_pos;
+                        if (animation.transpose)
+                            origin_position = animation.end_pos;
+                        if (animation.scale)
+                            draw_dimensions = animation.end_scale;
+                        
                         continue;
                     };
                     case MovementAnimation::Type::ENDLESS : {
@@ -162,9 +171,19 @@ void Component::Update(float dt, const Screen* screen)
 
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
         if (animation.transpose)
-            origin_position = animation.start_pos + (Vec2f)animation.GetTransposeDelta() * eased;
+        {
+            Vec2i32 pos = animation.start_pos + (Vec2f)animation.GetTransposeDelta() * eased;
+            origin_position = pos;
+            if ((Component*)screen->hovered_component == this)
+                screen->hover_design->origin_position = pos;
+        }
         if (animation.scale)
-            draw_dimensions.vec = animation.start_scale.vec + (Vec4f)animation.GetScaleDelta() * eased; 
+        {
+            Vec4i32 scale = animation.start_scale.vec + (Vec4f)animation.GetScaleDelta() * eased;
+            draw_dimensions.vec = scale;
+            if ((Component*)screen->hovered_component == this)
+                screen->hover_design->draw_dimensions = scale;
+        }
     }
 
     if (cancel_movements_flag)

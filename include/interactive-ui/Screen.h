@@ -32,7 +32,7 @@ protected:
     DisplayInterface* display;
     ScreenManager* manager;
 
-    float animation_hover_duration = 1.f;
+    float animation_hover_duration = 0.25f;
 
     void HoverChange(bool instant = false);
 
@@ -54,7 +54,7 @@ public:
     void AddComponent(Component* component);
     void RemoveComponent(Component* component);
 
-    void HoverComponent(SelectableComponent* comp);
+    void HoverComponent(SelectableComponent* comp, bool instant = false);
     void UnhoverComponent();
     void HoverDefaultComponent();
     inline void SetHoverAnimationDuration(float duration_s)

@@ -58,7 +58,6 @@ public:
     void AddComponentTable(const Screen* screen, SelectableComponent* up = nullptr, SelectableComponent* down = nullptr, SelectableComponent* left = nullptr, SelectableComponent* right = nullptr);
     void AddComponentTable(const Screen* screen, SelectableComponent** neighbors); // Must be of size 4.
 
-    virtual void DrawHover(); // Draw the extra elements when the component is hovered. Default is an outlining square.
     virtual void OnComponentHovered() {};
     virtual void OnComponentUnhovered() {};
 

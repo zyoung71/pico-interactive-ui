@@ -68,7 +68,7 @@ void Screen::RemoveComponent(Component* comp)
     }
 }
 
-void Screen::HoverComponent(SelectableComponent* comp)
+void Screen::HoverComponent(SelectableComponent* comp, bool instant)
 {
     if (component_set.contains((Component*)comp))
     {
@@ -77,7 +77,7 @@ void Screen::HoverComponent(SelectableComponent* comp)
 
         hovered_component = comp;
         hovered_component->OnComponentHovered();
-        HoverChange();
+        HoverChange(instant);
     }
 }
 
@@ -108,6 +108,7 @@ void Screen::HoverDefaultComponent()
                     {
                         hovered_component = sc;
                         hovered_component->OnComponentHovered();
+                        HoverChange(true);
                         return;
                     }
                 }
@@ -141,6 +142,7 @@ void Screen::OnScreenSelect()
     if (hovered_component)
     {
         hovered_component->allow_hover_draw = true;
+        hover_design->forced_visibility = true;
         //hovered_component->OnComponentHovered(); // not used, but could be later
     }
     for (auto&& c : components)
@@ -151,6 +153,8 @@ void Screen::OnScreenSelect()
 
 void Screen::OnScreenDeselect()
 {
+    hover_design->forced_visibility = false;
+
     if (hovered_component)
     {
         hovered_component->allow_hover_draw = false;
