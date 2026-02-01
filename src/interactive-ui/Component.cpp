@@ -162,7 +162,7 @@ void Component::Update(float dt)
     }
 
     // only draw if the components's AABB intersects with the screen dimensions
-    if (forced_visibility && personal_visibility && (origin_position.x + draw_dimensions.xmax > 0 || origin_position.y + draw_dimensions.ymax > 0))
+    if (forced_visibility && personal_visibility && origin_position.x + draw_dimensions.xmax > 0 && origin_position.y + draw_dimensions.ymax > 0)
         Draw(); // draw last
 }
 
