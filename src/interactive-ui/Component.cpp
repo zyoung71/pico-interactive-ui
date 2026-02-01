@@ -178,7 +178,8 @@ void Component::Update(float dt, const Screen* screen)
 
     if (forced_visibility && personal_visibility)
     {
-        if (draw_dimensions.Intersects(screen->dimensions))
+        AABBi32 check_bounds(origin_position + draw_dimensions.min, origin_position + draw_dimensions.max);
+        if (check_bounds.Intersects(screen->dimensions))
         {
             Draw(); // draw last
         }
