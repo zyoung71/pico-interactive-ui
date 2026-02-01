@@ -202,7 +202,7 @@ bool Component::Move(MovementAnimation animation, bool reversed, bool enable_cal
 
     MoveRefInc();
     
-    manager->UpdateDeltaTime();
+    manager->UpdateDeltaTime(); // kickstarts by resetting the dt
     return queue_try_add(&moving_queue, &animation);
 }
 

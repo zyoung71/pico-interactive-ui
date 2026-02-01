@@ -48,8 +48,9 @@ public:
 
     void QueueControl(uint32_t action_mask);
     
-    float UpdateDeltaTime();
+    void UpdateDeltaTime();
     void Update();
+    void Update(float dt_override);
     void UpdateIfAnyComponentMoving();
 
     friend Screen;

@@ -39,20 +39,27 @@ void ScreenManager::QueueControl(uint32_t action_mask)
     queue_try_add(&control_queue, &action_mask);
 }
 
-float ScreenManager::UpdateDeltaTime()
+void ScreenManager::UpdateDeltaTime()
 {
     static absolute_time_t then = 0;
     absolute_time_t now = to_us_since_boot(get_absolute_time());
     absolute_time_t dt_us = absolute_time_diff_us(then, now);
     last_dt = dt_us * 1e-6f;
     then = now;
-    return last_dt;
 }
 
 void ScreenManager::Update()
 {
+    UpdateDeltaTime();
     display->ClearDisplay();
-    selected_screen->Update(UpdateDeltaTime());
+    selected_screen->Update(last_dt);
+    display->UpdateDisplay();
+}
+
+void ScreenManager::Update(float dt_override)
+{
+    display->ClearDisplay();
+    selected_screen->Update(dt_override);
     display->UpdateDisplay();
 }
 
@@ -70,7 +77,7 @@ void ScreenManager::UpdateIfAnyComponentMoving()
             {
                 if (s == screens.top())
                 {
-                    Update();
+                    Update(last_dt);
                     continue;
                 }
                 s->Update(last_dt);
