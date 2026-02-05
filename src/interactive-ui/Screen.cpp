@@ -14,26 +14,23 @@ void Screen::HoverChange(bool instant)
 {
     constexpr Vec2i32 hover_outline_width = Vec2i32{2, 2};
 
-    if (hovered_component->allow_hover_draw)
+    if (instant || animation_hover_duration <= 0.f)
     {
-        if (instant || animation_hover_duration <= 0.f)
-        {
-            hover_design->origin_position = hovered_component->origin_position;
-            hover_design->draw_dimensions = hovered_component->draw_dimensions;
-            hover_design->draw_dimensions.min -= hover_outline_width;
-            hover_design->draw_dimensions.max += hover_outline_width;
-            return;
-        }
-        MovementAnimation move(hover_design, graphics::easing::lut_quad_out);
-        move.duration = animation_hover_duration;
-        move.end_pos = hovered_component->origin_position;
-        move.end_scale = hovered_component->draw_dimensions;
-        move.end_scale.min -= hover_outline_width;
-        move.end_scale.max += hover_outline_width;
-        move.transpose = true;
-        move.scale = true;
-        hover_design->Move(move);
+        hover_design->origin_position = hovered_component->origin_position;
+        hover_design->draw_dimensions = hovered_component->draw_dimensions;
+        hover_design->draw_dimensions.min -= hover_outline_width;
+        hover_design->draw_dimensions.max += hover_outline_width;
+        return;
     }
+    MovementAnimation move(hover_design, graphics::easing::lut_quad_out);
+    move.duration = animation_hover_duration;
+    move.end_pos = hovered_component->origin_position;
+    move.end_scale = hovered_component->draw_dimensions;
+    move.end_scale.min -= hover_outline_width;
+    move.end_scale.max += hover_outline_width;
+    move.transpose = true;
+    move.scale = true;
+    hover_design->Move(move);
 }
 
 Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
