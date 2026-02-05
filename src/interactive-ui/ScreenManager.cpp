@@ -5,6 +5,11 @@
 ScreenManager::ScreenManager(DisplayInterface* const display)
     : display(display), selected_screen(nullptr)
 {
+    if (refresh_rate > 0.f)
+        refresh_period = 1.f / refresh_rate;
+    else
+        refresh_period = 0.f;
+
     queue_init(&control_queue, sizeof(uint32_t), 4);
 }
 
@@ -51,16 +56,15 @@ void ScreenManager::UpdateDeltaTime()
 void ScreenManager::Update()
 {
     UpdateDeltaTime();
-    display->ClearDisplay();
-    selected_screen->Update(last_dt);
-    display->UpdateDisplay();
-}
-
-void ScreenManager::Update(float dt_override)
-{
-    display->ClearDisplay();
-    selected_screen->Update(dt_override);
-    display->UpdateDisplay();
+    static float cumulative_dt = 0.f;
+    cumulative_dt += last_dt;
+    if (last_dt > refresh_period)
+    {
+        cumulative_dt -= refresh_period;
+        display->ClearDisplay();
+        selected_screen->Update(last_dt);
+        display->UpdateDisplay();
+    }
 }
 
 void ScreenManager::UpdateIfAnyComponentMoving()
@@ -70,14 +74,14 @@ void ScreenManager::UpdateIfAnyComponentMoving()
     // therefore it is ideal we guard the set search
     if (master_component_moving_reference_count > 0)
     {
-        UpdateDeltaTime();
         for (auto s : screen_set)
         {
+            last_dt = 1e-6f; // consume large delta from any possible long waits. not zero to avoid double-callbacks
             if (s->HasMovingComponent())
             {
                 if (s == screens.top())
                 {
-                    Update(last_dt);
+                    Update();
                     continue;
                 }
                 s->Update(last_dt);
