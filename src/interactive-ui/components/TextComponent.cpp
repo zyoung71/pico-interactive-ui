@@ -41,8 +41,8 @@ TextComponent::TextComponent(ScreenManager* manager, const Vec2i32& origin, cons
     draw_dimensions.max = message_pixel_dimensions;
 }
 
-TextComponent::TextComponent(ScreenManager* manager, float x_percentage, float y_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : SelectableComponent(manager, x_percentage, y_percentage, z_layer, initial_screen), text(text), font(font)
+TextComponent::TextComponent(ScreenManager* manager, const Vec2f& screen_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+    : SelectableComponent(manager, screen_percentage, z_layer, initial_screen), text(text), font(font)
 {
     UpdateTextDimensions();
     draw_dimensions.max = message_pixel_dimensions;   
@@ -101,14 +101,16 @@ void TextComponent::Draw()
 
 void TextComponent::Align()
 {
-    Component::Align();
     UpdateTextDimensions();
+    draw_dimensions.min = {0, 0};
+    draw_dimensions.max = message_pixel_dimensions;
+    Component::Align();
 }
 
 void TextComponent::SetText(const char* text)
 {
     this->text = text;
-    UpdateTextDimensions();
+    Align();
 }
 
 void TextComponent::SetTextVerticalAlignment(AlignmentVertical align_v)
@@ -119,6 +121,13 @@ void TextComponent::SetTextVerticalAlignment(AlignmentVertical align_v)
 
 void TextComponent::SetTextHorizontalAlignment(AlignmentHorizontal align_h)
 {
+    text_horizontal_alignment = align_h;
+    Align();
+}
+
+void TextComponent::SetTextAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
+{
+    text_vertical_alignment = align_v;
     text_horizontal_alignment = align_h;
     Align();
 }
@@ -165,8 +174,8 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2i32& origin
     draw_dimensions.max = box_dimensions;
     UpdateTextDimensions();
 }
-TextBoxComponent::TextBoxComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : TextComponent(manager, x_percentage, y_percentage, text, font, z_layer, initial_screen), padding(padding)
+TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+    : TextComponent(manager, screen_percentage, text, font, z_layer, initial_screen), padding(padding)
 {
     draw_dimensions.max = box_dimensions;
     UpdateTextDimensions();
@@ -177,8 +186,8 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2i32& origin
     draw_dimensions.max = box_dimensions;
     UpdateTextDimensions();
 }
-TextBoxComponent::TextBoxComponent(ScreenManager* manager, float x_percentage, float y_percentage, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : TextComponent(manager, x_percentage, y_percentage, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(box_dimensions.x * x_pad_percentage), static_cast<int32_t>(box_dimensions.y * y_pad_percentage)})
+TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+    : TextComponent(manager, screen_percentage, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(box_dimensions.x * x_pad_percentage), static_cast<int32_t>(box_dimensions.y * y_pad_percentage)})
 {
     draw_dimensions.max = box_dimensions;
     UpdateTextDimensions();
@@ -186,6 +195,12 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, float x_percentage, f
 
 void TextBoxComponent::Draw()
 {
+    display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.max - draw_dimensions.min, color, true, clear_bg); // box
     TextComponent::Draw();
-    display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.max - draw_dimensions.min, color, true); // box
+}
+
+void TextBoxComponent::Align()
+{
+    UpdateTextDimensions();
+    Component::Align();
 }

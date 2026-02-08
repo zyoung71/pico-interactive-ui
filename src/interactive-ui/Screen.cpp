@@ -41,13 +41,13 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
     : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
 {
-    hover_design = new PaddingComponent(manager, {-1, 1}, {0, 0}, true, INT32_MAX, this);
+    hover_design = new PaddingComponent(manager, Vec2i32{-1, 1}, Vec2i32{0, 0}, true, INT32_MAX, this);
 }
 
 Screen::Screen(const Screen& to_copy)
     : dimensions(to_copy.dimensions), components(to_copy.components), component_set(to_copy.component_set),
     component_moving_reference_count(0), hovered_component(to_copy.hovered_component), animation_hover_duration(to_copy.animation_hover_duration),
-    display(to_copy.display), manager(to_copy.manager), hover_design(new PaddingComponent(to_copy.manager, {-1, -1}, {0, 0}, true, INT32_MAX, this))
+    display(to_copy.display), manager(to_copy.manager), hover_design(new PaddingComponent(to_copy.manager, Vec2i32{-1, -1}, Vec2i32{0, 0}, true, INT32_MAX, this))
 {
 }
 
@@ -74,7 +74,7 @@ void Screen::RemoveComponent(Component* comp)
     }
 }
 
-void Screen::HoverComponent(SelectableComponent* comp, bool instant)
+void Screen::HoverComponent(SelectableComponent* comp, bool instant) // may be used to force hovers on things that have no neighbors
 {
     if (component_set.contains((Component*)comp))
     {
@@ -82,7 +82,11 @@ void Screen::HoverComponent(SelectableComponent* comp, bool instant)
                 hovered_component->OnComponentUnhovered();
 
         hovered_component = comp;
+        allow_hover_draw = true;
         hovered_component->OnComponentHovered();
+        // in order for any component to move automatically,
+        // the screen manager must have the screen added to its set
+        manager->screen_set.insert(this);
         HoverChange(instant);
     }
 }
@@ -93,6 +97,7 @@ void Screen::UnhoverComponent()
     {
         hovered_component->OnComponentUnhovered();
         hovered_component = nullptr;
+        allow_hover_draw = false;
     }
 }
 
@@ -113,6 +118,7 @@ void Screen::HoverDefaultComponent()
                     if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3]) // Only hover if any neighboring components are set which defines it as something intended to be hovered.
                     {
                         hovered_component = sc;
+                        allow_hover_draw = true;
                         hovered_component->OnComponentHovered();
                         HoverChange(true);
                         return;
@@ -121,6 +127,18 @@ void Screen::HoverDefaultComponent()
             }
         }
     }
+}
+
+bool Screen::IsComponentHoverable(const SelectableComponent* comp) const
+{
+    if (!comp->component_lut.contains(this))
+        return false;
+
+    const SelectableComponent* const* neighbors = comp->component_lut.at(this).neighboring_components;
+    if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3])
+        return true;
+        
+    return false;
 }
 
 void Screen::SortComponents()
@@ -147,10 +165,10 @@ void Screen::OnScreenSelect()
 {
     if (hovered_component)
     {
-        hovered_component->allow_hover_draw = true;
+        allow_hover_draw = true;
         //hovered_component->OnComponentHovered(); // not used, but could be later
     }
-    for (auto&& c : components)
+    for (auto c : components)
     {
         c->ForceVisibility(true);
     }
@@ -161,10 +179,10 @@ void Screen::OnScreenDeselect()
 
     if (hovered_component)
     {
-        hovered_component->allow_hover_draw = false;
+        allow_hover_draw = false;
         //hovered_component->OnComponentUnhovered(); // not used, but could be later
     }
-    for (auto&& c : components)
+    for (auto c : components)
     {
         c->ForceVisibility(false);
     }
@@ -178,16 +196,13 @@ void Screen::Update(float dt)
         OnControl(control_mask);
     }
 
-    for (auto&& c : components) // Draw components last.
+    for (auto c : components) // Draw components last.
     {
         c->Update(dt, this);
     }
     
-    if (hovered_component)
-    {
-        if (hovered_component->allow_hover_draw) // i have NO IDEA why this works but forcing visibility doesn't
-            hover_design->Draw();
-    }
+    if (hovered_component && allow_hover_draw)
+        hover_design->Draw(); // i have NO IDEA why this works but forcing visibility doesn't
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)
@@ -198,10 +213,11 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     bool success = false;
 
     // This approach allows for multi-input like moving up and to the right on the same update.
+    SelectionTable& table = hovered_component->component_lut[this];
+    SelectableComponent* opt;
     if (control_mask & DIRECTIONAL_UP)
     {
-        SelectionTable& table = hovered_component->component_lut[this];
-        SelectableComponent* opt = table.up_component;
+        opt = table.up_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();
@@ -211,8 +227,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_RIGHT)
     {
-        SelectionTable& table = hovered_component->component_lut[this];
-        SelectableComponent* opt = table.right_component;
+        opt = table.right_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();
@@ -222,8 +237,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_DOWN)
     {
-        SelectionTable& table = hovered_component->component_lut[this];
-        SelectableComponent* opt = table.down_component;
+        opt = table.down_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();
@@ -233,8 +247,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     }
     if (control_mask & DIRECTIONAL_LEFT)
     {
-        SelectionTable& table = hovered_component->component_lut[this];
-        SelectableComponent* opt = table.left_component;
+        opt = table.left_component;
         if (opt != nullptr)
         {
             hovered_component->OnComponentUnhovered();

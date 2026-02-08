@@ -101,7 +101,7 @@ public:
     const bool selectable; // Smallest overhead without enabling RTTI.
 
     Component(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen = nullptr, bool selectable = false);
-    Component(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, Screen* initial_screen, bool selectable = false);
+    Component(ScreenManager* manager, const Vec2f& screen_percentage, int32_t z_layer, Screen* initial_screen, bool selectable = false);
     Component(const Component& to_copy);
     virtual ~Component();
 
@@ -113,6 +113,7 @@ public:
 
     void SetVerticalAlignment(AlignmentVertical align_v);
     void SetHorizontalAlignment(AlignmentHorizontal align_h);
+    void SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h);
 
     bool Move(MovementAnimation animation, bool reversed = false, bool enable_callbacks = true);
     bool IsMoving() const;

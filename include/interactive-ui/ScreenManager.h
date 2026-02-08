@@ -64,6 +64,7 @@ public:
     
     void UpdateDeltaTime();
     void Update();
+    void Update(float dt_override);
     void UpdateIfAnyComponentMoving();
 
     friend Screen;

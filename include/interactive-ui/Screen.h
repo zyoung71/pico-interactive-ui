@@ -18,6 +18,7 @@ public:
 
 private:
     std::unordered_set<Component*> component_set; // stores the same values the vector does, but intended for searching
+    bool allow_hover_draw = false;
 
     int component_moving_reference_count = 0;
 
@@ -58,9 +59,11 @@ public:
     void HoverComponent(SelectableComponent* comp, bool instant = false);
     void UnhoverComponent();
     void HoverDefaultComponent();
+    bool IsComponentHoverable(const SelectableComponent* comp) const;
     inline void SetHoverAnimationDuration(float duration_s)
     {
         animation_hover_duration = duration_s;
+
     }
 
     void SortComponents();

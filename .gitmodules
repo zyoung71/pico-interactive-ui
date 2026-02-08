@@ -7,3 +7,6 @@
 [submodule "lib/pico-event-hardware"]
 	path = lib/pico-event-hardware
 	url = https://github.com/zyoung71/pico-event-hardware
+[submodule "lib/pico-util"]
+	path = lib/pico-util
+	url = https://github.com/zyoung71/pico-util

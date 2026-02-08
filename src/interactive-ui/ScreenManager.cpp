@@ -53,16 +53,29 @@ void ScreenManager::UpdateDeltaTime()
     then = now;
 }
 
+static float cumulative_dt = 0.f;
+
 void ScreenManager::Update()
 {
     UpdateDeltaTime();
-    static float cumulative_dt = 0.f;
     cumulative_dt += last_dt;
-    if (last_dt > refresh_period)
+    if (last_dt >= refresh_period)
     {
         cumulative_dt -= refresh_period;
         display->ClearDisplay();
         selected_screen->Update(last_dt);
+        display->UpdateDisplay();
+    }
+}
+
+void ScreenManager::Update(float dt_override)
+{
+    cumulative_dt += dt_override;
+    if (last_dt >= refresh_period)
+    {
+        cumulative_dt -= refresh_period;
+        display->ClearDisplay();
+        selected_screen->Update(dt_override);
         display->UpdateDisplay();
     }
 }
@@ -74,14 +87,14 @@ void ScreenManager::UpdateIfAnyComponentMoving()
     // therefore it is ideal we guard the set search
     if (master_component_moving_reference_count > 0)
     {
+        UpdateDeltaTime();
         for (auto s : screen_set)
         {
-            last_dt = 1e-6f; // consume large delta from any possible long waits. not zero to avoid double-callbacks
             if (s->HasMovingComponent())
             {
-                if (s == screens.top())
+                if (s == selected_screen)
                 {
-                    Update();
+                    Update(last_dt);
                     continue;
                 }
                 s->Update(last_dt);

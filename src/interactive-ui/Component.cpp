@@ -36,10 +36,10 @@ Component::Component(ScreenManager* manager, const Vec2i32& position, int32_t z_
     queue_init(&moving_queue, sizeof(MovementAnimation), moving_queue_size);
 }
 
-Component::Component(ScreenManager* manager, float x_percentage, float y_percentage, int32_t z_layer, Screen* initial_screen, bool selectable)
-    : Component(manager, {
-        static_cast<int32_t>(initial_screen->GetDimensions().x * x_percentage),
-        static_cast<int32_t>(initial_screen->GetDimensions().y * y_percentage)
+Component::Component(ScreenManager* manager, const Vec2f& screen_percentage, int32_t z_layer, Screen* initial_screen, bool selectable)
+    : Component(manager, Vec2i32{
+        static_cast<int32_t>(initial_screen->GetDimensions().x * screen_percentage.x),
+        static_cast<int32_t>(initial_screen->GetDimensions().y * screen_percentage.y)
     }, z_layer, initial_screen, selectable)
 {
 }
@@ -113,10 +113,17 @@ void Component::Update(float dt, const Screen* screen)
                             animation.on_animation_end(&animation);
                         
                         if (animation.transpose)
+                        {
                             origin_position = animation.start_pos;
+                            if ((Component*)screen->hovered_component == this)
+                                screen->hover_design->origin_position = animation.start_pos;
+                        }
                         if (animation.scale)
-                            draw_dimensions = animation.start_scale;
-                            
+                        {
+                            draw_dimensions = animation.end_scale;
+                            if ((Component*)screen->hovered_component == this)
+                                screen->hover_design->draw_dimensions = animation.start_scale;   
+                        }
                         continue;
                     };
                     case MovementAnimation::Type::ENDLESS : {
@@ -144,9 +151,17 @@ void Component::Update(float dt, const Screen* screen)
                             animation.on_animation_end(&animation);
                         
                         if (animation.transpose)
+                        {
                             origin_position = animation.end_pos;
+                            if ((Component*)screen->hovered_component == this)
+                                screen->hover_design->origin_position = animation.end_pos;
+                        }
                         if (animation.scale)
+                        {
                             draw_dimensions = animation.end_scale;
+                            if ((Component*)screen->hovered_component == this)
+                                screen->hover_design->draw_dimensions = animation.end_scale;   
+                        }
                         
                         continue;
                     };
@@ -264,8 +279,19 @@ void Component::SetHorizontalAlignment(AlignmentHorizontal align_h)
     Align();
 }
 
+void Component::SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
+{
+    vertical_alignment = align_v;
+    horizontal_alignment = align_h;
+    Align();
+}
+
 bool Component::Move(MovementAnimation animation, bool reversed, bool enable_callbacks)
 {
+    manager->UpdateDeltaTime();
+
+    float dt = manager->last_dt;
+    
     if (animation.duration <= 0.f)
     {
         origin_position = reversed ? animation.start_pos : animation.end_pos;
@@ -276,7 +302,16 @@ bool Component::Move(MovementAnimation animation, bool reversed, bool enable_cal
             if (animation.on_animation_end)
                 animation.on_animation_end(&animation);
         }
-        manager->Update();
+        
+        for (auto s : screen_set)
+        {
+            if (s == manager->selected_screen)
+            {
+                manager->Update(dt);
+                continue;
+            }
+            s->Update(dt);
+        }
         return true;
     }
 
@@ -285,7 +320,6 @@ bool Component::Move(MovementAnimation animation, bool reversed, bool enable_cal
 
     MoveRefInc();
     
-    manager->UpdateDeltaTime(); // kickstarts by resetting the dt
     return queue_try_add(&moving_queue, &animation);
 }
 
