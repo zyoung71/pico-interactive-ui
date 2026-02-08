@@ -1,7 +1,7 @@
 #include <pico/stdio.h>
 
 #include <interactive-ui/ScreenManager.h>
-#include <ClockComponent.h>
+#include <interactive-ui/components/TextComponent.h>
 
 #include <math/Graphics.h>
 
@@ -16,35 +16,12 @@ int main()
 
     Screen menu(&manager, screen_dimensions);
 
-    RealTimeClock clock(4, 5, 6, i2c0);
-    ClockComponent clock_component(&manager, &clock, 0, &menu);
-    menu.AddComponent(&clock_component);
+    TextComponent text1(&manager, Vec2i32{20, 20}, "Hello", nullptr, 1, &menu);
 
-    TextBoxComponent text(&manager, Vec2i32{0, 0}, Vec2i32{31, 15}, Vec2i32{2, 2}, "TEXT", nullptr, 1);
+    TextBoxComponent text2(&manager, Vec2i32{0, 0}, Vec2i32{31, 15}, Vec2i32{2, 2}, "TEXT", nullptr, 1, &menu);
     
-    text.AddComponentTable(&menu, nullptr, nullptr, nullptr, &clock_component);
-    clock_component.AddComponentTable(&menu, nullptr, nullptr, &text, nullptr);
-
-    int id = clock_component.AddAction([](const Event* ev, void* ptr){
-        // When the clock component is selected with any select button or etc.
-        RealTimeClock* clock = (RealTimeClock*)ptr;
-        clock->Use24HourTime(); // Changes to 24-hour time.
-    }, &clock);
-
-    int id2 = text.AddAction([](const Event* ev, void* ptr){
-        // When the text box is selected with a button or etc.
-        ClockComponent* clk = (ClockComponent*)ptr;
-        MovementAnimation animation(clk, graphics::easing::lut_sine_in_out);
-        animation.on_animation_begin = [](const MovementAnimation* anim){
-            puts("animation has begun");
-        };
-        animation.on_animation_end = [](const MovementAnimation* anim){
-            puts("animation has ended");
-        };
-        animation.duration = 1.f;
-        animation.end_pos = Vec2i32{50, 40};
-        clk->Move(animation);
-    }, &clock_component);
+    text1.AddComponentTable(&menu, nullptr, nullptr, &text2, nullptr);
+    text2.AddComponentTable(&menu, nullptr, nullptr, nullptr, &text1);
 
     manager.PushScreen(&menu);
 

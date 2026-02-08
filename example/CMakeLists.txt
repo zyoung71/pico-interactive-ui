@@ -13,11 +13,9 @@ pico_sdk_init()
 project(InteractiveUI C CXX ASM)
 
 add_subdirectory(../ build)
-add_subdirectory(lib/pico-rtc)
 
 add_executable(InteractiveUI
     src/main.cpp
-    src/ClockComponent.cpp
 )
 
 target_include_directories(InteractiveUI PUBLIC
@@ -27,7 +25,6 @@ target_include_directories(InteractiveUI PUBLIC
 target_link_libraries(InteractiveUI
     pico_stdlib
     pico-interactive-ui
-    pico-rtc
 )
 
 pico_enable_stdio_usb(${CMAKE_PROJECT_NAME} 1)
