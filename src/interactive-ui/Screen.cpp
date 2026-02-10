@@ -7,7 +7,7 @@
 
 bool Screen::_ComponentCompare(const Component* a, const Component* b)
 {
-    return a->GetZLayer() < b->GetZLayer();
+    return a->z_layer < b->z_layer;
 }
 
 void Screen::HoverChange(bool instant)
@@ -162,7 +162,10 @@ void Screen::OnScreenSelect()
         c->ForceVisibility(true);
         c->OnEnterScreen(this);
     }
-    HoverChange(true); // here if any component recalculates its draw dimensions off-screen
+
+    // here if any component recalculates its draw dimensions off-screen.
+    // treated as a flag since this code is run before an update
+    hover_pending_move = true;
 }
 
 void Screen::OnScreenDeselect()
@@ -194,7 +197,14 @@ void Screen::Update(float dt)
     }
     
     if (hovered_component && allow_hover_draw)
+    {
+        if (hover_pending_move)
+        {
+            HoverChange(true);
+            hover_pending_move = false;
+        }
         hover_design->Draw(); // i have NO IDEA why this works but forcing visibility doesn't
+    }
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)

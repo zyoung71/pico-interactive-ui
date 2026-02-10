@@ -20,6 +20,7 @@ public:
 private:
     std::unordered_set<Component*> component_set; // stores the same values the vector does, but intended for searching
     bool allow_hover_draw = false;
+    bool hover_pending_move = false;
     int component_moving_reference_count = 0;
 
 protected:
