@@ -35,7 +35,7 @@ void Screen::HoverChange(bool instant) const
         hover_design->draw_dimensions.max += hover_outline_width;
         return;
     }
-    MovementAnimation move(hover_design, graphics::easing::lut_quad_out);
+    MovementAnimation move(hover_design, *easing_func);
     move.duration = animation_hover_duration;
     move.end_pos = hovered_component->origin_position;
     move.end_scale = hovered_component->draw_dimensions;

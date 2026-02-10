@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <math/AABB.h>
+#include <math/Graphics.h>
 #include "ControlAction.h"
 
 #include "ScreenManager.h"
@@ -31,6 +32,7 @@ protected:
 public:
     const AABBi32 dimensions;
     float animation_hover_duration = 0.2f;
+    const graphics::easing::EasingFunctionLUT* easing_func = &graphics::easing::lut_quad_out;
 
 public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);
