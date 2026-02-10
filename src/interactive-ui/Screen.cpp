@@ -155,6 +155,7 @@ void Screen::OnScreenSelect()
     if (hovered_component)
     {
         allow_hover_draw = true;
+        hover_design->ForceVisibility(true);
         //hovered_component->OnComponentHovered(); // not used, but could be later
     }
     for (auto c : components)
@@ -162,10 +163,6 @@ void Screen::OnScreenSelect()
         c->ForceVisibility(true);
         c->OnEnterScreen(this);
     }
-
-    // here if any component recalculates its draw dimensions off-screen.
-    // treated as a flag since this code is run before an update
-    hover_pending_move = true;
 }
 
 void Screen::OnScreenDeselect()
@@ -174,6 +171,7 @@ void Screen::OnScreenDeselect()
     if (hovered_component)
     {
         allow_hover_draw = false;
+        hover_design->ForceVisibility(false);
         //hovered_component->OnComponentUnhovered(); // not used, but could be later
     }
     for (auto c : components)
@@ -198,13 +196,13 @@ void Screen::Update(float dt)
     
     if (hovered_component && allow_hover_draw)
     {
-        if (hover_pending_move)
-        {
-            HoverChange(true);
-            hover_pending_move = false;
-        }
         hover_design->Draw(); // i have NO IDEA why this works but forcing visibility doesn't
     }
+}
+
+void Screen::OnFirstUpdateSinceSelection()
+{
+    HoverChange(true); // for any component that changes its draw dimensions off-screen
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)

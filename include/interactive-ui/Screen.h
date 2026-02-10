@@ -8,7 +8,6 @@
 #include "ScreenManager.h"
 
 class Component;
-class PaddingComponent;
 class SelectableComponent;
 
 class Screen
@@ -20,12 +19,11 @@ public:
 private:
     std::unordered_set<Component*> component_set; // stores the same values the vector does, but intended for searching
     bool allow_hover_draw = false;
-    bool hover_pending_move = false;
     int component_moving_reference_count = 0;
 
 protected:
     std::vector<Component*> components;
-    PaddingComponent* hover_design;
+    Component* hover_design;
     SelectableComponent* hovered_component;
     DisplayInterface* display;
     ScreenManager* manager;
@@ -67,6 +65,7 @@ public:
     virtual void OnScreenDeselect();
     
     virtual void Update(float dt);
+    virtual void OnFirstUpdateSinceSelection();
 
     bool NavigateToComponent(uint32_t control_mask);
     void ActOnComponent(uint32_t control_mask);
