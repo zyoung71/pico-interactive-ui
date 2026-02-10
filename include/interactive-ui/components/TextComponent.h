@@ -46,11 +46,11 @@ class TextBoxComponent : public TextComponent
 {
 protected:
     bool dynamic_box = false;
+    Vec2i32 padding = Vec2i32{2, 2};
 
     virtual void UpdateTextDimensions() override;
 
 public:
-    Vec2i32 padding = Vec2i32{2, 2};
     bool clear_bg = false;
 
 public:
@@ -59,6 +59,13 @@ public:
 
     virtual void Draw() override;
     virtual void Align() override;
+
+    void SetPadding(const Vec2i32& padding);
+
+    inline Vec2i32 GetPadding() const
+    {
+        return padding;
+    }
 
     void EnableDynamicBoxDimensions(bool enable);
 };

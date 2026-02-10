@@ -198,6 +198,12 @@ void TextBoxComponent::Align()
     Component::Align();
 }
 
+void TextBoxComponent::SetPadding(const Vec2i32& padding)
+{
+    this->padding = padding;
+    Align();
+}
+
 void TextBoxComponent::EnableDynamicBoxDimensions(bool enable)
 {
     dynamic_box = enable;

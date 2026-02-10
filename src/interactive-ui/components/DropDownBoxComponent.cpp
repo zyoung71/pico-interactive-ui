@@ -4,7 +4,7 @@ DropDownBoxComponent::DropDownBoxComponent(ScreenManager* manager, const Vec2i32
     : Component(manager, origin, z_layer, initial_screen),
     main_box(manager, origin, main_box_dimensions, text, font, z_layer, initial_screen),
     arrow_box(manager, origin + Vec2i32{main_box_dimensions.x, 0}, Vec2i32{7, main_box_dimensions.y}, z_layer, initial_screen),
-    arrow(manager, arrow_box.GetOriginPosition() + main_box.padding, bitmap_dropdown_arrow, z_layer, initial_screen),
+    arrow(manager, arrow_box.GetOriginPosition() + main_box.GetPadding(), bitmap_dropdown_arrow, z_layer, initial_screen),
     options(manager, origin, z_layer, initial_screen)
 {
     draw_dimensions.min = main_box.GetDrawDimensions().min;
@@ -61,7 +61,7 @@ void DropDownBoxComponent::SetOriginPosition(const Vec2i32& pos)
 {
     Component::SetOriginPosition(pos);
     arrow_box.SetOriginPosition(pos + main_box.GetDrawDimensions().Size());
-    arrow.SetOriginPosition(pos + main_box.GetDrawDimensions().Size() + main_box.padding);
+    arrow.SetOriginPosition(pos + main_box.GetDrawDimensions().Size() + main_box.GetPadding());
     options.SetOriginPosition(pos + Vec2i32{0, main_box.GetDrawDimensions().Size().y});
 }
 
