@@ -27,8 +27,8 @@ void ScreenManager::PushScreen(Screen* screen)
         selected_screen->OnScreenDeselect();
     selected_screen = screen;
     selected_screen->OnScreenSelect();
-    Update();
     selected_screen->OnFirstUpdateSinceSelection();
+    Update();
 }
 
 void ScreenManager::PopScreen()
@@ -37,8 +37,8 @@ void ScreenManager::PopScreen()
     selected_screen->OnScreenDeselect();
     selected_screen = screens.top();
     selected_screen->OnScreenSelect();
-    Update();
     selected_screen->OnFirstUpdateSinceSelection();
+    Update();
 }
 
 void ScreenManager::QueueControl(uint32_t action_mask)
