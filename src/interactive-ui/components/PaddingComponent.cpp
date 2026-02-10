@@ -20,5 +20,5 @@ void PaddingComponent::Draw()
     // if there is a background fill, fill it once and draw the next thickness lines inside
     display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.Size(), color, true, fill_if_outlined);
     for (int32_t i = 1; i < thickness; i++)
-        display->DrawSquare(origin_position + draw_dimensions.min + Vec2i32{i, i}, draw_dimensions.Size() - Vec2i32{i, i}, color, true, false);
+        display->DrawSquare(origin_position + draw_dimensions.min + Vec2i32{i, i}, draw_dimensions.Size() - Vec2i32{i + 1, i + 1}, color, true, false);
 }
