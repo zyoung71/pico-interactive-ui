@@ -5,12 +5,25 @@
 
 #include <algorithm>
 
+class HoverDesignComponent : public PaddingComponent
+{
+public:
+    HoverDesignComponent(ScreenManager* manager, Screen* initial_screen)
+        : PaddingComponent(manager, Vec2i32{-1, -1}, Vec2i32{0, 0}, Screen::hover_z_layer, initial_screen) {}
+
+    void Update(float dt, const Screen* screen) override
+    {
+        screen->HoverChange(true);
+        PaddingComponent::Update(dt, screen);
+    }
+};
+
 bool Screen::_ComponentCompare(const Component* a, const Component* b)
 {
     return a->z_layer < b->z_layer;
 }
 
-void Screen::HoverChange(bool instant)
+void Screen::HoverChange(bool instant) const
 {
     constexpr Vec2i32 hover_outline_width = Vec2i32{2, 2};
 
@@ -39,15 +52,15 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 }
 
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
-    : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
+    : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr),
+    hover_design(new HoverDesignComponent(manager, this))
 {
-    hover_design = new PaddingComponent(manager, Vec2i32{-1, 1}, Vec2i32{0, 0}, hover_z_layer, this);
 }
 
 Screen::Screen(const Screen& to_copy)
     : dimensions(to_copy.dimensions), components(to_copy.components), component_set(to_copy.component_set),
     component_moving_reference_count(0), hovered_component(to_copy.hovered_component), animation_hover_duration(to_copy.animation_hover_duration),
-    display(to_copy.display), manager(to_copy.manager), hover_design(new PaddingComponent(to_copy.manager, Vec2i32{-1, -1}, Vec2i32{0, 0}, hover_z_layer, this))
+    display(to_copy.display), manager(to_copy.manager), hover_design(new HoverDesignComponent(to_copy.manager, this))
 {
 }
 
@@ -167,39 +180,32 @@ void Screen::OnScreenDeselect()
     if (hovered_component)
     {
         hover_design->ForceVisibility(false);
+        hovered_component->locked = false;
         //hovered_component->OnComponentUnhovered(); // not used, but could be later
     }
     for (auto c : components)
     {
         c->ForceVisibility(false);
         c->OnExitScreen(this);
-        c->locked = false;
     }
     hover_design->thickness = 1;
 }
 
-void Screen::Update(float dt)
-{   
+void Screen::ProcessQueuedControls()
+{
     uint32_t control_mask;
     while (queue_try_remove(&manager->control_queue, &control_mask))
     {
         OnControl(control_mask);
     }
+}
 
-    for (auto c : components) // Draw components last.
+void Screen::Update(float dt)
+{   
+    for (auto c : components)
     {
         c->Update(dt, this);
     }
-    
-    if (hovered_component)
-    {
-        hover_design->Draw();
-    }
-}
-
-void Screen::OnFirstUpdateSinceSelection()
-{
-    HoverChange(true); // for any component that changes its draw dimensions off-screen
 }
 
 bool Screen::NavigateToComponent(uint32_t control_mask)

@@ -27,8 +27,6 @@ void ScreenManager::PushScreen(Screen* screen)
         selected_screen->OnScreenDeselect();
     selected_screen = screen;
     selected_screen->OnScreenSelect();
-    selected_screen->OnFirstUpdateSinceSelection();
-    Update();
 }
 
 void ScreenManager::PopScreen()
@@ -37,12 +35,18 @@ void ScreenManager::PopScreen()
     selected_screen->OnScreenDeselect();
     selected_screen = screens.top();
     selected_screen->OnScreenSelect();
-    selected_screen->OnFirstUpdateSinceSelection();
-    Update();
+}
+
+void ScreenManager::SetCBF(bool on)
+{
+    click_between_frames = on;
+    while (queue_try_remove(&control_queue, nullptr)) {} // empty the queue
 }
 
 void ScreenManager::QueueControl(uint32_t action_mask)
 {
+    if (click_between_frames)
+        return selected_screen->OnControl(action_mask);
     queue_try_add(&control_queue, &action_mask);
 }
 
@@ -61,9 +65,10 @@ void ScreenManager::Update()
 {
     UpdateDeltaTime();
     cumulative_dt += last_dt;
-    if (last_dt >= refresh_period)
+    if (cumulative_dt >= refresh_period)
     {
         cumulative_dt -= refresh_period;
+        selected_screen->ProcessQueuedControls();
         display->ClearDisplay();
         selected_screen->Update(last_dt);
         display->UpdateDisplay();
@@ -73,7 +78,7 @@ void ScreenManager::Update()
 void ScreenManager::Update(float dt_override)
 {
     cumulative_dt += dt_override;
-    if (last_dt >= refresh_period)
+    if (cumulative_dt >= refresh_period)
     {
         cumulative_dt -= refresh_period;
         display->ClearDisplay();

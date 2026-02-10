@@ -44,6 +44,7 @@ public:
 
 protected:
     bool cancel_master_back_action;
+    bool locked = false;
 
 public:
     // Contains a 4-directional table for other components for each screen. Some components may be used across screens, so a map is necessary.
