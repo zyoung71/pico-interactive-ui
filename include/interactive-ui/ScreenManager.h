@@ -27,6 +27,8 @@ private:
     float refresh_rate = 0.f; // if zero, runs as fast as possible, still allowing manual updating only
     float refresh_period;
 
+    bool click_between_frames = true; // processes actions immediately instead of queueing them
+
 public:
     ScreenManager(DisplayInterface* const display);
     ~ScreenManager();
@@ -39,6 +41,12 @@ public:
     void PushScreen(Screen* screen);
     void PopScreen();
 
+    void SetCBF(bool on);
+
+    inline bool IsCBFOn() const
+    {
+        return click_between_frames;
+    }
     inline Screen* GetCurrentScreen() const
     {
         return selected_screen;

@@ -35,6 +35,10 @@ void SelectableComponent::AddComponentTable(const Screen* screen, SelectableComp
 
 void SelectableComponent::Control(ControlAction action)
 {
-    Event* ev = new ComponentSelectEvent(this, action);
-    queue_try_add(&Event::event_queue, &ev);
+    // does not throw events onto the queue, instead immediately processes them
+    ComponentSelectEvent ev = ComponentSelectEvent(this, action);
+    for (auto&& act : event_actions)
+    {
+        act.action(&ev, act.user_data);
+    }
 }

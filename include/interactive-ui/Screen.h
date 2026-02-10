@@ -19,6 +19,7 @@ public:
 private:
     std::unordered_set<Component*> component_set; // stores the same values the vector does, but intended for searching
     bool allow_hover_draw = false;
+    bool hover_pending_move = false;
     int component_moving_reference_count = 0;
 
 protected:
@@ -28,11 +29,9 @@ protected:
     DisplayInterface* display;
     ScreenManager* manager;
 
-    void HoverChange(bool instant = false);
-
 public:
     const AABBi32 dimensions;
-    float animation_hover_duration = 0.25f;
+    float animation_hover_duration = 0.2f;
 
 public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);
@@ -53,6 +52,7 @@ public:
     void AddComponent(Component* component);
     void RemoveComponent(Component* component);
 
+    void HoverChange(bool instant = false) const;
     void HoverComponent(SelectableComponent* comp, bool instant = false);
     void UnhoverComponent();
     void HoverDefaultComponent();
@@ -64,8 +64,8 @@ public:
     virtual void OnScreenSelect();
     virtual void OnScreenDeselect();
     
+    void ProcessQueuedControls();
     virtual void Update(float dt);
-    virtual void OnFirstUpdateSinceSelection();
 
     bool NavigateToComponent(uint32_t control_mask);
     void ActOnComponent(uint32_t control_mask);
