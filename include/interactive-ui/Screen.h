@@ -59,15 +59,15 @@ public:
 
     void SortComponents();
 
-    virtual void OnControl(uint32_t control_mask);
+    virtual void OnControl(uint64_t control_mask);
     virtual void OnScreenSelect();
     virtual void OnScreenDeselect();
     
     void ProcessQueuedControls();
     virtual void Update(float dt);
 
-    bool NavigateToComponent(uint32_t control_mask);
-    void ActOnComponent(uint32_t control_mask);
+    bool NavigateToComponent(uint64_t control_mask);
+    void ActOnComponent(uint64_t control_mask);
 
     inline bool HasMovingComponent() const
     {

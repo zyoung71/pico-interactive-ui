@@ -154,7 +154,7 @@ void Screen::SortComponents()
     HoverDefaultComponent();
 }
 
-void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.
+void Screen::OnControl(uint64_t control_mask) // Trying to keep this function modular.
 {
     NavigateToComponent(control_mask);
     ActOnComponent(control_mask);
@@ -193,7 +193,7 @@ void Screen::OnScreenDeselect()
 
 void Screen::ProcessQueuedControls()
 {
-    uint32_t control_mask;
+    uint64_t control_mask;
     while (queue_try_remove(&manager->control_queue, &control_mask))
     {
         OnControl(control_mask);
@@ -208,7 +208,7 @@ void Screen::Update(float dt)
     }
 }
 
-bool Screen::NavigateToComponent(uint32_t control_mask)
+bool Screen::NavigateToComponent(uint64_t control_mask)
 {
     if (!hovered_component)
         return false;
@@ -270,7 +270,7 @@ bool Screen::NavigateToComponent(uint32_t control_mask)
     return success;
 }
 
-void Screen::ActOnComponent(uint32_t control_mask)
+void Screen::ActOnComponent(uint64_t control_mask)
 {
     if (hovered_component)
     {
@@ -280,14 +280,18 @@ void Screen::ActOnComponent(uint32_t control_mask)
             if (control_mask & binrep)
                 hovered_component->Control((ControlAction)binrep);
         }
-
-        if (hovered_component->cancel_master_back_action)
-            return;
     }
     
     // Does not require an active hovered component.
     if (control_mask & BACK)
     {
+        if (hovered_component->locked)
+        {
+            hovered_component->Lock(false);
+            return;
+        }
+        if (hovered_component->cancel_master_back_action) // for other instances
+            return;
         // Backs out the menu if there's one pushed over the main screen.
         if (manager->screens.size() > 1)
         {

@@ -68,7 +68,7 @@ public:
             refresh_period = 0.f;
     }
 
-    void QueueControl(uint32_t action_mask);
+    void QueueControl(uint64_t action_mask);
     
     void UpdateDeltaTime();
     void Update();

@@ -7,14 +7,14 @@
 class ComponentSelectEvent : public Event
 {
 protected:
-    ControlAction control;
+    uint64_t control;
 
 public:
-    ComponentSelectEvent(EventSource* source, ControlAction control);
+    ComponentSelectEvent(EventSource* source, uint64_t control);
 
     // Will guarantee only ONE control. For actions that caused multiple control queues at once, it will repeatedly
     // call the callbacks that this event is found in.
-    ControlAction GetControl() const
+    uint64_t GetControl() const
     {
         return control;
     }
@@ -43,7 +43,7 @@ public:
     typedef ComponentSelectEvent EventType;
 
 protected:
-    bool cancel_master_back_action;
+    bool cancel_master_back_action = false;
     bool locked = false;
 
 public:
@@ -72,7 +72,7 @@ public:
     virtual void OnComponentHovered() {};
     virtual void OnComponentUnhovered() {};
 
-    virtual void Control(ControlAction action);
+    virtual void Control(uint64_t action);
 
     inline void CancelMasterBackAction(bool cancel = true)
     {

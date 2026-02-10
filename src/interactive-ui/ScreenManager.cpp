@@ -10,7 +10,7 @@ ScreenManager::ScreenManager(DisplayInterface* const display)
     else
         refresh_period = 0.f;
 
-    queue_init(&control_queue, sizeof(uint32_t), 4);
+    queue_init(&control_queue, sizeof(ControlAction), 4);
 }
 
 ScreenManager::~ScreenManager()
@@ -43,7 +43,7 @@ void ScreenManager::SetCBF(bool on)
     while (queue_try_remove(&control_queue, nullptr)) {} // empty the queue
 }
 
-void ScreenManager::QueueControl(uint32_t action_mask)
+void ScreenManager::QueueControl(uint64_t action_mask)
 {
     if (click_between_frames)
         return selected_screen->OnControl(action_mask);

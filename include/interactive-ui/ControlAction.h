@@ -1,6 +1,6 @@
 #pragma once
 
-enum ControlAction
+enum ControlAction : uint64_t
 {
     SELECT0 = 1 << 0,
     SELECT1 = 1 << 1,
