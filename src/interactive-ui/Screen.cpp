@@ -82,7 +82,6 @@ void Screen::HoverComponent(SelectableComponent* comp, bool instant) // may be u
                 hovered_component->OnComponentUnhovered();
 
         hovered_component = comp;
-        allow_hover_draw = true;
         hovered_component->OnComponentHovered();
         // in order for any component to move automatically,
         // the screen manager must have the screen added to its set
@@ -97,7 +96,6 @@ void Screen::UnhoverComponent()
     {
         hovered_component->OnComponentUnhovered();
         hovered_component = nullptr;
-        allow_hover_draw = false;
     }
 }
 
@@ -118,7 +116,6 @@ void Screen::HoverDefaultComponent()
                     if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3]) // Only hover if any neighboring components are set which defines it as something intended to be hovered.
                     {
                         hovered_component = sc;
-                        allow_hover_draw = true;
                         hovered_component->OnComponentHovered();
                         HoverChange(true);
                         return;
@@ -154,7 +151,6 @@ void Screen::OnScreenSelect()
 {
     if (hovered_component)
     {
-        allow_hover_draw = true;
         hover_design->ForceVisibility(true);
         //hovered_component->OnComponentHovered(); // not used, but could be later
     }
@@ -170,7 +166,6 @@ void Screen::OnScreenDeselect()
 
     if (hovered_component)
     {
-        allow_hover_draw = false;
         hover_design->ForceVisibility(false);
         //hovered_component->OnComponentUnhovered(); // not used, but could be later
     }
@@ -178,7 +173,9 @@ void Screen::OnScreenDeselect()
     {
         c->ForceVisibility(false);
         c->OnExitScreen(this);
+        c->locked = false;
     }
+    hover_design->thickness = 1;
 }
 
 void Screen::Update(float dt)
@@ -194,9 +191,9 @@ void Screen::Update(float dt)
         c->Update(dt, this);
     }
     
-    if (hovered_component && allow_hover_draw)
+    if (hovered_component)
     {
-        hover_design->Draw(); // i have NO IDEA why this works but forcing visibility doesn't
+        hover_design->Draw();
     }
 }
 
@@ -208,6 +205,9 @@ void Screen::OnFirstUpdateSinceSelection()
 bool Screen::NavigateToComponent(uint32_t control_mask)
 {
     if (!hovered_component)
+        return false;
+
+    if (hovered_component->locked)
         return false;
 
     bool success = false;

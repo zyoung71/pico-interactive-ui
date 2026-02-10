@@ -9,6 +9,7 @@
 
 class Component;
 class SelectableComponent;
+class PaddingComponent;
 
 class Screen
 {
@@ -18,12 +19,11 @@ public:
 
 private:
     std::unordered_set<Component*> component_set; // stores the same values the vector does, but intended for searching
-    bool allow_hover_draw = false;
     int component_moving_reference_count = 0;
 
 protected:
     std::vector<Component*> components;
-    Component* hover_design;
+    PaddingComponent* hover_design;
     SelectableComponent* hovered_component;
     DisplayInterface* display;
     ScreenManager* manager;
@@ -77,4 +77,5 @@ public:
 
     friend ScreenManager;
     friend Component;
+    friend SelectableComponent;
 };

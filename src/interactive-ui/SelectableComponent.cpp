@@ -1,4 +1,5 @@
 #include <interactive-ui/SelectableComponent.h>
+#include <interactive-ui/components/PaddingComponent.h>
 
 #include <cstring>
 
@@ -37,4 +38,16 @@ void SelectableComponent::Control(ControlAction action)
 {
     Event* ev = new ComponentSelectEvent(this, action);
     queue_try_add(&Event::event_queue, &ev);
+}
+
+bool SelectableComponent::Lock(bool lock)
+{
+    // we know components should be unlocked if not on screen and should not ever be locked if so
+    if (screen_set.contains(manager->GetCurrentScreen())) // failsafe just in case
+    {
+        locked = lock;
+        manager->GetCurrentScreen()->hover_design->thickness = lock ? 2 : 1;
+        return true;
+    }
+    return false;
 }
