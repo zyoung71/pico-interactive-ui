@@ -78,12 +78,9 @@ private:
     
 private:
     bool cancel_movements_flag;
+    mutable queue_t moving_queue; // queue containing animation objects. NOT pointers, but values
 
 protected:
-    AABBi32 draw_dimensions; // most of the time this will be treated as a single vector, specifically the max
-    Vec2i32 origin_position;
-    int32_t z_layer;
-    uint32_t color;
     AlignmentVertical vertical_alignment = AlignmentVertical::TOP;
     AlignmentHorizontal horizontal_alignment = AlignmentHorizontal::LEFT;
 
@@ -94,8 +91,13 @@ protected:
 
     bool forced_visibility; // master visibility, controlled by screens and managers
     bool personal_visibility; // personal visibility, for hiding and showing on its own
+    
+    AABBi32 draw_dimensions; // most of the time this will be treated as a single vector, specifically the max
+    Vec2i32 origin_position;
+    int32_t z_layer;
 
-    mutable queue_t moving_queue; // queue containing animation objects. NOT pointers, but values
+public:
+    uint32_t color;
 
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
@@ -108,27 +110,24 @@ public:
     virtual void Update(float dt, const Screen* screen);
     virtual void Draw() = 0;
 
+    virtual void OnEnterScreen(const Screen* screen) {}
+    virtual void OnExitScreen(const Screen* screen) {}
+
     virtual void Align();
     virtual void Scale() {} // Scaling support is only available to classes that implement it
+
+    virtual void SetOriginPosition(const Vec2i32& pos);
 
     void SetVerticalAlignment(AlignmentVertical align_v);
     void SetHorizontalAlignment(AlignmentHorizontal align_h);
     void SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h);
+    void SetZLayer(int32_t z_layer);
 
     bool Move(MovementAnimation animation, bool reversed = false, bool enable_callbacks = true);
     bool IsMoving() const;
     inline void CancelMovementsNextUpdate() // needed to stop endless loops
     {
         cancel_movements_flag = true;
-    }
-
-    inline void SetColor(uint32_t rgba)
-    {
-        color = rgba;
-    }
-    inline uint32_t GetColor() const
-    {
-        return color;
     }
     virtual inline void ForceVisibility(bool visibility)
     {
@@ -150,33 +149,9 @@ public:
     {
         return forced_visibility && personal_visibility;
     }
-    inline void SetOriginPosition(const Vec2i32& pos)
-    {
-        origin_position = pos;
-    }
-    inline Vec2i32 GetOriginPosition() const
-    {
-        return origin_position;
-    }
-    inline void SetDrawDimensions(const AABBi32& draw)
-    {
-        draw_dimensions = draw;
-    }
-    inline AABBi32 GetDrawDimensions() const
-    {
-        return draw_dimensions;
-    }
     inline int32_t GetZLayer() const
     {
         return z_layer;
-    }
-    inline DisplayInterface* GetDisplay() const
-    {
-        return display;
-    }
-    inline ScreenManager* GetManager() const
-    {
-        return manager;
     }
     inline AlignmentVertical GetVerticalAlignment() const
     {
@@ -186,6 +161,15 @@ public:
     {
         return horizontal_alignment;
     }
+    inline AABBi32 GetDrawDimensions() const
+    {
+        return draw_dimensions;
+    }
+    inline Vec2i32 GetOriginPosition() const
+    {
+        return origin_position;
+    }
 
     friend Screen;
+    friend MovementAnimation;
 };

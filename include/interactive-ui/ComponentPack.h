@@ -9,17 +9,17 @@ protected:
 
 public:
     ComponentPack(ScreenManager* manager, const Vec2i32& master_position, int32_t z_layer, Screen* initial_screen = nullptr);
+    virtual ~ComponentPack() = default;
 
-    void Draw() override;
+    virtual void Update(float dt, const Screen* screen) override;
+    virtual void Draw() override;
+    virtual void Align() override;
+    virtual void Scale() override;
 
-    void ForceVisibility(bool visibility) override;
-    void SetPersonalVisibility(bool visibility) override;
+    virtual void ForceVisibility(bool visibility) override;
+    virtual void SetPersonalVisibility(bool visibility) override;
 
-    inline void AddSubcomponent(Component* component)
-    {
-        subcomponents.push_back(component);
-    }
-
+    virtual void AddSubcomponent(Component* component);
     void SortSubcomponents();
 
 };

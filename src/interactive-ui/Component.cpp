@@ -3,12 +3,12 @@
 #include <cstring>
 
 MovementAnimation::MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func)
-    : start_pos(component->GetOriginPosition()), easing_func(easing_func), start_scale(component->GetDrawDimensions())
+    : start_pos(component->origin_position), easing_func(easing_func), start_scale(component->draw_dimensions)
 {
 }
 
 MovementAnimation::MovementAnimation()
-    : start_pos(0, 0), easing_func(graphics::easing::lut_sine_in_out)
+    : start_pos(0, 0), easing_func(graphics::easing::lut_sine_in_out), start_scale(0, 0, 0, 0)
 {
 }
 
@@ -116,7 +116,7 @@ void Component::Update(float dt, const Screen* screen)
                         {
                             origin_position = animation.start_pos;
                             if ((Component*)screen->hovered_component == this)
-                                screen->hover_design->origin_position = animation.start_pos;
+                                screen->hover_design->SetOriginPosition(animation.start_pos);
                         }
                         if (animation.scale)
                         {
@@ -154,7 +154,7 @@ void Component::Update(float dt, const Screen* screen)
                         {
                             origin_position = animation.end_pos;
                             if ((Component*)screen->hovered_component == this)
-                                screen->hover_design->origin_position = animation.end_pos;
+                                screen->hover_design->SetOriginPosition(animation.end_pos);
                         }
                         if (animation.scale)
                         {
@@ -190,7 +190,7 @@ void Component::Update(float dt, const Screen* screen)
             Vec2i32 pos = animation.start_pos + (Vec2f)animation.GetTransposeDelta() * eased;
             origin_position = pos;
             if ((Component*)screen->hovered_component == this)
-                screen->hover_design->origin_position = pos;
+                screen->hover_design->SetOriginPosition(pos);
         }
         if (animation.scale)
         {
@@ -225,7 +225,7 @@ void Component::Update(float dt, const Screen* screen)
 
 void Component::Align()
 {
-    Vec2i32 component_size = draw_dimensions.max - draw_dimensions.min;
+    Vec2i32 component_size = draw_dimensions.Size();
 
     switch (vertical_alignment)
     {
@@ -267,6 +267,11 @@ void Component::Align()
     }
 }
 
+void Component::SetOriginPosition(const Vec2i32& pos)
+{
+    origin_position = pos;
+}
+
 void Component::SetVerticalAlignment(AlignmentVertical align_v)
 {
     vertical_alignment = align_v;
@@ -284,6 +289,13 @@ void Component::SetAlignment(AlignmentVertical align_v, AlignmentHorizontal alig
     vertical_alignment = align_v;
     horizontal_alignment = align_h;
     Align();
+}
+
+void Component::SetZLayer(int32_t layer)
+{
+    z_layer = layer;
+    for (auto s : screen_set)
+        s->SortComponents();
 }
 
 bool Component::Move(MovementAnimation animation, bool reversed, bool enable_callbacks)

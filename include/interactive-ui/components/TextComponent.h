@@ -5,14 +5,16 @@
 class TextComponent : public SelectableComponent
 {
 protected:
-    const char* text;
-    const Font* font;
     Vec2i32 message_pixel_dimensions;
     Vec2i32 text_base_offset; // the offset from the min of the draw dimensions
+    const char* text;
     AlignmentVertical text_vertical_alignment;
     AlignmentHorizontal text_horizontal_alignment;
-
+    
     virtual void UpdateTextDimensions();
+
+public:
+    const Font* font;
 
 public:
     TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
@@ -38,36 +40,25 @@ public:
     {
         return text;
     }
-    inline const Font* GetFont() const
-    {
-        return font;
-    }
-    inline void SetFont(const Font* font)
-    {
-        this->font = font;
-    }
 };
 
 class TextBoxComponent : public TextComponent
 {
 protected:
-    Vec2i32 padding;
-
-    bool clear_bg = false;
+    bool dynamic_box = false;
 
     virtual void UpdateTextDimensions() override;
 
 public:
-    TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
-    TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen);
-    TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
-    TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen);
+    Vec2i32 padding = Vec2i32{2, 2};
+    bool clear_bg = false;
+
+public:
+    TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
+    TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen);
 
     virtual void Draw() override;
     virtual void Align() override;
 
-    inline void ClearBackgroundOnDraw(bool clear)
-    {
-        clear_bg = clear;
-    }
+    void EnableDynamicBoxDimensions(bool enable);
 };

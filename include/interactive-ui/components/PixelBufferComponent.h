@@ -7,6 +7,9 @@
  * Colors in specific pixels based on the vector positions given. Unlike BitmapComponent,
  * it will ONLY set the pixels based on the vector positions given.
  * Initially inside the constructor, you can pass an array of positions and their colors.
+ * The order of pixels will not be retained, unlike BitmapComponent, and will not be able
+ * to perform rotations or mirrors. Use this for designs that require a large space with
+ * few pixels, or for icons that do not have square shapes.
  */
 class PixelBufferComponent : public SelectableComponent
 {

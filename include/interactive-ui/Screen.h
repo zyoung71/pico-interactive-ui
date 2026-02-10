@@ -15,27 +15,25 @@ class Screen
 {
 public:
     static bool _ComponentCompare(const Component* a, const Component* b);
+    static constexpr int32_t hover_z_layer = 5000;
 
 private:
     std::unordered_set<Component*> component_set; // stores the same values the vector does, but intended for searching
     bool allow_hover_draw = false;
-
     int component_moving_reference_count = 0;
 
 protected:
-    const AABBi32 dimensions;
-
     std::vector<Component*> components;
-
     PaddingComponent* hover_design;
     SelectableComponent* hovered_component;
-    
     DisplayInterface* display;
     ScreenManager* manager;
 
-    float animation_hover_duration = 0.25f;
-
     void HoverChange(bool instant = false);
+
+public:
+    const AABBi32 dimensions;
+    float animation_hover_duration = 0.25f;
 
 public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);
@@ -60,14 +58,8 @@ public:
     void UnhoverComponent();
     void HoverDefaultComponent();
     bool IsComponentHoverable(const SelectableComponent* comp) const;
-    inline void SetHoverAnimationDuration(float duration_s)
-    {
-        animation_hover_duration = duration_s;
-
-    }
 
     void SortComponents();
-    void SetComponentZLayer(Component* comp, int32_t z_layer);
 
     virtual void OnControl(uint32_t control_mask);
     virtual void OnScreenSelect();

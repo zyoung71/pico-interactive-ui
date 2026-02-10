@@ -41,13 +41,13 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
     : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr)
 {
-    hover_design = new PaddingComponent(manager, Vec2i32{-1, 1}, Vec2i32{0, 0}, true, INT32_MAX, this);
+    hover_design = new PaddingComponent(manager, Vec2i32{-1, 1}, Vec2i32{0, 0}, hover_z_layer, this);
 }
 
 Screen::Screen(const Screen& to_copy)
     : dimensions(to_copy.dimensions), components(to_copy.components), component_set(to_copy.component_set),
     component_moving_reference_count(0), hovered_component(to_copy.hovered_component), animation_hover_duration(to_copy.animation_hover_duration),
-    display(to_copy.display), manager(to_copy.manager), hover_design(new PaddingComponent(to_copy.manager, Vec2i32{-1, -1}, Vec2i32{0, 0}, true, INT32_MAX, this))
+    display(to_copy.display), manager(to_copy.manager), hover_design(new PaddingComponent(to_copy.manager, Vec2i32{-1, -1}, Vec2i32{0, 0}, hover_z_layer, this))
 {
 }
 
@@ -135,24 +135,13 @@ bool Screen::IsComponentHoverable(const SelectableComponent* comp) const
         return false;
 
     const SelectableComponent* const* neighbors = comp->component_lut.at(this).neighboring_components;
-    if (neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3])
-        return true;
-        
-    return false;
+    return neighbors[0] || neighbors[1] || neighbors[2] || neighbors[3];
 }
 
 void Screen::SortComponents()
 {
     std::sort(components.begin(), components.end(), _ComponentCompare);
     HoverDefaultComponent();
-}
-
-void Screen::SetComponentZLayer(Component* comp, int32_t z_layer)
-{
-    if (component_set.contains(comp))
-    {
-        comp->z_layer = z_layer;
-    }
 }
 
 void Screen::OnControl(uint32_t control_mask) // Trying to keep this function modular.
@@ -171,7 +160,9 @@ void Screen::OnScreenSelect()
     for (auto c : components)
     {
         c->ForceVisibility(true);
+        c->OnEnterScreen(this);
     }
+    HoverChange(true); // here if any component recalculates its draw dimensions off-screen
 }
 
 void Screen::OnScreenDeselect()
@@ -185,6 +176,7 @@ void Screen::OnScreenDeselect()
     for (auto c : components)
     {
         c->ForceVisibility(false);
+        c->OnExitScreen(this);
     }
 }
 

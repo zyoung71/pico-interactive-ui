@@ -135,6 +135,11 @@ void TextComponent::SetTextAlignment(AlignmentVertical align_v, AlignmentHorizon
 void TextBoxComponent::UpdateTextDimensions()
 {
     TextComponent::UpdateTextDimensions();
+    if (dynamic_box)
+    {
+        draw_dimensions.min = Vec2i32{0, 0};
+        draw_dimensions.max = message_pixel_dimensions + padding * 2;
+    }
     switch (text_vertical_alignment)
     {
         case AlignmentVertical::TOP: {
@@ -168,26 +173,14 @@ void TextBoxComponent::UpdateTextDimensions()
     }
 }
 
-TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : TextComponent(manager, origin, text, font, z_layer, initial_screen), padding(padding)
+TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+    : TextComponent(manager, origin, text, font, z_layer, initial_screen)
 {
     draw_dimensions.max = box_dimensions;
     UpdateTextDimensions();
 }
-TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, const Vec2i32& padding, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : TextComponent(manager, screen_percentage, text, font, z_layer, initial_screen), padding(padding)
-{
-    draw_dimensions.max = box_dimensions;
-    UpdateTextDimensions();
-}
-TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : TextComponent(manager, origin, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(box_dimensions.x * x_pad_percentage), static_cast<int32_t>(box_dimensions.y * y_pad_percentage)})
-{
-    draw_dimensions.max = box_dimensions;
-    UpdateTextDimensions();
-}
-TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, float x_pad_percentage, float y_pad_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : TextComponent(manager, screen_percentage, text, font, z_layer, initial_screen), padding({static_cast<int32_t>(box_dimensions.x * x_pad_percentage), static_cast<int32_t>(box_dimensions.y * y_pad_percentage)})
+TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+    : TextComponent(manager, screen_percentage, text, font, z_layer, initial_screen)
 {
     draw_dimensions.max = box_dimensions;
     UpdateTextDimensions();
@@ -195,7 +188,7 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_p
 
 void TextBoxComponent::Draw()
 {
-    display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.max - draw_dimensions.min, color, true, clear_bg); // box
+    display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.Size(), color, true, clear_bg); // box
     TextComponent::Draw();
 }
 
@@ -203,4 +196,10 @@ void TextBoxComponent::Align()
 {
     UpdateTextDimensions();
     Component::Align();
+}
+
+void TextBoxComponent::EnableDynamicBoxDimensions(bool enable)
+{
+    dynamic_box = enable;
+    Align();
 }

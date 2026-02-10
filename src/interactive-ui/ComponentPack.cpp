@@ -7,22 +7,50 @@ ComponentPack::ComponentPack(ScreenManager* manager, const Vec2i32& master_posit
 {
 }
 
+void ComponentPack::Update(float dt, const Screen* screen)
+{
+    Component::Update(dt, screen);
+    for (auto c : subcomponents)
+        c->Update(dt, screen);
+}
+
 void ComponentPack::Draw()
 {
     for (auto c : subcomponents)
         c->Draw();
 }
 
+void ComponentPack::Align()
+{
+    for (auto c : subcomponents)
+        c->Align();
+    Component::Align();
+}
+
+void ComponentPack::Scale()
+{
+    for (auto c : subcomponents)
+        c->Scale();
+    Component::Scale();
+}
+
 void ComponentPack::ForceVisibility(bool visibility)
 {
     for (auto c : subcomponents)
         c->ForceVisibility(visibility);
+    Component::ForceVisibility(visibility);
 }
 
 void ComponentPack::SetPersonalVisibility(bool visibility)
 {
     for (auto c : subcomponents)
         c->SetPersonalVisibility(visibility);
+    Component::SetPersonalVisibility(visibility);
+}
+
+void ComponentPack::AddSubcomponent(Component* comp)
+{
+    subcomponents.push_back(comp);
 }
 
 void ComponentPack::SortSubcomponents()
