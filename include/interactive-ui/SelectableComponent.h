@@ -44,6 +44,7 @@ public:
 
 protected:
     bool cancel_master_back_action;
+    bool locked = false;
 
 public:
     // Contains a 4-directional table for other components for each screen. Some components may be used across screens, so a map is necessary.
@@ -56,6 +57,17 @@ public:
 
     void AddComponentTable(const Screen* screen, SelectableComponent* up = nullptr, SelectableComponent* down = nullptr, SelectableComponent* left = nullptr, SelectableComponent* right = nullptr);
     void AddComponentTable(const Screen* screen, SelectableComponent** neighbors); // Must be of size 4.
+    
+    // @return True if a lock or unlock was successful
+    bool Lock(bool lock);
+    inline bool IsLocked() const
+    {
+        return locked;
+    }
+    inline bool LockToggle()
+    {
+        return Lock(!locked);
+    }
 
     virtual void OnComponentHovered() {};
     virtual void OnComponentUnhovered() {};
