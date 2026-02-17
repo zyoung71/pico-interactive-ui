@@ -22,13 +22,15 @@ void FunctionComponent::DrawThickness(size_t i)
     tan = tan.Normalize();
 
     int32_t half = thickness >> 1; // epic freaking optimization!!!!!!!!
-    // when not inversed, it is negated for proper screen origin drawing
-    Vec2f offset = Vec2f{-tan.y, tan.x} + (inversed ? Vec2f{v_curr * amplitude, (float)i} : Vec2f{(float)i, -v_curr * amplitude});
 
-    for (int32_t j = -half; j < half; j++)
+    // when not inversed, it is negated for proper screen origin drawing
+    Vec2f on_curve = inversed ? Vec2f{v_curr * amplitude, (float)i} : Vec2f{(float)i, -v_curr * amplitude};
+    Vec2f norm = {-tan.y, tan.x}; // definition for 2d vector normal
+
+    for (int32_t j = -half; j <= half; j++)
     {
-        Vec2f pixel_f = offset * (float)j;
-        display->DrawPixel(origin_position + draw_dimensions.min + Vec2i32{(int32_t)roundf(pixel_f.x), (int32_t)roundf(pixel_f.y)}, color);
+        Vec2f pixel_f = on_curve + norm * (float)j;
+        display->DrawPixel(origin_position + draw_dimensions.min + Vec2i32{(int32_t)std::round(pixel_f.x), (int32_t)std::round(pixel_f.y)}, color);
     }
 }
 
