@@ -43,12 +43,12 @@ void DropDownBoxComponent::Align()
     options.Align();
 }
 
-void DropDownBoxComponent::Scale()
+void DropDownBoxComponent::Scale(const Vec2f& scale_vec)
 {
-    Component::Scale();
-    arrow_box.Scale();
-    arrow.Scale();
-    options.Scale();
+    Component::Scale(scale_vec);
+    arrow_box.Scale(scale_vec);
+    arrow.Scale(scale_vec);
+    options.Scale(scale_vec);
 }
 
 void DropDownBoxComponent::OnExitScreen(const Screen* screen)

@@ -27,11 +27,11 @@ void ComponentPack::Align()
     Component::Align();
 }
 
-void ComponentPack::Scale()
+void ComponentPack::Scale(const Vec2f& scale_vec)
 {
     for (auto c : subcomponents)
-        c->Scale();
-    Component::Scale();
+        c->Scale(scale_vec);
+    Component::Scale(scale_vec);
 }
 
 void ComponentPack::ForceVisibility(bool visibility)

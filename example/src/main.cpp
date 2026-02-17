@@ -2,6 +2,7 @@
 
 #include <interactive-ui/ScreenManager.h>
 #include <interactive-ui/components/TextComponent.h>
+#include <interactive-ui/components/FunctionComponent.h>
 
 #include <math/Graphics.h>
 
@@ -19,6 +20,11 @@ int main()
     TextComponent text1(&manager, Vec2i32{20, 20}, "Hello", nullptr, 1, &menu);
 
     TextBoxComponent text2(&manager, Vec2i32{0, 0}, Vec2i32{31, 15}, "TEXT", nullptr, 1, &menu);
+
+    FunctionComponent sine_wave(&manager, Vec2i32{32, 32}, Vec2i32{64, 32}, std::sinf, 99, &menu);
+
+    sine_wave.SetThickness(5);
+    sine_wave.amplitude = 12.f;
     
     text1.AddComponentTable(&menu, nullptr, nullptr, &text2, nullptr);
     text2.AddComponentTable(&menu, nullptr, nullptr, nullptr, &text1);

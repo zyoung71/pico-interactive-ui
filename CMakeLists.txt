@@ -10,6 +10,7 @@ if (NOT TARGET pico-interactive-ui)
         src/interactive-ui/components/PaddingComponent.cpp
         src/interactive-ui/components/TextComponent.cpp
         src/interactive-ui/components/DropDownBoxComponent.cpp
+        src/interactive-ui/components/FunctionComponent.cpp
     )
 
     add_subdirectory(lib/pico-math)

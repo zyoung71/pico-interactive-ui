@@ -29,13 +29,13 @@ void Screen::HoverChange(bool instant) const
 
     if (instant || animation_hover_duration <= 0.f)
     {
-        hover_design->origin_position = hovered_component->origin_position;
-        hover_design->draw_dimensions = hovered_component->draw_dimensions;
-        hover_design->draw_dimensions.min -= hover_outline_width;
-        hover_design->draw_dimensions.max += hover_outline_width;
+        hover_design->GetComponent()->origin_position = hovered_component->origin_position;
+        hover_design->GetComponent()->draw_dimensions = hovered_component->draw_dimensions;
+        hover_design->GetComponent()->draw_dimensions.min -= hover_outline_width;
+        hover_design->GetComponent()->draw_dimensions.max += hover_outline_width;
         return;
     }
-    MovementAnimation move(hover_design, *easing_func);
+    MovementAnimation move(hover_design->GetComponent(), *easing_func);
     move.duration = animation_hover_duration;
     move.end_pos = hovered_component->origin_position;
     move.end_scale = hovered_component->draw_dimensions;
@@ -43,7 +43,7 @@ void Screen::HoverChange(bool instant) const
     move.end_scale.max += hover_outline_width;
     move.transpose = true;
     move.scale = true;
-    hover_design->Move(move);
+    hover_design->GetComponent()->Move(move);
 }
 
 Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
@@ -164,7 +164,7 @@ void Screen::OnScreenSelect()
 {
     if (hovered_component)
     {
-        hover_design->ForceVisibility(true);
+        hover_design->GetComponent()->ForceVisibility(true);
         //hovered_component->OnComponentHovered(); // not used, but could be later
     }
     for (auto c : components)
@@ -179,7 +179,7 @@ void Screen::OnScreenDeselect()
 
     if (hovered_component)
     {
-        hover_design->ForceVisibility(false);
+        hover_design->GetComponent()->ForceVisibility(false);
         hovered_component->locked = false;
         //hovered_component->OnComponentUnhovered(); // not used, but could be later
     }
@@ -188,7 +188,7 @@ void Screen::OnScreenDeselect()
         c->ForceVisibility(false);
         c->OnExitScreen(this);
     }
-    hover_design->thickness = 1;
+    hover_design->SetThickness(1);
 }
 
 void Screen::ProcessQueuedControls()

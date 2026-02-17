@@ -51,7 +51,7 @@ bool SelectableComponent::Lock(bool lock)
     {
         locked = lock;
         cancel_master_back_action = lock;
-        manager->GetCurrentScreen()->hover_design->thickness = lock ? 2 : 1;
+        manager->GetCurrentScreen()->hover_design->SetThickness(lock ? 2 : 1);
         return true;
     }
     return false;

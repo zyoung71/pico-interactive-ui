@@ -7,10 +7,10 @@
 #include "ControlAction.h"
 
 #include "ScreenManager.h"
+#include "iface/IThickness.h"
 
 class Component;
 class SelectableComponent;
-class PaddingComponent;
 
 class Screen
 {
@@ -24,7 +24,7 @@ private:
 
 protected:
     std::vector<Component*> components;
-    PaddingComponent* hover_design;
+    IThickness<uint32_t>* hover_design;
     SelectableComponent* hovered_component;
     DisplayInterface* display;
     ScreenManager* manager;
@@ -32,7 +32,7 @@ protected:
 public:
     const AABBi32 dimensions;
     float animation_hover_duration = 0.2f;
-    const graphics::easing::EasingFunctionLUT* easing_func = &graphics::easing::lut_quad_out;
+    const FunctionLUT<float>* easing_func = &graphics::easing::lut_quad_out;
 
 public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);

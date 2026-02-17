@@ -2,7 +2,7 @@
 #include <interactive-ui/components/PaddingComponent.h>
 #include <cstring>
 
-MovementAnimation::MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func)
+MovementAnimation::MovementAnimation(const Component* component, const FunctionLUT<float>& easing_func)
     : start_pos(component->origin_position), easing_func(easing_func), start_scale(component->draw_dimensions)
 {
 }
@@ -116,13 +116,13 @@ void Component::Update(float dt, const Screen* screen)
                         {
                             origin_position = animation.start_pos;
                             if ((Component*)screen->hovered_component == this)
-                                screen->hover_design->SetOriginPosition(animation.start_pos);
+                                screen->hover_design->GetComponent()->SetOriginPosition(animation.start_pos);
                         }
                         if (animation.scale)
                         {
                             draw_dimensions = animation.end_scale;
                             if ((Component*)screen->hovered_component == this)
-                                screen->hover_design->draw_dimensions = animation.start_scale;   
+                                screen->hover_design->GetComponent()->SetDrawDimensions(animation.start_scale);   
                         }
                         continue;
                     };
@@ -154,13 +154,13 @@ void Component::Update(float dt, const Screen* screen)
                         {
                             origin_position = animation.end_pos;
                             if ((Component*)screen->hovered_component == this)
-                                screen->hover_design->SetOriginPosition(animation.end_pos);
+                                screen->hover_design->GetComponent()->SetOriginPosition(animation.end_pos);
                         }
                         if (animation.scale)
                         {
                             draw_dimensions = animation.end_scale;
                             if ((Component*)screen->hovered_component == this)
-                                screen->hover_design->draw_dimensions = animation.end_scale;   
+                                screen->hover_design->GetComponent()->SetDrawDimensions(animation.end_scale);   
                         }
                         
                         continue;
@@ -181,7 +181,7 @@ void Component::Update(float dt, const Screen* screen)
 
         ani_arr[idx++] = &animation; // add to array for later use
 
-        size_t lut_idx = static_cast<size_t>(k * (graphics::easing::lut_size - 1));
+        size_t lut_idx = static_cast<size_t>(k * (lut_size - 1));
         eased = animation.easing_func[lut_idx];
 
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
@@ -190,14 +190,14 @@ void Component::Update(float dt, const Screen* screen)
             Vec2i32 pos = animation.start_pos + (Vec2f)animation.GetTransposeDelta() * eased;
             origin_position = pos;
             if ((Component*)screen->hovered_component == this)
-                screen->hover_design->SetOriginPosition(pos);
+                screen->hover_design->GetComponent()->SetOriginPosition(pos);
         }
         if (animation.scale)
         {
             Vec4i32 scale = animation.start_scale.vec + (Vec4f)animation.GetScaleDelta() * eased;
             draw_dimensions.vec = scale;
             if ((Component*)screen->hovered_component == this)
-                screen->hover_design->draw_dimensions = scale;
+                screen->hover_design->GetComponent()->SetDrawDimensions(scale);
         }
     }
 
@@ -267,9 +267,22 @@ void Component::Align()
     }
 }
 
+void Component::Scale(const Vec2f& scale_vec)
+{
+    draw_dimensions.xmin = static_cast<int32_t>((float)draw_dimensions.xmin * scale_vec.x);
+    draw_dimensions.ymin = static_cast<int32_t>((float)draw_dimensions.ymin * scale_vec.y);
+    draw_dimensions.xmax = static_cast<int32_t>((float)draw_dimensions.xmax * scale_vec.x);
+    draw_dimensions.ymax = static_cast<int32_t>((float)draw_dimensions.ymax * scale_vec.y);
+}
+
 void Component::SetOriginPosition(const Vec2i32& pos)
 {
     origin_position = pos;
+}
+
+void Component::SetDrawDimensions(const AABBi32& dims)
+{
+    draw_dimensions = dims;
 }
 
 void Component::SetVerticalAlignment(AlignmentVertical align_v)

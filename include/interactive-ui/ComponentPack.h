@@ -14,7 +14,7 @@ public:
     virtual void Update(float dt, const Screen* screen) override;
     virtual void Draw() override;
     virtual void Align() override;
-    virtual void Scale() override;
+    virtual void Scale(const Vec2f& scale_vec) override;
 
     virtual void ForceVisibility(bool visibility) override;
     virtual void SetPersonalVisibility(bool visibility) override;

@@ -6,7 +6,6 @@
 
 class Component;
 
-using graphics::easing::EasingFunctionLUT; // maybe not the best idea to throw in a header? eh dont care enough
 struct MovementAnimation
 {
 private:
@@ -32,14 +31,14 @@ public:
     bool transpose = true;
     bool scale = false;
 
-    const EasingFunctionLUT& easing_func;
+    const FunctionLUT<float>& easing_func;
 
     typedef void(*AnimationStateCallback)(const MovementAnimation*);
 
     AnimationStateCallback on_animation_begin = nullptr;
     AnimationStateCallback on_animation_end = nullptr;
 
-    MovementAnimation(const Component* component, const EasingFunctionLUT& easing_func);
+    MovementAnimation(const Component* component, const FunctionLUT<float>& easing_func);
     MovementAnimation();
 
     inline Vec2i32 GetTransposeDelta() const
@@ -114,9 +113,10 @@ public:
     virtual void OnExitScreen(const Screen* screen) {}
 
     virtual void Align();
-    virtual void Scale() {} // Scaling support is only available to classes that implement it
+    virtual void Scale(const Vec2f& scale_vec);
 
     virtual void SetOriginPosition(const Vec2i32& pos);
+    virtual void SetDrawDimensions(const AABBi32& dims);
 
     void SetVerticalAlignment(AlignmentVertical align_v);
     void SetHorizontalAlignment(AlignmentHorizontal align_h);
