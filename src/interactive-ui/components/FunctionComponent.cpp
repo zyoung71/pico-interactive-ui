@@ -13,8 +13,7 @@ void FunctionComponent::RedoFunctionLUT()
         function_value_lut[i] = v;
 
         extrema.x = std::min(v, extrema.x);
-        extrema.y = std::min(v, extrema.y);
-
+        extrema.y = std::max(v, extrema.y);
     }
     AutoFit();
 }
