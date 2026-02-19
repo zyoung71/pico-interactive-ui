@@ -15,7 +15,6 @@ void FunctionComponent::RedoFunctionLUT()
         extrema.x = std::min(v, extrema.x);
         extrema.y = std::max(v, extrema.y);
     }
-    AutoFit();
 }
 
 void FunctionComponent::DrawThickness(size_t i)
@@ -46,6 +45,7 @@ FunctionComponent::FunctionComponent(ScreenManager* manager, const Vec2i32& orig
 {
     draw_dimensions.max = dimensions;
     RedoFunctionLUT();
+    AutoFit();
 }
 
 void FunctionComponent::AutoFit()
