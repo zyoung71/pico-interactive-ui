@@ -14,7 +14,9 @@ void FunctionComponent::RedoFunctionLUT()
 
         extrema.x = std::min(v, extrema.x);
         extrema.y = std::min(v, extrema.y);
+
     }
+    AutoFit();
 }
 
 void FunctionComponent::DrawThickness(size_t i)
