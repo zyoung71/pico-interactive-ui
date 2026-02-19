@@ -21,10 +21,10 @@ int main()
 
     TextBoxComponent text2(&manager, Vec2i32{0, 0}, Vec2i32{31, 15}, "TEXT", nullptr, 1, &menu);
 
-    FunctionComponent sine_wave(&manager, Vec2i32{32, 32}, Vec2i32{64, 32}, std::sinf, 99, &menu);
+    FunctionComponent sine_wave(&manager, Vec2i32{32, 32}, Vec2i32{64, 32}, std::sin, 99, &menu);
 
     sine_wave.SetThickness(5);
-    sine_wave.amplitude = 12.f;
+    sine_wave.AutoFit();
     
     text1.AddComponentTable(&menu, nullptr, nullptr, &text2, nullptr);
     text2.AddComponentTable(&menu, nullptr, nullptr, nullptr, &text1);

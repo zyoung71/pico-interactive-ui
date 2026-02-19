@@ -5,9 +5,15 @@ void FunctionComponent::RedoFunctionLUT()
     const int32_t length = inversed ? draw_dimensions.Height() : draw_dimensions.Width();
     const float domain_length = domain.y - domain.x;
     function_value_lut.resize(length);
+    extrema.x = +__FLT_MAX__;
+    extrema.y = -__FLT_MAX__;
     for (int32_t i = 0; i < length; i++)
     {
-        function_value_lut[i] = func_raw((i / float(length - 1)) * domain_length + domain.x);
+        float v = func_raw((i / float(length - 1)) * (float)domain_length + domain.x);
+        function_value_lut[i] = v;
+
+        extrema.x = std::min(v, extrema.x);
+        extrema.y = std::min(v, extrema.y);
     }
 }
 
@@ -39,6 +45,11 @@ FunctionComponent::FunctionComponent(ScreenManager* manager, const Vec2i32& orig
 {
     draw_dimensions.max = dimensions;
     RedoFunctionLUT();
+}
+
+void FunctionComponent::AutoFit()
+{
+    amplitude = draw_dimensions.Height() / (extrema.y - extrema.x);
 }
 
 void FunctionComponent::Draw()

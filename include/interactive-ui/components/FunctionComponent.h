@@ -12,6 +12,7 @@ private:
 protected:
     std::vector<float> function_value_lut;
     Vec2f domain;
+    Vec2f extrema;
     uint32_t thickness = 1;
     MathFunction<float> func_raw; // alternative option
     bool inversed = false;
@@ -26,6 +27,8 @@ public:
     void Scale(const Vec2f& scale_vec) override;
 
     void SetDrawDimensions(const AABBi32& dims) override;
+
+    void AutoFit();
 
     inline void SetDomain(const Vec2f& domain)
     {
