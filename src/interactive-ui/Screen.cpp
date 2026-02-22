@@ -5,10 +5,10 @@
 
 #include <algorithm>
 
-class HoverDesignComponent : public PaddingComponent
+class DefaultHoverDesignComponent : public PaddingComponent
 {
 public:
-    HoverDesignComponent(ScreenManager* manager, Screen* initial_screen)
+    DefaultHoverDesignComponent(ScreenManager* manager, Screen* initial_screen)
         : PaddingComponent(manager, Vec2i32{-1, -1}, Vec2i32{0, 0}, Screen::hover_z_layer, initial_screen) {}
 
     void Update(float dt, const Screen* screen) override
@@ -53,20 +53,15 @@ Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
 
 Screen::Screen(ScreenManager* manager, const Vec2u32& dimensions)
     : dimensions(Vec2i32{0, 0}, (Vec2i32)dimensions), manager(manager), display(manager->display), hovered_component(nullptr),
-    hover_design(new HoverDesignComponent(manager, this))
+    hover_design(std::make_unique<DefaultHoverDesignComponent>(manager, this))
 {
 }
 
 Screen::Screen(const Screen& to_copy)
     : dimensions(to_copy.dimensions), components(to_copy.components), component_set(to_copy.component_set),
     component_moving_reference_count(0), hovered_component(to_copy.hovered_component), animation_hover_duration(to_copy.animation_hover_duration),
-    display(to_copy.display), manager(to_copy.manager), hover_design(new HoverDesignComponent(to_copy.manager, this))
+    display(to_copy.display), manager(to_copy.manager), hover_design(std::make_unique<DefaultHoverDesignComponent>(to_copy.manager, this))
 {
-}
-
-Screen::~Screen()
-{
-    delete hover_design;
 }
 
 void Screen::AddComponent(Component* component)
@@ -210,7 +205,7 @@ void Screen::Update(float dt)
 
 bool Screen::NavigateToComponent(uint64_t control_mask)
 {
-    if (!hovered_component)
+    if (!hovered_component || manager->enable_cursor)
         return false;
 
     if (hovered_component->locked)
@@ -274,10 +269,11 @@ void Screen::ActOnComponent(uint64_t control_mask)
 {
     if (hovered_component)
     {
-        for (decltype(control_mask) i = 0; i < sizeof(control_mask) * 8; i++)
+        constexpr decltype(control_mask) bits = sizeof(control_mask) * 8;
+        for (decltype(control_mask) i = 0; i < bits; i++)
         {
             decltype(control_mask) binrep = 1 << i;
-            if (control_mask & binrep)
+            if ((control_mask & binrep) && (hovered_component->control_enables & binrep))
                 hovered_component->Control((ControlAction)binrep);
         }
     }
@@ -290,10 +286,9 @@ void Screen::ActOnComponent(uint64_t control_mask)
             hovered_component->Lock(false);
             return;
         }
-        if (hovered_component->cancel_master_back_action) // for other instances
-            return;
+        
         // Backs out the menu if there's one pushed over the main screen.
-        if (manager->screens.size() > 1)
+        if ((hovered_component->control_enables & ControlAction::BACK) && (manager->screens.size() > 1))
         {
             manager->PopScreen();
         }

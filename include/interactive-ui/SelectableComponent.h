@@ -43,12 +43,11 @@ public:
     typedef ComponentSelectEvent EventType;
 
 protected:
-    bool cancel_master_back_action = false;
-    bool locked = false;
-
-public:
     // Contains a 4-directional table for other components for each screen. Some components may be used across screens, so a map is necessary.
     std::unordered_map<const Screen*, SelectionTable> component_lut;
+
+    uint64_t control_enables = UINT64_MAX; // all controls enabled by default
+    bool locked = false;
 
 public:
     SelectableComponent(ScreenManager* manager, const Vec2i32& position, int32_t z_layer, Screen* initial_screen = nullptr);
@@ -69,15 +68,23 @@ public:
         return Lock(!locked);
     }
 
+    inline uint64_t GetEnabledControls() const
+    {
+        return control_enables;
+    }
+
+    inline void EnableControl(ControlAction control, bool enable)
+    {
+        if (enable)
+            control_enables |= control;
+        else
+            control_enables &= ~control;
+    }
+
     virtual void OnComponentHovered() {};
     virtual void OnComponentUnhovered() {};
 
     virtual void Control(uint64_t action);
-
-    inline void CancelMasterBackAction(bool cancel = true)
-    {
-        cancel_master_back_action = cancel;
-    }
 
     friend Screen;
 };

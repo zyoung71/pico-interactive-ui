@@ -24,7 +24,7 @@ private:
 
 protected:
     std::vector<Component*> components;
-    IThickness<uint32_t>* hover_design;
+    std::unique_ptr<IThickness<uint32_t>> hover_design;
     SelectableComponent* hovered_component;
     DisplayInterface* display;
     ScreenManager* manager;
@@ -38,7 +38,7 @@ public:
     Screen(ScreenManager* manager, uint32_t width, uint32_t height);
     Screen(ScreenManager* manager, const Vec2u32& dimensions);
     Screen(const Screen& to_copy);
-    virtual ~Screen();
+    virtual ~Screen() = default;
 
     inline Vec2i32 GetDimensions() const
     {
@@ -48,6 +48,21 @@ public:
     inline SelectableComponent* GetHoveredComponent() const
     {
         return hovered_component;
+    }
+
+    inline const std::unique_ptr<IThickness<uint32_t>>& GetHoverDesign() const
+    {
+        return hover_design;
+    }
+
+    inline void SetHoverDesign(std::unique_ptr<IThickness<uint32_t>> design)
+    {
+        hover_design = std::move(design);
+    }
+    template<class ThicknessImplementation> requires std::is_base_of_v<IThickness<uint32_t>, ThicknessImplementation>
+    inline void SetHoverDesign(ThicknessImplementation* design)
+    {
+        hover_design = std::make_unique<ThicknessImplementation>(design);
     }
 
     void AddComponent(Component* component);

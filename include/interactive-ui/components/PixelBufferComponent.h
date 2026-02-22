@@ -14,7 +14,7 @@
 class PixelBufferComponent : public SelectableComponent
 {
 protected:
-    std::unordered_map<Vec2i32, uint32_t> pixels;
+    std::unordered_map<Vec2i32, uint32_t> pixel_map;
 
 public:
     PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, int32_t z_layer, Screen* initial_screen = nullptr);
@@ -27,6 +27,9 @@ public:
     virtual ~PixelBufferComponent() = default;
 
     void SetPixel(Pixel p);
+    void ClearPixels();
+    void SetPixels(const ArrayView<Pixel>& pixels);
+    void SetPixels(const Pixel* pixels, size_t p_count);
 
     void Draw() override;
 };

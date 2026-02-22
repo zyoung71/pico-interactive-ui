@@ -50,7 +50,6 @@ bool SelectableComponent::Lock(bool lock)
     if (screen_set.contains(manager->GetCurrentScreen())) // failsafe just in case
     {
         locked = lock;
-        cancel_master_back_action = lock;
         manager->GetCurrentScreen()->hover_design->SetThickness(lock ? 2 : 1);
         return true;
     }
