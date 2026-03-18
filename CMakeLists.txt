@@ -1,6 +1,7 @@
 if (NOT TARGET pico-interactive-ui)
 
     add_library(pico-interactive-ui STATIC
+        src/interactive-ui/DisplayInterface.cpp
         src/interactive-ui/Screen.cpp
         src/interactive-ui/ScreenManager.cpp
         src/interactive-ui/Component.cpp
@@ -11,7 +12,7 @@ if (NOT TARGET pico-interactive-ui)
         src/interactive-ui/components/TextComponent.cpp
         src/interactive-ui/components/DropDownBoxComponent.cpp
         src/interactive-ui/components/FunctionComponent.cpp
-        src/interactive-ui/components/CircleComponent.cpp
+        src/interactive-ui/graphics/Rasterization.cpp
     )
 
     add_subdirectory(lib/pico-math)

@@ -166,6 +166,26 @@ void ScreenManager::Update(float dt_override)
     }
 }
 
+void ScreenManager::ForceUpdate()
+{
+    selected_screen->ProcessQueuedControls();
+    display->ClearDisplay();
+    selected_screen->Update(last_dt);
+    if (enable_cursor)
+        cursor->GetComponent()->Update(last_dt, selected_screen);
+    display->UpdateDisplay();
+}
+
+void ScreenManager::ForceUpdate(float dt_override)
+{
+    selected_screen->ProcessQueuedControls();
+    display->ClearDisplay();
+    selected_screen->Update(dt_override);
+    if (enable_cursor)
+        cursor->GetComponent()->Update(last_dt, selected_screen);
+    display->UpdateDisplay();
+}
+
 void ScreenManager::UpdateIfAnyComponentMoving()
 {
     // at least one component globally is moving.

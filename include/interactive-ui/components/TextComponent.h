@@ -15,6 +15,7 @@ protected:
 
 public:
     const Font* font;
+    uint32_t font_scale = 1;
 
 public:
     TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);

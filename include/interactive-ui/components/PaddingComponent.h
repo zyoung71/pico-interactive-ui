@@ -10,6 +10,7 @@ protected:
     uint32_t thickness = 1;
     
 public:
+    uint32_t fill_color;
     bool outlined = true;
     bool fill_if_outlined = false;
 

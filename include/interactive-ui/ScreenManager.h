@@ -99,9 +99,12 @@ public:
     void UpdateDeltaTime();
     void Update();
     void Update(float dt_override);
+    void ForceUpdate();
+    void ForceUpdate(float dt_override);
     void UpdateIfAnyComponentMoving();
     void UpdateIfCursorActivity();
 
     friend Screen;
     friend Component;
+    friend DisplayInterface;
 };

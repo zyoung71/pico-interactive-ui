@@ -94,7 +94,7 @@ void TextComponent::Draw()
             }
         }
 
-        display->DrawText(origin_position + draw_dimensions.min + text_offset, vbuff + track, font, color);
+        display->DrawText(origin_position + draw_dimensions.min + text_offset, vbuff + track, *font, font_scale, color);
         track = span + 1;
     }
 }
@@ -188,7 +188,10 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_p
 
 void TextBoxComponent::Draw()
 {
-    display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.Size(), color, true, clear_bg); // box
+    if (clear_bg)
+        display->FillSquare(origin_position + draw_dimensions.min, draw_dimensions.Size(), color);
+
+    display->DrawSquare(origin_position + draw_dimensions.min, draw_dimensions.Size(), color); // box
     TextComponent::Draw();
 }
 
