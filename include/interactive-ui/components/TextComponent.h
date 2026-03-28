@@ -20,7 +20,8 @@ public:
 public:
     TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
     TextComponent(ScreenManager* manager, const Vec2f& screen_percentage, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen);
-
+    virtual ~TextComponent() = default;
+    
     virtual void Draw() override;
     virtual void Align() override;
 
@@ -57,6 +58,7 @@ public:
 public:
     TextBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
     TextBoxComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen);
+    virtual ~TextBoxComponent() = default;
 
     virtual void Draw() override;
     virtual void Align() override;

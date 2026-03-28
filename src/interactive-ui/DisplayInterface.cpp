@@ -1,7 +1,7 @@
 #include <interactive-ui/ScreenManager.h>
 #include <interactive-ui/graphics/Rasterization.h>
 
-void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint32_t scale, uint32_t color)
+void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint32_t scale, RGBA color)
 {
     const Vec2i32 scale_vec(scale);
 
@@ -25,7 +25,7 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint
     }
 }
 
-void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font, uint32_t scale, uint32_t color)
+void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font, uint32_t scale, RGBA color)
 {
     for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_height) * scale)
     {
@@ -34,32 +34,34 @@ void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font,
     }
 }
 
-void DisplayInterface::DrawLine(Vec2i32 pos_begin, Vec2i32 pos_end, uint32_t color)
+void DisplayInterface::DrawHorizontalLine(Vec2i32 pos_begin, int32_t length, RGBA color)
 {
-    if (pos_begin.x == pos_end.x) // if vertical line
-    {
-        for (; pos_begin.y <= pos_end.y; pos_begin.y++)
-            DrawPixel(pos_begin, color);
-        return;
-    }
-    if (pos_begin.y == pos_end.y) // if horizontal line
-    {
-        for (; pos_begin.x <= pos_end.x; pos_begin.x++)
-            DrawPixel(pos_begin, color);
-        return;
-    }
+    int32_t x_end = pos_begin.x + length;
+    for (; pos_begin.x <= x_end; pos_begin.x++)
+        DrawPixel(pos_begin, color);
+}
 
+void DisplayInterface::DrawVerticalLine(Vec2i32 pos_begin, int32_t length, RGBA color)
+{
+    int32_t y_end = pos_begin.y + length;
+    for (; pos_begin.y <= y_end; pos_begin.y++)
+        DrawPixel(pos_begin, color);
+}
+
+void DisplayInterface::DrawLine(Vec2i32 pos_begin, Vec2i32 pos_end, RGBA color)
+{
     Vec2f delta = static_cast<Vec2f>(pos_end - pos_begin);
     float slope = delta.y / delta.x;
+    float y;
 
     for (int32_t x = pos_begin.x; x <= pos_end.x; x++)
     {
-        float y = slope * static_cast<float>(x - pos_begin.x) + (float)pos_begin.y;
+        y = slope * static_cast<float>(x - pos_begin.x) + (float)pos_begin.y;
         DrawPixel(Vec2i32{x, (int32_t)y}, color);
     }
 }
 
-void DisplayInterface::DrawPolygon(const Vec2i32* points, size_t pos_count, uint32_t color)
+void DisplayInterface::DrawPolygon(const Vec2i32* points, size_t pos_count, RGBA color)
 {
     Vec2i32 begin, end;
     for (size_t i = 0; i < pos_count; i++)
@@ -70,12 +72,17 @@ void DisplayInterface::DrawPolygon(const Vec2i32* points, size_t pos_count, uint
     }
 }
 
-void DisplayInterface::DrawPolygon(const ArrayView<Vec2i32>& points, uint32_t color)
+void DisplayInterface::DrawPolygon(const ArrayView<Vec2i32>& points, RGBA color)
 {
     return DrawPolygon(points.data, points.length, color);
 }
 
-void DisplayInterface::DrawCircle(Vec2i32 center_pos, Vec2i32 radius, uint32_t color)
+void DisplayInterface::DrawCircle(Vec2i32 center_pos, int32_t radius, RGBA color)
+{
+
+}
+
+void DisplayInterface::DrawEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA color)
 {
     Vec2i32 index_pos = {0, radius.y};
     Vec2i32 index_pos_conj;
@@ -111,7 +118,7 @@ void DisplayInterface::DrawCircle(Vec2i32 center_pos, Vec2i32 radius, uint32_t c
     }
 }
 
-void DisplayInterface::DrawSquare(Vec2i32 pos, Vec2i32 size, uint32_t color)
+void DisplayInterface::DrawSquare(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
     DrawLine(pos, pos + Vec2i32{size.x, 0}, color);
     DrawLine(pos + Vec2i32{0, size.y}, pos + size, color);
@@ -119,7 +126,7 @@ void DisplayInterface::DrawSquare(Vec2i32 pos, Vec2i32 size, uint32_t color)
     DrawLine(pos + Vec2i32{size.x, 0}, pos + size, color);
 }
 
-void DisplayInterface::DrawSquare(AABBi32 dimensions, uint32_t color)
+void DisplayInterface::DrawSquare(AABBi32 dimensions, RGBA color)
 {
     DrawSquare(dimensions.min, dimensions.max, color);
 }
@@ -134,17 +141,40 @@ void DisplayInterface::DrawBitmap(const ArrayView<uint8_t>& bitmap)
     DrawBitmap(bitmap.data, bitmap.length);
 }
 
-void DisplayInterface::FillPolygon(const Vec2i32* points, size_t pos_count, uint32_t fill_color)
+void DisplayInterface::FillPolygon(const Vec2i32* points, size_t pos_count, RGBA color)
 {
-    graphics::scanline_rasterization(make_array_view(points, pos_count), this, fill_color);
+    graphics::scanline_rasterization(make_array_view(points, pos_count), this, color);
 }
 
-void DisplayInterface::FillPolygon(const ArrayView<Vec2i32>& points, uint32_t color)
+void DisplayInterface::FillPolygon(const ArrayView<Vec2i32>& points, RGBA color)
 {
     graphics::scanline_rasterization(points, this, color);
 }
 
-void DisplayInterface::FillCircle(Vec2i32 center_pos, Vec2i32 radius, uint32_t color)
+void DisplayInterface::FillCircle(Vec2i32 center_pos, int32_t radius, RGBA color)
+{
+    int32_t x = 0;
+    int32_t d = 1 - radius;
+    while (x <= radius)
+    {
+        DrawHorizontalLine(center_pos + Vec2i32{-x, radius}, x, color);
+        DrawHorizontalLine(center_pos - Vec2i32{x, radius}, x, color);
+        DrawHorizontalLine(center_pos + Vec2i32{-radius, x}, radius, color);
+        DrawHorizontalLine(center_pos - Vec2i32{radius, x}, radius, color);
+
+        if (d < 0)
+            d += 2 * x + 3;
+        else
+        {
+            d += 2 * (x - radius) + 5;
+            radius--;
+        }
+
+        x++;
+    }
+}
+
+void DisplayInterface::FillEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA color)
 {
     int32_t hh = radius.x * radius.x;
     int32_t ww = radius.y * radius.y;
@@ -173,14 +203,14 @@ void DisplayInterface::FillCircle(Vec2i32 center_pos, Vec2i32 radius, uint32_t c
     }
 }   
 
-void DisplayInterface::FillSquare(Vec2i32 pos, Vec2i32 size, uint32_t color)
+void DisplayInterface::FillSquare(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
     for (; pos.x < size.x; pos.x++)
         for (; pos.y < size.y; pos.y++)
             DrawPixel(pos, color);
 }
 
-void DisplayInterface::FillSquare(AABBi32 dimensions, uint32_t color)
+void DisplayInterface::FillSquare(AABBi32 dimensions, RGBA color)
 {
     FillSquare(dimensions.min, dimensions.max, color);
 }

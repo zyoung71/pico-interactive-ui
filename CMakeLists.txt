@@ -12,6 +12,7 @@ if (NOT TARGET pico-interactive-ui)
         src/interactive-ui/components/TextComponent.cpp
         src/interactive-ui/components/DropDownBoxComponent.cpp
         src/interactive-ui/components/FunctionComponent.cpp
+        src/interactive-ui/components/ProgressBarComponent.cpp
         src/interactive-ui/graphics/Rasterization.cpp
     )
 

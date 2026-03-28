@@ -5,37 +5,66 @@
 
 namespace graphics
 {
+    union HSV;
 
-    constexpr uint32_t rgba(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha)
+    union RGBA
     {
-        return (red << 24) | (green << 16) | (blue << 8) | (alpha << 0);
-    }
-    constexpr uint32_t rgba(Vec4u8 vrgba)
+        Vec4u8 vrgba;
+        Vec3u8 vrgb;
+        uint32_t rgba;
+        uint8_t red;
+        uint8_t green;
+        uint8_t blue;
+        uint8_t alpha;
+
+        constexpr inline operator uint32_t() const
+        {
+            return rgba;
+        }
+
+        constexpr inline RGBA() : rgba(0) {}
+        constexpr inline RGBA(uint32_t rgba) : rgba(rgba) {}
+        constexpr inline RGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : RGBA((r << 24) | (g << 16) | (b << 8) | (a << 0)) {}
+        constexpr inline RGBA(uint8_t r, uint8_t g, uint8_t b) : RGBA(r, g, b, 255) {}
+        constexpr inline RGBA(Vec4u8 v) : RGBA(v.x, v.y, v.z, v.w) {}
+        constexpr inline RGBA(Vec3u8 v) : RGBA(v.x, v.y, v.z, 255) {}
+
+        constexpr HSV ToHSV();
+    };
+
+    union HSV
     {
-        return rgba(vrgba.x, vrgba.y, vrgba.z, vrgba.w);
-    }
-    constexpr uint32_t rgb(Vec3u8 vrgb)
-    {
-        return rgba(vrgb.x, vrgb.y, vrgb.z, 255);
-    }
-    constexpr uint32_t rgb(uint8_t red, uint8_t green, uint8_t blue)
-    {
-        return rgba(red, green, blue, 255);
-    }
+        Vec3f v;
+        float hue;
+        float saturation;
+        float brightness;
+
+        constexpr static inline HSV HSV_unchecked(Vec3f v)
+        {
+            HSV hsv;
+            hsv.hue = v.x;
+            hsv.saturation = v.y;
+            hsv.brightness = v.z;
+            return hsv;
+        }
+
+        constexpr inline HSV() : v(0.f, 0.f, 0.f) {}
+        constexpr inline HSV(float hue, float saturation, float brightness) : v(std::fmodf(hue, 360.f), std::fmodf(saturation, 360.f), std::fmodf(brightness, 360.f)) {}
+        constexpr inline HSV(Vec3f vhsv) : v(vhsv.x, vhsv.y, vhsv.z) {}
+
+        constexpr RGBA ToRGB();
+
+        constexpr inline void ShiftHue(float degrees)
+        {
+            hue += degrees;
+            hue = std::fmodf(hue, 360.f);
+        }
+    };
     
-    constexpr Vec3f hsv(float hue, float saturation, float brightness)
-    {
-        return Vec3f{std::fmodf(hue, 360.f), std::fmodf(saturation, 360.f), std::fmodf(brightness, 360.f)};
-    }
-    constexpr Vec3f hsv_unchecked(float hue, float saturation, float brightness)
-    {
-        return Vec3f{hue, saturation, brightness};
-    }
-    
-    constexpr Vec3f rgb_to_hsv(uint8_t red, uint8_t green, uint8_t blue)
+    constexpr HSV RGBA::ToHSV()
     {
         Vec3f rgbf{(float)red, (float)green, (float)blue};
-        Vec3f hsv;
+        HSV hsv;
         rgbf /= 255.f;
     
         float min, max, delta;
@@ -43,60 +72,99 @@ namespace graphics
         min = rgbf.Min();
         max = rgbf.Max();
         delta = max - min;
-        hsv.z = max;
+        hsv.brightness = max;
     
         if (delta <= 0.f)
         {
-            hsv.x = 0.f;
-            hsv.y = 0.f;
+            hsv.hue = 0.f;
+            hsv.saturation = 0.f;
             return hsv;
         }
         if (max > 0.f)
-            hsv.y = delta / max;
+            hsv.saturation = delta / max;
         else
         {
-            hsv.x = NAN;
-            hsv.y = 0.f;
+            hsv.hue = NAN;
+            hsv.saturation = 0.f;
             return hsv;
         }
     
         if (max >= rgbf.x)
-            hsv.x = (rgbf.y - rgbf.z) / delta;
+            hsv.hue = (rgbf.y - rgbf.z) / delta;
         else if (max >= rgbf.y)
-            hsv.x = ((rgbf.z - rgbf.x) / delta) + 2;
+            hsv.hue = ((rgbf.z - rgbf.x) / delta) + 2;
         else
-            hsv.x = ((rgbf.x - rgbf.y) / delta) + 4;
+            hsv.hue = ((rgbf.x - rgbf.y) / delta) + 4;
     
-        hsv.x *= 60.f;
+        hsv.hue *= 60.f;
     
-        if (hsv.x < 0.f)
-            hsv.x += 360.f;
+        if (hsv.hue < 0.f)
+            hsv.hue += 360.f;
     
         return hsv;
     }
-    constexpr Vec3f rgb_to_hsv(Vec3u8 vrgb)
-    {
-        return rgb_to_hsv(vrgb.x, vrgb.y, vrgb.z);
-    }
     
-    constexpr uint32_t hsv_to_rgb(float hue, float saturation, float brightness)
+    constexpr RGBA HSV::ToRGB()
     {
-        // todo
-        return 0;
-    }
-    constexpr uint32_t hsv_to_rgb(const Vec3f& hsv)
-    {
-        return hsv_to_rgb(hsv.x, hsv.y, hsv.z);
-    }
+        float hh, p, q, t, ff;
 
-    constexpr void hsv_hue_shift(float& hue, float degrees)
-    {
-        hue += degrees;
-        hue = std::fmodf(hue, 360.f);
-    }
-    constexpr void hsv_hue_shift(Vec3f& hsv, float degrees)
-    {
-        hsv_hue_shift(hsv.x, degrees);
-    }
+        int32_t i;
+        RGBA rgba;
+        rgba.alpha = 255;
 
+        if (saturation <= 0.f)
+        {
+            rgba.vrgb = Vec3u8(brightness);
+            return rgba;
+        }
+
+        hh = hue;
+        if (hh >= 360.0f)
+            hh = 0.f;
+
+        hh /= 60.f;
+        i = (int32_t)hh;
+        ff = hh - i;
+        p = brightness * (1.f - saturation);
+        q = brightness * (1.f - (saturation * ff));
+        t = brightness * (1.f - (saturation * (1.f - ff)));
+
+        switch (i)
+        {
+            case 0:
+                rgba.red = brightness;
+                rgba.green = t;
+                rgba.blue = p;
+                break;
+            case 1:
+                rgba.red = q;
+                rgba.green = brightness;
+                rgba.blue = p;
+                break;
+            case 2:
+                rgba.red = p;
+                rgba.green = brightness;
+                rgba.blue = t;
+                break;
+
+            case 3:
+                rgba.red = p;
+                rgba.green = q;
+                rgba.blue = brightness;
+                break;
+            case 4:
+                rgba.red = t;
+                rgba.green = p;
+                rgba.blue = brightness;
+                break;
+            case 5:
+            default:
+                rgba.red = brightness;
+                rgba.green = p;
+                rgba.blue = q;
+                break;
+        }
+
+        return rgba;
+    }
 }
