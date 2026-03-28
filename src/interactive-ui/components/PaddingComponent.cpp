@@ -15,10 +15,10 @@ void PaddingComponent::Draw()
 {
     if (!outlined)
     {
-        return display->FillSquare(origin_position + draw_dimensions.min, draw_dimensions.Size(), color);
+        return display->FillRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), color);
     }
     // if there is a background fill, fill it once and draw the next thickness lines inside
-    display->FillSquare(origin_position + draw_dimensions.min, draw_dimensions.Size(), color);
+    display->FillRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), color);
     for (int32_t i = 1; i < thickness; i++)
-        display->DrawSquare(origin_position + draw_dimensions.min + Vec2i32{i, i}, draw_dimensions.Size() - Vec2i32{i + 1, i + 1}, color);
+        display->DrawRectangle(origin_position + draw_dimensions.min + Vec2i32{i, i}, draw_dimensions.Size() - Vec2i32{i + 1, i + 1}, color);
 }
