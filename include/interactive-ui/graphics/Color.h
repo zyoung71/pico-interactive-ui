@@ -59,10 +59,11 @@ namespace graphics
 
         constexpr RGBA ToRGB();
 
-        constexpr inline void ShiftHue(float degrees)
+        constexpr inline HSV& ShiftHue(float degrees)
         {
             hue += degrees;
             hue = std::fmodf(hue, 360.f);
+            return *this;
         }
     };
     
