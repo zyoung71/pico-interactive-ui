@@ -18,7 +18,7 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint
             for (int8_t j = 0; j < 8; j++, line >>= 1)
             {
                 if (line & 1)
-                    FillSquare(pos + Vec2i32{width, (lp << 3) + j} * scale, scale_vec, color);
+                    FillRectangle(pos + Vec2i32{width, (lp << 3) + j} * scale, scale_vec, color);
             }
             idx++;
         }
@@ -179,7 +179,7 @@ void DisplayInterface::DrawEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA colo
     }
 }
 
-void DisplayInterface::DrawSquare(Vec2i32 pos, Vec2i32 size, RGBA color)
+void DisplayInterface::DrawRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
     DrawLine(pos, pos + Vec2i32{size.x, 0}, color);
     DrawLine(pos + Vec2i32{0, size.y}, pos + size, color);
@@ -187,12 +187,12 @@ void DisplayInterface::DrawSquare(Vec2i32 pos, Vec2i32 size, RGBA color)
     DrawLine(pos + Vec2i32{size.x, 0}, pos + size, color);
 }
 
-void DisplayInterface::DrawSquare(AABBi32 dimensions, RGBA color)
+void DisplayInterface::DrawRectangle(AABBi32 dimensions, RGBA color)
 {
-    DrawSquare(dimensions.min, dimensions.max, color);
+    DrawRectangle(dimensions.min, dimensions.max, color);
 }
 
-void DisplayInterface::DrawRoundedSquare(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color)
+void DisplayInterface::DrawRoundedRectangle(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color)
 {
     Vec2i32 begin = pos + radius;
     Vec2i32 end = pos + size - radius - Vec2i32(1);
@@ -256,9 +256,9 @@ void DisplayInterface::DrawRoundedSquare(Vec2i32 pos, Vec2i32 size, Vec2i32 radi
     }
 }
 
-void DisplayInterface::DrawRoundedSquare(AABBi32 dimensions, Vec2i32 radius, RGBA color)
+void DisplayInterface::DrawRoundedRectangle(AABBi32 dimensions, Vec2i32 radius, RGBA color)
 {
-    DrawRoundedSquare(dimensions.min, dimensions.max, radius, color);
+    DrawRoundedRectangle(dimensions.min, dimensions.max, radius, color);
 }
 
 void DisplayInterface::FillPolygon(const Vec2i32* points, size_t pos_count, RGBA color)
@@ -323,14 +323,14 @@ void DisplayInterface::FillEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA colo
     }
 }   
 
-void DisplayInterface::FillSquare(Vec2i32 pos, Vec2i32 size, RGBA color)
+void DisplayInterface::FillRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
     for (; pos.x < size.x; pos.x++)
         for (; pos.y < size.y; pos.y++)
             DrawPixel(pos, color);
 }
 
-void DisplayInterface::FillSquare(AABBi32 dimensions, RGBA color)
+void DisplayInterface::FillRectangle(AABBi32 dimensions, RGBA color)
 {
-    FillSquare(dimensions.min, dimensions.max, color);
+    FillRectangle(dimensions.min, dimensions.max, color);
 }

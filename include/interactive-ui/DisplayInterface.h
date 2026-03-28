@@ -49,11 +49,11 @@ public:
     void DrawCircle(Vec2i32 center_pos, int32_t radius, RGBA color);
     void DrawEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA color);
 
-    void DrawSquare(Vec2i32 pos, Vec2i32 size, RGBA color);
-    void DrawSquare(AABBi32 dimensions, RGBA color);
+    void DrawRectangle(Vec2i32 pos, Vec2i32 size, RGBA color);
+    void DrawRectangle(AABBi32 dimensions, RGBA color);
 
-    void DrawRoundedSquare(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color);
-    void DrawRoundedSquare(AABBi32 dimensions, Vec2i32 radius, RGBA color);
+    void DrawRoundedRectangle(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color);
+    void DrawRoundedRectangle(AABBi32 dimensions, Vec2i32 radius, RGBA color);
 
     void FillPolygon(const Vec2i32* points, size_t pos_count, RGBA color);
     void FillPolygon(const ArrayView<Vec2i32>& points, RGBA color);
@@ -61,7 +61,7 @@ public:
     void FillCircle(Vec2i32 center_pos, int32_t radius, RGBA color);
     void FillEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA color);
 
-    void FillSquare(Vec2i32 pos, Vec2i32 size, RGBA color);
-    void FillSquare(AABBi32 dimensions, RGBA color);
+    void FillRectangle(Vec2i32 pos, Vec2i32 size, RGBA color);
+    void FillRectangle(AABBi32 dimensions, RGBA color);
 
 };
