@@ -41,6 +41,18 @@ void DisplayInterface::DrawHorizontalLine(Vec2i32 pos_begin, int32_t length, RGB
         DrawPixel(pos_begin, color);
 }
 
+void DisplayInterface::DrawHorizontalLineX1X2(int32_t x1, int32_t x2, int32_t y, RGBA color)
+{
+    for (; x1 <= x2; x1++)
+        DrawPixel(x1, y, color);
+}
+
+void DisplayInterface::DrawVerticalLineY1Y2(int32_t y1, int32_t y2, int32_t x, RGBA color)
+{
+    for (; y1 <= y2; y1++)
+        DrawPixel(x, y1, color);
+}
+
 void DisplayInterface::DrawVerticalLine(Vec2i32 pos_begin, int32_t length, RGBA color)
 {
     int32_t y_end = pos_begin.y + length;
@@ -79,41 +91,90 @@ void DisplayInterface::DrawPolygon(const ArrayView<Vec2i32>& points, RGBA color)
 
 void DisplayInterface::DrawCircle(Vec2i32 center_pos, int32_t radius, RGBA color)
 {
+    Vec2i32 draw_pos = {0, radius};
+    int32_t decision = 1 - radius;
 
+    Vec2i32 conj, flip;
+    while (draw_pos.x < draw_pos.y)
+    {
+        conj.x = -draw_pos.x;
+        conj.y = draw_pos.y;
+        DrawPixel(center_pos + draw_pos, color);
+        DrawPixel(center_pos + conj, color);
+        DrawPixel(center_pos - conj, color);
+        DrawPixel(center_pos - draw_pos, color);
+
+        flip = {draw_pos.y, draw_pos.x};
+        conj.x = -flip.x;
+        conj.y = flip.y;
+        DrawPixel(center_pos + flip, color);
+        DrawPixel(center_pos + conj, color);
+        DrawPixel(center_pos - conj, color);
+        DrawPixel(center_pos - flip, color);
+
+        if (decision < 0)
+            decision += 2 * draw_pos.x + 3;
+        else
+        {
+            decision += 2 * (draw_pos.x - draw_pos.y) + 5;
+            draw_pos.y--;
+        }
+        draw_pos.x++;
+    }
 }
 
 void DisplayInterface::DrawEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA color)
 {
-    Vec2i32 index_pos = {0, radius.y};
-    Vec2i32 index_pos_conj;
+    Vec2i32 r_sqr = radius * radius * 2;
+    Vec2i32 r_sqr_times_2 = r_sqr * 2;
+    Vec2i32 draw_pos = {0, radius.y};
+    Vec2i32 delta = {0, r_sqr_times_2.y * radius.y};
 
-    Vec2i32 r_sqr = {radius.x * radius.x, radius.y * radius.y};
-    Vec2i32 d;
-    d.x = 0;
-    d.y = 2 * r_sqr.x * index_pos.y;
+    int32_t decision = r_sqr.y - r_sqr.x * radius.y + (r_sqr.x >> 2);
 
-    int32_t d1 = r_sqr.y - (r_sqr.x * radius.y) + (r_sqr.x / 4);
-
-    while (d.x < d.y)
+    Vec2i32 conj;
+    while (delta.x < delta.y)
     {
-        index_pos_conj.x = -index_pos.x;
-        index_pos_conj.y = index_pos.y;
+        conj.x = -draw_pos.x;
+        conj.y = draw_pos.y;
+        DrawPixel(center_pos + draw_pos, color);
+        DrawPixel(center_pos + conj, color);
+        DrawPixel(center_pos - conj, color);
+        DrawPixel(center_pos - draw_pos, color);
 
-        DrawPixel(center_pos + index_pos, color);
-        DrawPixel(center_pos + index_pos_conj, color);
-        DrawPixel(center_pos - index_pos_conj, color);
-        DrawPixel(center_pos - index_pos, color);
-
-        index_pos.x++;
-        d.x += 2 * r_sqr.y;
-
-        if (d1 < 0)
-            d1 += d.x + r_sqr.y;
+        draw_pos.x++;
+        delta.x += r_sqr_times_2.y;
+        
+        if (decision < 0)
+            decision += delta.x + r_sqr.y;
         else
         {
-            index_pos.y--;
-            d.y -= 2 * r_sqr.x;
-            d1 += d.x - d.y + r_sqr.y;
+            draw_pos.y--;
+            delta.y -= r_sqr_times_2.x;
+            decision += delta.x - delta.y + r_sqr.y;
+        }
+    }
+
+    decision = r_sqr.y * draw_pos.x * draw_pos.x + r_sqr.x * (draw_pos.y - 1) * (draw_pos.y - 1) - r_sqr.x * r_sqr.y;
+    while (draw_pos.y >= 0)
+    {
+        conj.x = -draw_pos.x;
+        conj.y = draw_pos.y;
+        DrawPixel(center_pos + draw_pos, color);
+        DrawPixel(center_pos + conj, color);
+        DrawPixel(center_pos - conj, color);
+        DrawPixel(center_pos - draw_pos, color);
+
+        draw_pos.y--;
+        delta.y -= r_sqr_times_2.x;
+
+        if (decision > 0)
+            decision += r_sqr.x - delta.y;
+        else
+        {
+            draw_pos.x++;
+            delta.x += r_sqr_times_2.y;
+            decision += delta.x - delta.y + r_sqr.x;
         }
     }
 }
@@ -131,14 +192,73 @@ void DisplayInterface::DrawSquare(AABBi32 dimensions, RGBA color)
     DrawSquare(dimensions.min, dimensions.max, color);
 }
 
-void DisplayInterface::DrawBitmap(const uint8_t* bitmap_buff, size_t bitmap_size)
+void DisplayInterface::DrawRoundedSquare(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color)
 {
-    // todo
+    Vec2i32 begin = pos + radius;
+    Vec2i32 end = pos + size - radius - Vec2i32(1);
+    
+    DrawHorizontalLineX1X2(begin.x, end.x, begin.y, color);
+    DrawHorizontalLineX1X2(begin.x, end.x, end.y, color);
+    DrawVerticalLineY1Y2(begin.y, end.y, begin.x, color);
+    DrawVerticalLineY1Y2(begin.y, end.y, end.x, color);
+
+    Vec2i32 r_sqr = radius * radius;
+    Vec2i32 r_sqr_times_2 = r_sqr * 2;
+
+    Vec2i32 draw_offset = {0, radius.y};
+    Vec2i32 draw_offset_conj;
+    Vec2i32 delta = {0, r_sqr_times_2.x * radius.y};
+
+    int32_t decision = r_sqr.y - r_sqr.x * radius.y + (r_sqr.x >> 2);
+    while (delta.x < delta.y)
+    {
+        draw_offset_conj.x = -draw_offset.x;
+        draw_offset_conj.y = draw_offset.y;
+        DrawPixel(begin + draw_offset, color);
+        DrawPixel(begin + draw_offset_conj, color);
+        DrawPixel(begin - draw_offset_conj, color);
+        DrawPixel(begin - draw_offset, color);
+
+        draw_offset.x++;
+        delta.x += r_sqr_times_2.y;
+
+        if (decision < 0)
+            decision += delta.x + r_sqr.y;
+        else
+        {
+            draw_offset.x--;
+            delta.y -= r_sqr_times_2.x;
+            decision += delta.x - delta.y + r_sqr.y;
+        }
+    }
+
+    decision = r_sqr.y * draw_offset.x * draw_offset.x + r_sqr.x * (draw_offset.y - 1) * (draw_offset.y - 1) - r_sqr.x * r_sqr.y;
+    while (draw_offset.y >= 0)
+    {
+        draw_offset_conj.x = -draw_offset.x;
+        draw_offset_conj.y = draw_offset.y;
+        DrawPixel(begin + draw_offset, color);
+        DrawPixel(begin + draw_offset_conj, color);
+        DrawPixel(begin - draw_offset_conj, color);
+        DrawPixel(begin - draw_offset, color);
+
+        draw_offset.y--;
+        delta.y -= r_sqr_times_2.x;
+
+        if (decision > 0)
+            decision += r_sqr.x - delta.y;
+        else
+        {
+            draw_offset.x++;
+            delta.x += r_sqr_times_2.y;
+            decision += delta.x - delta.y + r_sqr.x;
+        }
+    }
 }
 
-void DisplayInterface::DrawBitmap(const ArrayView<uint8_t>& bitmap)
+void DisplayInterface::DrawRoundedSquare(AABBi32 dimensions, Vec2i32 radius, RGBA color)
 {
-    DrawBitmap(bitmap.data, bitmap.length);
+    DrawRoundedSquare(dimensions.min, dimensions.max, radius, color);
 }
 
 void DisplayInterface::FillPolygon(const Vec2i32* points, size_t pos_count, RGBA color)
@@ -154,7 +274,7 @@ void DisplayInterface::FillPolygon(const ArrayView<Vec2i32>& points, RGBA color)
 void DisplayInterface::FillCircle(Vec2i32 center_pos, int32_t radius, RGBA color)
 {
     int32_t x = 0;
-    int32_t d = 1 - radius;
+    int32_t decision = 1 - radius;
     while (x <= radius)
     {
         DrawHorizontalLine(center_pos + Vec2i32{-x, radius}, x, color);
@@ -162,11 +282,11 @@ void DisplayInterface::FillCircle(Vec2i32 center_pos, int32_t radius, RGBA color
         DrawHorizontalLine(center_pos + Vec2i32{-radius, x}, radius, color);
         DrawHorizontalLine(center_pos - Vec2i32{radius, x}, radius, color);
 
-        if (d < 0)
-            d += 2 * x + 3;
+        if (decision < 0)
+            decision += 2 * x + 3;
         else
         {
-            d += 2 * (x - radius) + 5;
+            decision += 2 * (x - radius) + 5;
             radius--;
         }
 

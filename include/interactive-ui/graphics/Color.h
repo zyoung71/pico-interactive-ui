@@ -48,6 +48,11 @@ namespace graphics
             return hsv;
         }
 
+        constexpr inline operator Vec3f() const
+        {
+            return v;
+        }
+
         constexpr inline HSV() : v(0.f, 0.f, 0.f) {}
         constexpr inline HSV(float hue, float saturation, float brightness) : v(std::fmodf(hue, 360.f), std::fmodf(saturation, 360.f), std::fmodf(brightness, 360.f)) {}
         constexpr inline HSV(Vec3f vhsv) : v(vhsv.x, vhsv.y, vhsv.z) {}
@@ -166,5 +171,29 @@ namespace graphics
         }
 
         return rgba;
+    }
+
+    namespace colors
+    {
+        constexpr RGBA WHITE = 0xFFFFFFFF;
+        constexpr RGBA BLACK = 0xFFFFFF00;
+        constexpr RGBA GRAY = 0x7F7F7FFF;
+
+        constexpr RGBA RED = 0xFF0000FF;
+        constexpr RGBA ORANGE = 0xFF7F00FF;
+        constexpr RGBA YELLOW = 0xFFFF00FF;
+        constexpr RGBA LIME = 0x7FFF00FF;
+        constexpr RGBA GREEN = 0x00FF00FF;
+        constexpr RGBA SPRING_GREEN = 0x00FF7FFF;
+        constexpr RGBA CYAN = 0x00FFFFFF;
+        constexpr RGBA AZURE_BLUE = 0x007FFFFF;
+        constexpr RGBA BLUE = 0x0000FFFF;
+        constexpr RGBA INDIGO = 0x7F00FFFF;
+        constexpr RGBA MAGENTA = 0xFF00FFFF;
+        constexpr RGBA HOT_PINK = 0xFF007FFF;
+
+        constexpr RGBA LIGHT_YELLOW = 0xFFFF7FFF;
+        constexpr RGBA PINK = 0xFF7FFFFF;
+        constexpr RGBA LIGHT_BLUE = 0x7FFFFFFF;
     }
 }
