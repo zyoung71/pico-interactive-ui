@@ -31,9 +31,12 @@ namespace graphics
 
         constexpr HSV ToHSV() const;
 
-        constexpr inline RGBA Inverted() const
+        constexpr inline RGBA& Invert()
         {
-            return RGBA(Vec3u8(255) - vrgb);
+            red = 255 - red;
+            green = 255 - green;
+            blue = 255 - blue;
+            return *this;
         }
     };
 
