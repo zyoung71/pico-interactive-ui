@@ -189,7 +189,7 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_p
 void TextBoxComponent::Draw()
 {
     if (clear_bg)
-        display->FillRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), 0);
+        display->FillRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), colors::CLEAR);
 
     display->DrawRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), color); // box
     TextComponent::Draw();

@@ -182,9 +182,11 @@ void DisplayInterface::DrawEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA colo
 void DisplayInterface::DrawRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
     DrawHorizontalLine(pos, size.x, color);
-    DrawHorizontalLine(pos + Vec2i32{0, size.y}, size.x, color);
     DrawVerticalLine(pos, size.y, color);
-    DrawVerticalLine(pos + Vec2i32{size.x, 0}, size.y, color);
+    pos.y += size.y;
+    DrawHorizontalLine(pos, size.x, color);
+    pos.x += size.x;
+    DrawVerticalLine(pos, size.y, color);
 }
 
 void DisplayInterface::DrawRectangle(AABBi32 dimensions, RGBA color)

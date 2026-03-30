@@ -29,7 +29,12 @@ namespace graphics
         constexpr inline RGBA(Vec4u8 v) : RGBA(v.x, v.y, v.z, v.w) {}
         constexpr inline RGBA(Vec3u8 v) : RGBA(v.x, v.y, v.z, 255) {}
 
-        constexpr HSV ToHSV();
+        constexpr HSV ToHSV() const;
+
+        constexpr inline RGBA Inverted() const
+        {
+            return RGBA(Vec3u8(255) - vrgb);
+        }
     };
 
     union HSV
@@ -57,7 +62,7 @@ namespace graphics
         constexpr inline HSV(float hue, float saturation, float brightness) : v(std::fmodf(hue, 360.f), std::fmodf(saturation, 360.f), std::fmodf(brightness, 360.f)) {}
         constexpr inline HSV(Vec3f vhsv) : v(vhsv.x, vhsv.y, vhsv.z) {}
 
-        constexpr RGBA ToRGB();
+        constexpr RGBA ToRGB() const;
 
         constexpr inline HSV& ShiftHue(float degrees)
         {
@@ -67,7 +72,7 @@ namespace graphics
         }
     };
     
-    constexpr HSV RGBA::ToHSV()
+    constexpr HSV RGBA::ToHSV() const
     {
         Vec3f rgbf{(float)red, (float)green, (float)blue};
         HSV hsv;
@@ -110,7 +115,7 @@ namespace graphics
         return hsv;
     }
     
-    constexpr RGBA HSV::ToRGB()
+    constexpr RGBA HSV::ToRGB() const
     {
         float hh, p, q, t, ff;
 
@@ -176,6 +181,8 @@ namespace graphics
 
     namespace colors
     {
+        constexpr RGBA CLEAR = 0x00000000;
+
         constexpr RGBA WHITE = 0xFFFFFFFF;
         constexpr RGBA BLACK = 0xFFFFFF00;
         constexpr RGBA GRAY = 0x7F7F7FFF;
