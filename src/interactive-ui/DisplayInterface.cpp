@@ -7,15 +7,15 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint
 
     if (c < font.ascii_begin || c > font.ascii_end)
         return;
-    
-    uint32_t ppl = (font.char_height >> 3) + (font.char_height & 7) > 0;
-    for (uint8_t width = 0; width < font.char_width; width++)
+
+    uint32_t ppl = (font.char_height >> 3) + ((font.char_height & 7) > 0);
+    for (int32_t width = 0; width < font.char_width; width++)
     {
         uint32_t idx = (c - font.ascii_begin) * font.char_width * ppl + width * ppl;
         for (int32_t lp = 0; lp < ppl; lp++)
         {
             uint8_t line = font.char_bitmap[idx];
-            for (int8_t j = 0; j < 8; j++, line >>= 1)
+            for (int32_t j = 0; j < 8; j++, line >>= 1)
             {
                 if (line & 1)
                     FillRectangle(pos + Vec2i32{width, (lp << 3) + j} * scale, scale_vec, color);
@@ -37,8 +37,8 @@ void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font,
 void DisplayInterface::DrawHorizontalLine(Vec2i32 pos_begin, int32_t length, RGBA color)
 {
     int32_t x_end = pos_begin.x + length;
-    for (; pos_begin.x <= x_end; pos_begin.x++)
-        DrawPixel(pos_begin, color);
+    for (int32_t x = pos_begin.x; x <= x_end; x++)
+        DrawPixel(x, pos_begin.y, color);
 }
 
 void DisplayInterface::DrawHorizontalLineX1X2(int32_t x1, int32_t x2, int32_t y, RGBA color)
@@ -56,8 +56,8 @@ void DisplayInterface::DrawVerticalLineY1Y2(int32_t y1, int32_t y2, int32_t x, R
 void DisplayInterface::DrawVerticalLine(Vec2i32 pos_begin, int32_t length, RGBA color)
 {
     int32_t y_end = pos_begin.y + length;
-    for (; pos_begin.y <= y_end; pos_begin.y++)
-        DrawPixel(pos_begin, color);
+    for (int32_t y = pos_begin.y; y <= y_end; y++)
+        DrawPixel(pos_begin.x, y, color);
 }
 
 void DisplayInterface::DrawLine(Vec2i32 pos_begin, Vec2i32 pos_end, RGBA color)

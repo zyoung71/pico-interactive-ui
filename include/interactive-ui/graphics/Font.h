@@ -22,13 +22,13 @@ struct Font
 
     // ASCII 32 = (space) character
     // ASCII 126 = (~) character
-    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t ascii_begin = 32, uint8_t ascii_end = 126>
+    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t ascii_begin = ' ', uint8_t ascii_end = '~'>
     static consteval Font BuildFont(const uint8_t data[char_width * (ascii_end - ascii_begin)])
     {
         return Font(char_height, char_width, char_spacing, ascii_begin, ascii_end, data, char_width * (ascii_end - ascii_begin));
     }
 
-    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t ascii_begin = 32, uint8_t ascii_end = 126>
+    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t ascii_begin = ' ', uint8_t ascii_end = '~'>
     static consteval Font BuildFont(const uint8_t data[ascii_end - ascii_begin][char_width])
     {
         return Font(char_height, char_width, char_spacing, ascii_begin, ascii_end, data, char_width * (ascii_end - ascii_begin));
