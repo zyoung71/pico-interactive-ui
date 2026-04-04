@@ -15,10 +15,15 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint
         for (int32_t lp = 0; lp < ppl; lp++)
         {
             uint8_t line = font.char_bitmap[idx];
+            int32_t y;
             for (int32_t j = 0; j < 8; j++, line >>= 1)
             {
+                y = (lp << 3) + j;
+                if (y >= font.char_height)
+                    break;
+
                 if (line & 1)
-                    FillRectangle(pos + Vec2i32{width, (lp << 3) + j} * scale, scale_vec, color);
+                    FillRectangle(Vec2i32{(pos.x + width * (int32_t)scale), pos.y + y * (int32_t)scale}, scale_vec, color);
             }
             idx++;
         }
@@ -181,17 +186,22 @@ void DisplayInterface::DrawEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA colo
 
 void DisplayInterface::DrawRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
-    DrawHorizontalLine(pos, size.x, color);
-    DrawVerticalLine(pos, size.y, color);
-    pos.y += size.y;
-    DrawHorizontalLine(pos, size.x, color);
-    pos.x += size.x;
-    DrawVerticalLine(pos, size.y, color);
+    int32_t len_x = pos.x + size.x - 1;
+    int32_t len_y = pos.y + size.y - 1;
+    DrawHorizontalLineX1X2(pos.x, len_x, pos.y, color);
+    DrawHorizontalLineX1X2(pos.x, len_x, len_y, color);
+    DrawVerticalLineY1Y2(pos.y, len_y, pos.x, color);
+    DrawVerticalLineY1Y2(pos.y, len_y, len_x, color);
 }
 
 void DisplayInterface::DrawRectangle(AABBi32 dimensions, RGBA color)
 {
-    DrawRectangle(dimensions.min, dimensions.max, color);
+    int32_t len_x = dimensions.xmin + dimensions.xmax;
+    int32_t len_y = dimensions.ymin + dimensions.ymax;
+    DrawHorizontalLineX1X2(dimensions.xmin, len_x, dimensions.ymin, color);
+    DrawHorizontalLineX1X2(dimensions.xmin, len_x, len_y, color);
+    DrawVerticalLineY1Y2(dimensions.ymin, len_y, dimensions.xmin, color);
+    DrawVerticalLineY1Y2(dimensions.ymin, len_y, len_x, color);
 }
 
 void DisplayInterface::DrawRoundedRectangle(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color)
@@ -327,12 +337,14 @@ void DisplayInterface::FillEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA colo
 
 void DisplayInterface::FillRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
-    for (; pos.x < size.x; pos.x++)
-        for (; pos.y < size.y; pos.y++)
-            DrawPixel(pos, color);
+    for (int32_t x = pos.x; x < size.x; x++)
+        for (int32_t y = pos.y; y < size.y; y++)
+            DrawPixel(x, y, color);
 }
 
 void DisplayInterface::FillRectangle(AABBi32 dimensions, RGBA color)
 {
-    FillRectangle(dimensions.min, dimensions.max, color);
+    for (int32_t x = dimensions.xmin; x <= dimensions.xmax; x++)
+        for (int32_t y = dimensions.ymin; y <= dimensions.ymax; y++)
+            DrawPixel(x, y, color);
 }

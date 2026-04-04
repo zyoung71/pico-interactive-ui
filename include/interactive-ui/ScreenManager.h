@@ -81,11 +81,11 @@ public:
     {
         return screens.size();
     }
-    inline float GetRefreshRate() const
+    inline float GetTargetRefreshRate() const
     {
         return refresh_rate;
     }
-    inline void SetRefreshRate(float hz)
+    inline void SetTargetRefreshRate(float hz)
     {
         refresh_rate = hz;
         if (hz > 0.f)
