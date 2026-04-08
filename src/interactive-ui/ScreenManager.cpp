@@ -162,6 +162,8 @@ void ScreenManager::Update(float dt_override)
         cumulative_dt -= refresh_period;
         display->ClearDisplay();
         selected_screen->Update(dt_override);
+        if (enable_cursor)
+            cursor->GetComponent()->Update(dt_override, selected_screen);
         display->UpdateDisplay();
     }
 }

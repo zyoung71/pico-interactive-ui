@@ -29,6 +29,7 @@ public:
     void SetTextVerticalAlignment(AlignmentVertical align_v);
     void SetTextHorizontalAlignment(AlignmentHorizontal align_h);
     void SetTextAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h);
+    void SetTextAlignment(AlignmentHorizontal align_h, AlignmentVertical align_v);
 
     inline AlignmentVertical GetTextVerticalAlignment() const
     {

@@ -32,7 +32,7 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint
 
 void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font, uint32_t scale, RGBA color)
 {
-    for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_height) * scale)
+    for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_spacing) * scale)
     {
         pos.x = x_n;
         DrawCharacter(pos, *(text++), font, scale, color);
@@ -48,14 +48,20 @@ void DisplayInterface::DrawHorizontalLine(Vec2i32 pos_begin, int32_t length, RGB
 
 void DisplayInterface::DrawHorizontalLineX1X2(int32_t x1, int32_t x2, int32_t y, RGBA color)
 {
-    for (; x1 <= x2; x1++)
-        DrawPixel(x1, y, color);
+    if (x1 > x2)
+        std::swap(x1, x2);
+
+    for (int32_t x = x1; x <= x2; x++)
+        DrawPixel(x, y, color);
 }
 
 void DisplayInterface::DrawVerticalLineY1Y2(int32_t y1, int32_t y2, int32_t x, RGBA color)
 {
-    for (; y1 <= y2; y1++)
-        DrawPixel(x, y1, color);
+    if (y1 > y2)
+        std::swap(y1, y2);
+
+    for (int32_t y = y1; y <= y2; y++)
+        DrawPixel(x, y, color);
 }
 
 void DisplayInterface::DrawVerticalLine(Vec2i32 pos_begin, int32_t length, RGBA color)
@@ -197,11 +203,11 @@ void DisplayInterface::DrawRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 void DisplayInterface::DrawRectangle(AABBi32 dimensions, RGBA color)
 {
     int32_t len_x = dimensions.xmin + dimensions.xmax;
-    int32_t len_y = dimensions.ymin + dimensions.ymax;
+    int32_t len_y = dimensions.ymin + dimensions.ymax - 2; // sub 2 to avoid drawing corner pixels twice
     DrawHorizontalLineX1X2(dimensions.xmin, len_x, dimensions.ymin, color);
     DrawHorizontalLineX1X2(dimensions.xmin, len_x, len_y, color);
-    DrawVerticalLineY1Y2(dimensions.ymin, len_y, dimensions.xmin, color);
-    DrawVerticalLineY1Y2(dimensions.ymin, len_y, len_x, color);
+    DrawVerticalLineY1Y2(dimensions.ymin + 1, len_y, dimensions.xmin, color);
+    DrawVerticalLineY1Y2(dimensions.ymin + 1, len_y, len_x, color);
 }
 
 void DisplayInterface::DrawRoundedRectangle(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color)
@@ -337,8 +343,9 @@ void DisplayInterface::FillEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA colo
 
 void DisplayInterface::FillRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
-    for (int32_t x = pos.x; x < size.x; x++)
-        for (int32_t y = pos.y; y < size.y; y++)
+    Vec2i32 end = pos + size;
+    for (int32_t x = pos.x; x < end.x; x++)
+        for (int32_t y = pos.y; y < end.y; y++)
             DrawPixel(x, y, color);
 }
 

@@ -132,6 +132,13 @@ void TextComponent::SetTextAlignment(AlignmentVertical align_v, AlignmentHorizon
     Align();
 }
 
+void TextComponent::SetTextAlignment(AlignmentHorizontal align_h, AlignmentVertical align_v)
+{
+    text_vertical_alignment = align_v;
+    text_horizontal_alignment = align_h;
+    Align();
+}
+
 void TextBoxComponent::UpdateTextDimensions()
 {
     TextComponent::UpdateTextDimensions();

@@ -22,11 +22,10 @@ void PaddingComponent::Draw()
         display->FillRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), color);
     
     Vec2i32 offset;
-    Vec2i32 unit = {1, 1};
-    for (int32_t i = 1; i < thickness; i++)
+    for (int32_t i = 0; i < thickness; i++)
     {
         offset.x = i;
         offset.y = i;
-        display->DrawRectangle(origin_position + draw_dimensions.min + offset, draw_dimensions.Size() - offset - unit, color);
+        display->DrawRectangle(origin_position + draw_dimensions.min + offset, draw_dimensions.Size() - offset, color);
     }
 }
