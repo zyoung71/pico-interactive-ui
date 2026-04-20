@@ -144,13 +144,13 @@ void ScreenManager::Update()
     cumulative_dt += last_dt;
     if (cumulative_dt >= refresh_period)
     {
-        cumulative_dt -= refresh_period;
         selected_screen->ProcessQueuedControls();
         display->ClearDisplay();
-        selected_screen->Update(last_dt);
+        selected_screen->Update(cumulative_dt);
         if (enable_cursor)
-            cursor->GetComponent()->Update(last_dt, selected_screen);
+            cursor->GetComponent()->Update(cumulative_dt, selected_screen);
         display->UpdateDisplay();
+        cumulative_dt -= refresh_period;
     }
 }
 
