@@ -8,6 +8,7 @@ protected:
     Vec2i32 message_pixel_dimensions;
     Vec2i32 text_base_offset; // the offset from the min of the draw dimensions
     const char* text;
+    uint32_t font_scale = 1;
     AlignmentVertical text_vertical_alignment;
     AlignmentHorizontal text_horizontal_alignment;
     
@@ -15,7 +16,6 @@ protected:
 
 public:
     const Font* font;
-    uint32_t font_scale = 1;
 
 public:
     TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
@@ -26,6 +26,7 @@ public:
     virtual void Align() override;
 
     void SetText(const char* text);
+    void SetFontScale(uint32_t scale);
     void SetTextVerticalAlignment(AlignmentVertical align_v);
     void SetTextHorizontalAlignment(AlignmentHorizontal align_h);
     void SetTextAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h);
@@ -42,6 +43,10 @@ public:
     inline const char* GetText() const
     {
         return text;
+    }
+    inline uint32_t GetFontScale() const
+    {
+        return font_scale;
     }
 };
 
