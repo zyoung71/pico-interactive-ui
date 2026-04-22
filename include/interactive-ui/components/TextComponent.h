@@ -48,6 +48,10 @@ public:
     {
         return font_scale;
     }
+    inline Vec2i32 GetMessagePixelDimensions() const
+    {
+        return message_pixel_dimensions;
+    }
 };
 
 class TextBoxComponent : public TextComponent
