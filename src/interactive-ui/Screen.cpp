@@ -38,6 +38,7 @@ void Screen::HoverChange(bool instant) const
     MovementAnimation move(hover_design->GetComponent(), *easing_func);
     move.duration = animation_hover_duration;
     move.end_pos = hovered_component->origin_position;
+    move.end_pos_reference = hovered_component; // dynamically track location of component
     move.end_scale = hovered_component->draw_dimensions;
     move.end_scale.min -= hover_outline_width;
     move.end_scale.max += hover_outline_width;

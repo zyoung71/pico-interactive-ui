@@ -26,10 +26,13 @@ public:
     AABBi32 end_scale;
     Vec2i32 start_pos;
     Vec2i32 end_pos;
-    float duration = 1.f;
     Type type = NORMAL;
+    float duration = 1.f;
+    const Component* end_pos_reference = nullptr;
     bool transpose = true;
     bool scale = false;
+    bool set_to_end_pos_on_end = true;
+    bool set_to_end_scale_on_end = true;
 
     const FunctionLUT<float>& easing_func;
 

@@ -75,11 +75,19 @@ void Component::Update(float dt, const Screen* screen)
         if (!animation.moving)
             continue;
 
+        if (animation.end_pos_reference)
+            animation.end_pos = animation.end_pos_reference->GetOriginPosition();
+
         if (cancel_movements_flag)
         {
             animation.moving = false;
             MoveRefDec();
             
+            if (animation.set_to_end_pos_on_end && animation.transpose)
+                SetOriginPosition(animation.end_pos);
+            if (animation.set_to_end_scale_on_end && animation.scale)
+                SetDrawDimensions(animation.end_scale);
+
             if (animation.on_animation_end && animation.enable_callbacks)
                 animation.on_animation_end(&animation);
 
@@ -112,15 +120,15 @@ void Component::Update(float dt, const Screen* screen)
                         if (animation.on_animation_end && animation.enable_callbacks)
                             animation.on_animation_end(&animation);
                         
-                        if (animation.transpose)
+                        if (animation.transpose && animation.set_to_end_pos_on_end)
                         {
-                            origin_position = animation.start_pos;
+                            SetOriginPosition(animation.start_pos);
                             if ((Component*)screen->hovered_component == this)
                                 screen->hover_design->GetComponent()->SetOriginPosition(animation.start_pos);
                         }
-                        if (animation.scale)
+                        if (animation.scale && animation.set_to_end_scale_on_end)
                         {
-                            draw_dimensions = animation.end_scale;
+                            SetDrawDimensions(animation.end_scale);
                             if ((Component*)screen->hovered_component == this)
                                 screen->hover_design->GetComponent()->SetDrawDimensions(animation.start_scale);   
                         }
@@ -150,15 +158,15 @@ void Component::Update(float dt, const Screen* screen)
                         if (animation.on_animation_end && animation.enable_callbacks)
                             animation.on_animation_end(&animation);
                         
-                        if (animation.transpose)
+                        if (animation.transpose && animation.set_to_end_pos_on_end)
                         {
-                            origin_position = animation.end_pos;
+                            SetOriginPosition(animation.end_pos);
                             if ((Component*)screen->hovered_component == this)
                                 screen->hover_design->GetComponent()->SetOriginPosition(animation.end_pos);
                         }
-                        if (animation.scale)
+                        if (animation.scale && animation.set_to_end_scale_on_end)
                         {
-                            draw_dimensions = animation.end_scale;
+                            SetDrawDimensions(animation.end_scale);
                             if ((Component*)screen->hovered_component == this)
                                 screen->hover_design->GetComponent()->SetDrawDimensions(animation.end_scale);   
                         }
@@ -188,14 +196,14 @@ void Component::Update(float dt, const Screen* screen)
         if (animation.transpose)
         {
             Vec2i32 pos = animation.start_pos + (Vec2f)animation.GetTransposeDelta() * eased;
-            origin_position = pos;
+            SetOriginPosition(pos);
             if ((Component*)screen->hovered_component == this)
                 screen->hover_design->GetComponent()->SetOriginPosition(pos);
         }
         if (animation.scale)
         {
             Vec4i32 scale = animation.start_scale.vec + (Vec4f)animation.GetScaleDelta() * eased;
-            draw_dimensions.vec = scale;
+            SetDrawDimensions(scale);
             if ((Component*)screen->hovered_component == this)
                 screen->hover_design->GetComponent()->SetDrawDimensions(scale);
         }
