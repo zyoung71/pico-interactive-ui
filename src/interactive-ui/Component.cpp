@@ -75,8 +75,15 @@ void Component::Update(float dt, const Screen* screen)
         if (!animation.moving)
             continue;
 
+        if (animation.start_pos_reference)
+            animation.start_pos = animation.start_pos_reference->GetOriginPosition();
         if (animation.end_pos_reference)
             animation.end_pos = animation.end_pos_reference->GetOriginPosition();
+
+        if (animation.start_scale_reference)
+            animation.start_scale = animation.start_scale_reference->GetDrawDimensions();
+        if (animation.end_scale_reference)
+            animation.end_scale = animation.end_scale_reference->GetDrawDimensions();
 
         if (cancel_movements_flag)
         {

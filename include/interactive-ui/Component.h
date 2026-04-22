@@ -28,7 +28,10 @@ public:
     Vec2i32 end_pos;
     Type type = NORMAL;
     float duration = 1.f;
+    const Component* start_pos_reference = nullptr;
     const Component* end_pos_reference = nullptr;
+    const Component* start_scale_reference = nullptr;
+    const Component* end_scale_reference = nullptr;
     bool transpose = true;
     bool scale = false;
     bool set_to_end_pos_on_end = true;
