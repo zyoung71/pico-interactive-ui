@@ -25,26 +25,26 @@ bool Screen::_ComponentCompare(const Component* a, const Component* b)
 
 void Screen::HoverChange(bool instant) const
 {
-    constexpr Vec2i32 hover_outline_width = Vec2i32{2, 2};
+    constexpr Vec4i32 hover_outline_width = Vec4i32{-2, -2, 2, 2};
+
+    Component* design_component = hover_design->GetComponent();
 
     if (instant || animation_hover_duration <= 0.f)
     {
-        hover_design->GetComponent()->origin_position = hovered_component->origin_position;
-        hover_design->GetComponent()->draw_dimensions = hovered_component->draw_dimensions;
-        hover_design->GetComponent()->draw_dimensions.min -= hover_outline_width;
-        hover_design->GetComponent()->draw_dimensions.max += hover_outline_width;
+        design_component->SetOriginPosition(hovered_component->origin_position);
+        design_component->SetDrawDimensions(hovered_component->draw_dimensions.vec + hover_outline_width);
         return;
     }
-    MovementAnimation move(hover_design->GetComponent(), *easing_func);
+
+    MovementAnimation move(design_component, *easing_func);
     move.duration = animation_hover_duration;
     move.end_pos = hovered_component->origin_position;
     move.end_pos_reference = hovered_component; // dynamically track location of component
     move.end_scale = hovered_component->draw_dimensions;
-    move.end_scale.min -= hover_outline_width;
-    move.end_scale.max += hover_outline_width;
+    move.end_scale.vec += hover_outline_width;
     move.transpose = true;
     move.scale = true;
-    hover_design->GetComponent()->Move(move);
+    design_component->Move(move);
 }
 
 Screen::Screen(ScreenManager* manager, uint32_t width, uint32_t height)
