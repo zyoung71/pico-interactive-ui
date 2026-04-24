@@ -12,10 +12,14 @@ namespace graphics
         Vec4u8 vrgba;
         Vec3u8 vrgb;
         uint32_t rgba;
-        uint8_t red;
-        uint8_t green;
-        uint8_t blue;
-        uint8_t alpha;
+
+        struct
+        {
+            uint8_t red;
+            uint8_t green;
+            uint8_t blue;
+            uint8_t alpha;
+        };
 
         constexpr inline operator uint32_t() const
         {
@@ -43,9 +47,13 @@ namespace graphics
     union HSV
     {
         Vec3f v;
-        float hue;
-        float saturation;
-        float brightness;
+        
+        struct
+        {
+            float hue;
+            float saturation;
+            float brightness;
+        };
 
         constexpr static inline HSV HSV_unchecked(Vec3f v)
         {
