@@ -300,25 +300,6 @@ void Component::SetDrawDimensions(const AABBi32& dims)
     draw_dimensions = dims;
 }
 
-void Component::SetVerticalAlignment(AlignmentVertical align_v)
-{
-    vertical_alignment = align_v;
-    Align();
-}
-
-void Component::SetHorizontalAlignment(AlignmentHorizontal align_h)
-{
-    horizontal_alignment = align_h;
-    Align();
-}
-
-void Component::SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
-{
-    vertical_alignment = align_v;
-    horizontal_alignment = align_h;
-    Align();
-}
-
 void Component::SetZLayer(int32_t layer)
 {
     z_layer = layer;

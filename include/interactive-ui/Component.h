@@ -124,9 +124,27 @@ public:
     virtual void SetOriginPosition(const Vec2i32& pos);
     virtual void SetDrawDimensions(const AABBi32& dims);
 
-    void SetVerticalAlignment(AlignmentVertical align_v);
-    void SetHorizontalAlignment(AlignmentHorizontal align_h);
-    void SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h);
+    virtual inline void SetVerticalAlignment(AlignmentVertical align_v)
+    {
+        vertical_alignment = align_v;
+        Align();
+    }
+    virtual inline void SetHorizontalAlignment(AlignmentHorizontal align_h)
+    {
+        horizontal_alignment = align_h;
+        Align();
+    }
+    virtual inline void SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
+    {
+        vertical_alignment = align_v;
+        horizontal_alignment = align_h;
+        Align();
+    }
+    inline void SetAlignment(AlignmentHorizontal align_h, AlignmentVertical align_v)
+    {
+        SetAlignment(align_v, align_h);
+    }
+
     void SetZLayer(int32_t z_layer);
 
     bool Move(MovementAnimation animation, bool reversed = false, bool enable_callbacks = true);

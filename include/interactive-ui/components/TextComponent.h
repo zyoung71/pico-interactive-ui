@@ -27,6 +27,13 @@ public:
 
     void SetText(const char* text);
     void SetFontScale(uint32_t scale);
+
+    /**
+     * NOTE: These functions are aimed to align text dependent on draw dimenions.
+     * Regular, unmodified TextComponents do not adjust the draw dimensions outside
+     * the actual dimensions of the text. If you are looking to adjust around the
+     * origin position, please use the SetAlignment family of functions.
+     */
     void SetTextVerticalAlignment(AlignmentVertical align_v);
     void SetTextHorizontalAlignment(AlignmentHorizontal align_h);
     void SetTextAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h);
