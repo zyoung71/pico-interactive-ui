@@ -26,7 +26,7 @@ BitmapComponent::BitmapComponent(ScreenManager* manager, const Vec2f& screen_per
 
 void BitmapComponent::Draw()
 {
-    Vec2i32 end = origin_position + draw_dimensions.max - draw_dimensions.min;
+    Vec2i32 end = origin_position + draw_dimensions.Size();
     int32_t x_0 = 0, y_0 = 0; // Bitmap's local coords
 
     // so... much... boilerplate... all for optimization
@@ -38,7 +38,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = end.x - 1; x >= origin_position.x; x--)
                 {
-                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
+                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;
@@ -51,7 +51,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = end.x - 1; x >= origin_position.x; x--)
                 {
-                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
+                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;
@@ -67,7 +67,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = origin_position.x; x < end.x; x++)
                 {
-                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
+                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;
@@ -80,7 +80,7 @@ void BitmapComponent::Draw()
             {
                 for (int32_t x = origin_position.x; x < end.x; x++)
                 {
-                    display->DrawPixel(Vec2i32{x, y} + draw_dimensions.min, pixel_map(y_0, x_0));
+                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
                     x_0++;
                 }
                 x_0 = 0;
