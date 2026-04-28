@@ -5,14 +5,14 @@
 #include "PaddingComponent.h"
 #include "BitmapComponent.h"
 
-constexpr uint32_t data_dropdown_arrow[4][7] = {
+constexpr RGBA data_dropdown_arrow[4][7] = {
     {1, 1, 1, 1, 1, 1, 1},
     {0, 1, 1, 1, 1, 1, 0},
     {0, 0, 1, 1, 1, 0, 0},
     {0, 0, 0, 1, 0, 0, 0}
 };
 
-constexpr ArrayView2D<uint32_t> bitmap_dropdown_arrow = make_array_view(data_dropdown_arrow);
+constexpr ArrayView2D<RGBA> bitmap_dropdown_arrow = make_array_view(data_dropdown_arrow);
 
 class DropDownBoxComponent : public Component
 {
