@@ -13,12 +13,12 @@ namespace graphics
         Vec3u8 vrgb;
         uint32_t rgba;
 
-        struct
+        struct // this has to be layed out in reverse to match little endian behavior!
         {
-            uint8_t red;
-            uint8_t green;
-            uint8_t blue;
             uint8_t alpha;
+            uint8_t blue;
+            uint8_t green;
+            uint8_t red;
         };
 
         constexpr inline operator uint32_t() const
