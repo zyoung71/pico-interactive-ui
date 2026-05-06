@@ -2,8 +2,7 @@
 
 #include "TextComponent.h"
 
-// WIP class
-
+// WIP class do not use
 class ProgressBarComponent : public TextBoxComponent
 {
 protected:

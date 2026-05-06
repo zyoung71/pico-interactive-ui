@@ -17,7 +17,7 @@ void FunctionComponent::RedoFunctionLUT()
     }
 }
 
-void FunctionComponent::DrawThickness(size_t i)
+void FunctionComponent::DrawThickness(size_t i, const Vec2i32& pos)
 {
     float v_prev = function_value_lut[std::max(i - 1, 0U)];
     float v_curr = function_value_lut[i];
@@ -36,7 +36,7 @@ void FunctionComponent::DrawThickness(size_t i)
     for (int32_t j = -half; j <= half; j++)
     {
         Vec2f pixel_f = on_curve + norm * (float)j;
-        display->DrawPixel(origin_position + draw_dimensions.min + Vec2i32{(int32_t)std::round(pixel_f.x), (int32_t)std::round(pixel_f.y)}, color);
+        display->DrawPixel(pos + draw_dimensions.min + Vec2i32{(int32_t)std::round(pixel_f.x), (int32_t)std::round(pixel_f.y)}, color);
     }
 }
 
@@ -53,14 +53,15 @@ void FunctionComponent::AutoFit()
     amplitude = draw_dimensions.Height() / (extrema.y - extrema.x);
 }
 
-void FunctionComponent::Draw()
+void FunctionComponent::Draw(const Screen* screen)
 {
+    Vec2i32 ss_pos = screen->ToScreenCoords(origin_position);
     if (inversed)
         for (int32_t y = draw_dimensions.Height() - 1; y >= 0; y--)
-            DrawThickness(y);
+            DrawThickness(y, ss_pos);
     else
         for (int32_t x = 0; x < draw_dimensions.Width(); x++)
-            DrawThickness(x);
+            DrawThickness(x, ss_pos);
 }
 
 void FunctionComponent::Scale(const Vec2f& scale_vec)

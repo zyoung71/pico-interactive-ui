@@ -43,7 +43,7 @@ public:
     }
 
     void Update(float dt, const Screen* screen);
-    void Draw() override;
+    void Draw(const Screen* screen) override;
     void Align() override;
     void Scale(const Vec2f& scale_vec) override;
 

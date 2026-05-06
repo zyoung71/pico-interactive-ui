@@ -7,7 +7,7 @@ class FunctionComponent : public SelectableComponent, public IThickness<uint32_t
 {
 private:
     void RedoFunctionLUT();
-    void DrawThickness(size_t i);
+    void DrawThickness(size_t i, const Vec2i32& pos);
 
 protected:
     std::vector<float> function_value_lut;
@@ -23,7 +23,7 @@ public:
 public:
     FunctionComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, MathFunction<float> func_raw, int32_t z_layer, Screen* initial_screen = nullptr);
 
-    void Draw() override;
+    void Draw(const Screen* screen) override;
     void Scale(const Vec2f& scale_vec) override;
 
     void SetDrawDimensions(const AABBi32& dims) override;
@@ -65,9 +65,5 @@ public:
     inline void SetThickness(uint32_t thick) override
     {
         thickness = thick;
-    }
-    inline Component* GetComponent() const override
-    {
-        return (Component*)this;
     }
 };

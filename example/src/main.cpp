@@ -4,8 +4,6 @@
 #include <interactive-ui/components/TextComponent.h>
 #include <interactive-ui/components/FunctionComponent.h>
 
-#include <math/Graphics.h>
-
 static constexpr Vec2i32 screen_dimensions = Vec2i32(128, 64);
 
 int main()

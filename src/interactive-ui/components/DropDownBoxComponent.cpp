@@ -27,12 +27,11 @@ void DropDownBoxComponent::Update(float dt, const Screen* screen)
     options.Update(dt, screen);
 }
 
-void DropDownBoxComponent::Draw()
+void DropDownBoxComponent::Draw(const Screen* screen)
 {
-    Component::Draw();
-    arrow_box.Draw();
-    arrow.Draw();
-    options.Draw();
+    arrow_box.Draw(screen);
+    arrow.Draw(screen);
+    options.Draw(screen);
 }
 
 void DropDownBoxComponent::Align()

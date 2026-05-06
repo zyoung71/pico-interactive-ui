@@ -8,7 +8,7 @@
 #include <pico/util/queue.h>
 
 #include "DisplayInterface.h"
-#include "mixin/CursorMixin.h"
+#include "iface/CursorMixin.h"
 
 class Screen;
 
@@ -24,6 +24,7 @@ private:
     Screen* selected_screen;
 
     float last_dt = 0.f;
+    float cumulative_dt = 0.f;
 
     int master_component_moving_reference_count = 0;
 

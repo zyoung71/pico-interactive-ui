@@ -31,5 +31,5 @@ public:
     void SetPixels(const ArrayView<Pixel>& pixels);
     void SetPixels(const Pixel* pixels, size_t p_count);
 
-    void Draw() override;
+    void Draw(const Screen* screen) override;
 };

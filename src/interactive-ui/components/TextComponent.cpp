@@ -48,7 +48,7 @@ TextComponent::TextComponent(ScreenManager* manager, const Vec2f& screen_percent
     draw_dimensions.max = message_pixel_dimensions;   
 }
 
-void TextComponent::Draw()
+void TextComponent::Draw(const Screen* screen)
 {
     size_t len = strlen(text) + 1;
     char vbuff[len];
@@ -94,7 +94,7 @@ void TextComponent::Draw()
             }
         }
 
-        display->DrawText(origin_position + draw_dimensions.min + text_offset, vbuff + track, *font, font_scale, color);
+        display->DrawText(screen->ToScreenCoords(origin_position) + draw_dimensions.min + text_offset, vbuff + track, *font, font_scale, color);
         track = span + 1;
     }
 }
@@ -199,13 +199,15 @@ TextBoxComponent::TextBoxComponent(ScreenManager* manager, const Vec2f& screen_p
     UpdateTextDimensions();
 }
 
-void TextBoxComponent::Draw()
+void TextBoxComponent::Draw(const Screen* screen)
 {
-    if (clear_bg)
-        display->FillRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), colors::CLEAR);
+    Vec2i32 ss_pos = screen->ToScreenCoords(origin_position);
 
-    display->DrawRectangle(origin_position + draw_dimensions.min, draw_dimensions.Size(), color); // box
-    TextComponent::Draw();
+    if (clear_bg)
+        display->FillRectangle(ss_pos + draw_dimensions.min, draw_dimensions.Size(), colors::CLEAR);
+
+    display->DrawRectangle(ss_pos + draw_dimensions.min, draw_dimensions.Size(), color); // box
+    TextComponent::Draw(screen);
 }
 
 void TextBoxComponent::Align()

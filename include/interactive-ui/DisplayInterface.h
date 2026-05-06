@@ -24,6 +24,10 @@ public:
     virtual ~DisplayInterface() = default;
 
     virtual Vec2u32 GetDimensions() const = 0;
+    inline AABBi32 GetDimensionsAABB() const
+    {
+        return AABBi32{0, 0, static_cast<int32_t>(GetDimensions().x), static_cast<int32_t>(GetDimensions().y)};
+    }
 
     virtual void UpdateDisplay() = 0;
     virtual void Power(bool power_on) = 0;

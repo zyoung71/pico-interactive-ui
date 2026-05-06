@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Screen.h"
-#include <math/Graphics.h>
 #include <math/AABB.h>
 
 class Component;
@@ -102,7 +101,7 @@ protected:
     int32_t z_layer;
 
 public:
-    uint32_t color;
+    RGBA color;
 
 public:
     const bool selectable; // Smallest overhead without enabling RTTI.
@@ -113,7 +112,7 @@ public:
     virtual ~Component();
 
     virtual void Update(float dt, const Screen* screen);
-    virtual void Draw() = 0;
+    virtual void Draw(const Screen* screen) = 0;
 
     virtual void OnEnterScreen(const Screen* screen) {}
     virtual void OnExitScreen(const Screen* screen) {}
@@ -124,17 +123,17 @@ public:
     virtual void SetOriginPosition(const Vec2i32& pos);
     virtual void SetDrawDimensions(const AABBi32& dims);
 
-    virtual inline void SetVerticalAlignment(AlignmentVertical align_v)
+    inline void SetVerticalAlignment(AlignmentVertical align_v)
     {
         vertical_alignment = align_v;
         Align();
     }
-    virtual inline void SetHorizontalAlignment(AlignmentHorizontal align_h)
+    inline void SetHorizontalAlignment(AlignmentHorizontal align_h)
     {
         horizontal_alignment = align_h;
         Align();
     }
-    virtual inline void SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
+    inline void SetAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
     {
         vertical_alignment = align_v;
         horizontal_alignment = align_h;
@@ -192,6 +191,10 @@ public:
     inline Vec2i32 GetOriginPosition() const
     {
         return origin_position;
+    }
+    inline AABBi32 GetGlobalDimensions() const
+    {
+        return AABBi32{GetDrawDimensions().min + origin_position, GetDrawDimensions().max + origin_position};
     }
 
     friend Screen;

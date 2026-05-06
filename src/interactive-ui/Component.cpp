@@ -8,7 +8,7 @@ MovementAnimation::MovementAnimation(const Component* component, const FunctionL
 }
 
 MovementAnimation::MovementAnimation()
-    : start_pos(0, 0), easing_func(graphics::easing::lut_sine_in_out), start_scale(0, 0, 0, 0)
+    : start_pos(0, 0), easing_func(easing::lut_sine_in_out), start_scale(0, 0, 0, 0)
 {
 }
 
@@ -231,9 +231,10 @@ void Component::Update(float dt, const Screen* screen)
     if (forced_visibility && personal_visibility)
     {
         AABBi32 check_bounds(origin_position + draw_dimensions.min, origin_position + draw_dimensions.max);
-        if (check_bounds.Intersects(screen->dimensions))
+        // only draw if it falls inside the screen dimensions, and the whole display dimensions
+        if (check_bounds.Intersects(screen->dimensions) && check_bounds.Intersects(display->GetDimensionsAABB()))
         {
-            Draw(); // draw last
+            Draw(screen); // draw last
         }
     }
 }

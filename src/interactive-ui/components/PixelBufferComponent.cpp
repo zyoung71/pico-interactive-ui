@@ -111,10 +111,11 @@ void PixelBufferComponent::SetPixels(const Pixel* pixels, size_t p_count)
     Align();
 }
 
-void PixelBufferComponent::Draw()
+void PixelBufferComponent::Draw(const Screen* screen)
 {
+    Vec2i32 ss_pos = screen->ToScreenCoords(origin_position);
     for (const auto& [p, c] : pixel_map)
     {
-        display->DrawPixel(p + origin_position + draw_dimensions.min, c);
+        display->DrawPixel(p + ss_pos + draw_dimensions.min, c);
     }
 }

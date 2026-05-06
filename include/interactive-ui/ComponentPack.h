@@ -12,14 +12,14 @@ public:
     virtual ~ComponentPack() = default;
 
     virtual void Update(float dt, const Screen* screen) override;
-    virtual void Draw() override;
+    virtual void Draw(const Screen* screen) override;
     virtual void Align() override;
     virtual void Scale(const Vec2f& scale_vec) override;
 
     virtual void ForceVisibility(bool visibility) override;
     virtual void SetPersonalVisibility(bool visibility) override;
 
-    virtual void AddSubcomponent(Component* component);
+    void AddSubcomponent(Component* component);
     void SortSubcomponents();
 
 };

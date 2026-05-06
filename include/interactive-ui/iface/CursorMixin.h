@@ -1,10 +1,9 @@
 #pragma once
 
 #include <hardware/GPIODevice.h>
+#include "../iface/IComponentSupplier.h"
 
-class Component;
-
-class CursorMixin
+class CursorMixin : public IComponentSupplier
 {
 public:
     float velocity = 10.f; // pixels per second
@@ -31,7 +30,4 @@ public:
 
     virtual void OnHoverOverComponent(const Component* component) = 0;
     virtual void OnUnhoverOverComponent(const Component* component) = 0;
-    virtual Component* GetComponent() const = 0;
-
-    
 };

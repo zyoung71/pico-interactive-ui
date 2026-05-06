@@ -6,6 +6,7 @@ if (NOT TARGET pico-interactive-ui)
         src/interactive-ui/ScreenManager.cpp
         src/interactive-ui/Component.cpp
         src/interactive-ui/SelectableComponent.cpp
+        src/interactive-ui/ComponentPack.cpp
         src/interactive-ui/components/BitmapComponent.cpp
         src/interactive-ui/components/PixelBufferComponent.cpp
         src/interactive-ui/components/PaddingComponent.cpp

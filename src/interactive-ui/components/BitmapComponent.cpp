@@ -24,38 +24,72 @@ BitmapComponent::BitmapComponent(ScreenManager* manager, const Vec2f& screen_per
     draw_dimensions.max = Vec2i32{(int32_t)pixels.cols, (int32_t)pixels.rows};
 }
 
-void BitmapComponent::Draw()
+void BitmapComponent::Draw(const Screen* screen)
 {
-    Vec2i32 end = origin_position + draw_dimensions.Size();
-    int32_t x_0 = 0, y_0 = 0; // Bitmap's local coords
+    Vec2i32 ss_pos = screen->ToScreenCoords(origin_position);
 
+    Vec2i32 end = ss_pos + draw_dimensions.Size();
+    int32_t x_0 = 0, y_0 = 0; // Bitmap's local coords
+    
     // so... much... boilerplate... all for optimization
     if (mirror_horizontally)
     {
         if (mirror_vertically)
         {
-            for (int32_t y = end.y - 1; y >= origin_position.y; y--)
+            if (override_color)
             {
-                for (int32_t x = end.x - 1; x >= origin_position.x; x--)
+                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
                 {
-                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
-                    x_0++;
+                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
                 }
-                x_0 = 0;
-                y_0++;
+            }
+            else
+            {
+                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
+                {
+                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
+                }
             }
         }
         else
         {
-            for (int32_t y = origin_position.y; y < end.y; y++)
+            if (override_color)
             {
-                for (int32_t x = end.x - 1; x >= origin_position.x; x--)
+                for (int32_t y = ss_pos.y; y < end.y; y++)
                 {
-                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
-                    x_0++;
+                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
                 }
-                x_0 = 0;
-                y_0++;
+            }
+            else
+            {
+                for (int32_t y = ss_pos.y; y < end.y; y++)
+                {
+                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
+                }
             }
         }
     }
@@ -63,28 +97,60 @@ void BitmapComponent::Draw()
     {
         if (mirror_vertically)
         {
-            for (int32_t y = end.y - 1; y >= origin_position.y; y--)
+            if (override_color)
             {
-                for (int32_t x = origin_position.x; x < end.x; x++)
+                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
                 {
-                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
-                    x_0++;
+                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
                 }
-                x_0 = 0;
-                y_0++;
+            }
+            else
+            {
+                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
+                {
+                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
+                }
             }
         }
         else
         {
-            for (int32_t y = origin_position.y; y < end.y; y++)
+            if (override_color)
             {
-                for (int32_t x = origin_position.x; x < end.x; x++)
+                for (int32_t y = ss_pos.y; y < end.y; y++)
                 {
-                    display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
-                    x_0++;
+                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
                 }
-                x_0 = 0;
-                y_0++;
+            }
+            else
+            {
+                for (int32_t y = ss_pos.y; y < end.y; y++)
+                {
+                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    {
+                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        x_0++;
+                    }
+                    x_0 = 0;
+                    y_0++;
+                }
             }
         }
     }

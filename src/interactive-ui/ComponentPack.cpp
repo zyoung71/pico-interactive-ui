@@ -14,10 +14,10 @@ void ComponentPack::Update(float dt, const Screen* screen)
         c->Update(dt, screen);
 }
 
-void ComponentPack::Draw()
+void ComponentPack::Draw(const Screen* screen)
 {
     for (auto c : subcomponents)
-        c->Draw();
+        c->Draw(screen);
 }
 
 void ComponentPack::Align()
@@ -56,19 +56,17 @@ void ComponentPack::AddSubcomponent(Component* comp)
 void ComponentPack::SortSubcomponents()
 {
     std::sort(subcomponents.begin(), subcomponents.end(), Screen::_ComponentCompare);
-    Vec2i32 low, high;
+    AABBi32 c_dims;
     for (auto c : subcomponents)
     {
-        Vec2i32 origin = c->GetOriginPosition();
-        if (origin.x < low.x)
-            low.x = origin.x;
-        if (origin.y < low.y)
-            low.y = origin.y;
-        if (origin.x > high.x)
-            high.x = origin.x;
-        if (origin.y > high.y)
-            high.y = origin.y;
+        c_dims = c->GetDrawDimensions();
+        if (c_dims.xmin < draw_dimensions.xmin)
+            draw_dimensions.xmin = c_dims.xmin;
+        if (c_dims.ymin < draw_dimensions.ymin)
+            draw_dimensions.ymin = c_dims.ymin;
+        if (c_dims.xmax > draw_dimensions.xmax)
+            draw_dimensions.xmax = c_dims.xmax;
+        if (c_dims.ymax > draw_dimensions.ymax)
+            draw_dimensions.ymax = c_dims.ymax;
     }
-    draw_dimensions.min = low;
-    draw_dimensions.max = high;
 }

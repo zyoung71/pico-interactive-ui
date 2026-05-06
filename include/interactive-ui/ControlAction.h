@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 enum ControlAction : uint64_t
 {
     SELECT0 = 1 << 0,

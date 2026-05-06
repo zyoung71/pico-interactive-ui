@@ -136,8 +136,6 @@ void ScreenManager::UpdateDeltaTime()
     then = now;
 }
 
-static float cumulative_dt = 0.f;
-
 void ScreenManager::Update()
 {
     UpdateDeltaTime();

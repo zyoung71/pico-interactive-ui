@@ -10,7 +10,7 @@ protected:
     uint32_t thickness = 1;
     
 public:
-    uint32_t fill_color;
+    RGBA fill_color;
     bool outlined = true;
     bool fill_if_outlined = false;
 
@@ -18,7 +18,7 @@ public:
     PaddingComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& size, int32_t z_layer, Screen* initial_screen = nullptr);
     PaddingComponent(ScreenManager* manager, const Vec2f& screen_percentage, const Vec2i32& size, int32_t z_layer, Screen* initial_screen);
 
-    void Draw() override;
+    void Draw(const Screen* screen) override;
 
     inline uint32_t GetThickness() const override
     {
@@ -27,9 +27,5 @@ public:
     inline void SetThickness(uint32_t thick) override
     {
         thickness = thick;
-    }
-    inline Component* GetComponent() const override
-    {
-        return (Component*)this;
     }
 };

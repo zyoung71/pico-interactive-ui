@@ -5,16 +5,33 @@
 
 #include <algorithm>
 
-class DefaultHoverDesignComponent : public PaddingComponent
+class DefaultHoverDesignComponent : public PaddingComponent, public HoverMixin
 {
 public:
     DefaultHoverDesignComponent(ScreenManager* manager, Screen* initial_screen)
-        : PaddingComponent(manager, Vec2i32{-1, -1}, Vec2i32{0, 0}, Screen::hover_z_layer, initial_screen) {}
+        : PaddingComponent(manager, hover_initial_position, Vec2i32{0, 0}, hover_z_layer, initial_screen) {}
 
-    void Update(float dt, const Screen* screen) override
+    // void Update(float dt, const Screen* screen) override
+    // {
+    //     screen->HoverChange(true);
+    //     PaddingComponent::Update(dt, screen);
+    // }
+
+    inline void OnLock() override
     {
-        screen->HoverChange(true);
-        PaddingComponent::Update(dt, screen);
+        SetThickness(2);
+    }
+    inline void OnUnlock() override
+    {
+        SetThickness(1);
+    }
+    constexpr inline AABBi32 GetDrawOffset() const override
+    {
+        return AABBi32{-2, -2, 2, 2};
+    }
+    inline Component* GetComponent() const override
+    {
+        return (Component*)this;
     }
 };
 
@@ -25,14 +42,12 @@ bool Screen::_ComponentCompare(const Component* a, const Component* b)
 
 void Screen::HoverChange(bool instant) const
 {
-    constexpr Vec4i32 hover_outline_width = Vec4i32{-2, -2, 2, 2};
-
     Component* design_component = hover_design->GetComponent();
 
     if (instant || animation_hover_duration <= 0.f)
     {
         design_component->SetOriginPosition(hovered_component->origin_position);
-        design_component->SetDrawDimensions(hovered_component->draw_dimensions.vec + hover_outline_width);
+        design_component->SetDrawDimensions(hovered_component->draw_dimensions.vec + hover_design->GetDrawOffset().vec);
         return;
     }
 
@@ -41,7 +56,7 @@ void Screen::HoverChange(bool instant) const
     move.end_pos = hovered_component->origin_position;
     move.end_pos_reference = hovered_component; // dynamically track location of component
     move.end_scale = hovered_component->draw_dimensions;
-    move.end_scale.vec += hover_outline_width;
+    move.end_scale.vec += hover_design->GetDrawOffset().vec;
     move.transpose = true;
     move.scale = true;
     design_component->Move(move);
@@ -63,6 +78,30 @@ Screen::Screen(const Screen& to_copy)
     component_moving_reference_count(0), hovered_component(to_copy.hovered_component), animation_hover_duration(to_copy.animation_hover_duration),
     display(to_copy.display), manager(to_copy.manager), hover_design(std::make_unique<DefaultHoverDesignComponent>(to_copy.manager, this))
 {
+}
+
+Vec2i32 Screen::ToScreenCoords(const Vec2i32& initial_pos) const
+{
+    switch (cspace_h)
+    {
+        case LEFT_TO_RIGHT: // screen X coords increase from left to right
+            switch (cspace_v)
+            {
+                case TOP_TO_BOTTOM: // screen Y coords increase from top to bottom
+                    return initial_pos + origin_point;
+                case BOTTOM_TO_TOP: // screen Y coords increase from bottom to top
+                    return Vec2i32{initial_pos.x + origin_point.x, dimensions.ymax - (initial_pos.y + origin_point.y)};
+            }
+        case RIGHT_TO_LEFT: // screen X coords increase from right to left
+            switch (cspace_v)
+            {
+                case TOP_TO_BOTTOM:
+                    return Vec2i32{dimensions.xmax - (initial_pos.x + origin_point.x), initial_pos.y + origin_point.y};
+                case BOTTOM_TO_TOP:
+                    return dimensions.max - (initial_pos + origin_point);
+            }
+    }
+    __builtin_unreachable();
 }
 
 void Screen::AddComponent(Component* component)
@@ -91,6 +130,7 @@ void Screen::HoverComponent(SelectableComponent* comp, bool instant) // may be u
                 hovered_component->OnComponentUnhovered();
 
         hovered_component = comp;
+        hover_design->hovered_component = comp;
         hovered_component->OnComponentHovered();
         // in order for any component to move automatically,
         // the screen manager must have the screen added to its set
@@ -104,6 +144,7 @@ void Screen::UnhoverComponent()
     if (hovered_component)
     {
         hovered_component->OnComponentUnhovered();
+        hover_design->hovered_component = nullptr;
         hovered_component = nullptr;
     }
 }
@@ -184,7 +225,7 @@ void Screen::OnScreenDeselect()
         c->ForceVisibility(false);
         c->OnExitScreen(this);
     }
-    hover_design->SetThickness(1);
+    hover_design->OnUnlock(); // if locked, unlock
 }
 
 void Screen::ProcessQueuedControls()
