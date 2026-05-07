@@ -3,12 +3,12 @@
 #include <cstring>
 
 MovementAnimation::MovementAnimation(const Component* component, const FunctionLUT<float>& easing_func)
-    : start_pos(component->origin_position), easing_func(easing_func), start_scale(component->draw_dimensions)
+    : start_pos(component->origin_position), easing_func(&easing_func), start_scale(component->draw_dimensions)
 {
 }
 
-MovementAnimation::MovementAnimation()
-    : start_pos(0, 0), easing_func(easing::lut_sine_in_out), start_scale(0, 0, 0, 0)
+MovementAnimation::MovementAnimation(const FunctionLUT<float>& easing_func)
+    : start_pos(0, 0), easing_func(&easing_func), start_scale(0, 0, 0, 0)
 {
 }
 
@@ -193,11 +193,13 @@ void Component::Update(float dt, const Screen* screen)
             }
         }
         // if an animation is done playing for good, the code below should NOT be ran
+        if (animation.on_animation_update && animation.enable_callbacks)
+            animation.on_animation_update(&animation);
 
         ani_arr[idx++] = &animation; // add to array for later use
 
         size_t lut_idx = static_cast<size_t>(k * (lut_size - 1));
-        eased = animation.easing_func[lut_idx];
+        eased = animation.easing_func->at(lut_idx);
 
         // do floating point arithmetic to allow ratio results, then translate back to pixel coordinates
         if (animation.transpose)

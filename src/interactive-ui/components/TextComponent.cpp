@@ -107,44 +107,6 @@ void TextComponent::Align()
     Component::Align();
 }
 
-void TextComponent::SetText(const char* text)
-{
-    this->text = text;
-    Align();
-}
-
-void TextComponent::SetFontScale(uint32_t scale)
-{
-    font_scale = scale;
-    Align();
-}
-
-void TextComponent::SetTextVerticalAlignment(AlignmentVertical align_v)
-{
-    text_vertical_alignment = align_v;
-    Align();
-}
-
-void TextComponent::SetTextHorizontalAlignment(AlignmentHorizontal align_h)
-{
-    text_horizontal_alignment = align_h;
-    Align();
-}
-
-void TextComponent::SetTextAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
-{
-    text_vertical_alignment = align_v;
-    text_horizontal_alignment = align_h;
-    Align();
-}
-
-void TextComponent::SetTextAlignment(AlignmentHorizontal align_h, AlignmentVertical align_v)
-{
-    text_vertical_alignment = align_v;
-    text_horizontal_alignment = align_h;
-    Align();
-}
-
 void TextBoxComponent::UpdateTextDimensions()
 {
     TextComponent::UpdateTextDimensions();

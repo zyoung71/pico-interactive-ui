@@ -26,6 +26,9 @@ BitmapComponent::BitmapComponent(ScreenManager* manager, const Vec2f& screen_per
 
 void BitmapComponent::Draw(const Screen* screen)
 {
+    if (scale == 0)
+        return;
+
     Vec2i32 ss_pos = screen->ToScreenCoords(origin_position);
 
     Vec2i32 end = ss_pos + draw_dimensions.Size();
@@ -38,11 +41,14 @@ void BitmapComponent::Draw(const Screen* screen)
         {
             if (override_color)
             {
-                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
+                RGBA adjusted = color;
+                for (int32_t y = end.y - 1 + draw_dimensions.ymin; y >= ss_pos.y; y -= scale)
                 {
-                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    for (int32_t x = end.x - 1 + draw_dimensions.xmin; x >= ss_pos.x; x -= scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        adjusted.alpha = pixel_map(y_0, x_0).alpha;
+                        display->FillRectangle(x, y, scale, scale, adjusted);
+                            
                         x_0++;
                     }
                     x_0 = 0;
@@ -51,11 +57,11 @@ void BitmapComponent::Draw(const Screen* screen)
             }
             else
             {
-                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
+                for (int32_t y = end.y - 1 + draw_dimensions.ymin; y >= ss_pos.y; y -= scale)
                 {
-                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    for (int32_t x = end.x - 1 + draw_dimensions.xmin; x >= ss_pos.x; x -= scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        display->FillRectangle(x, y, scale, scale, pixel_map(y_0, x_0));
                         x_0++;
                     }
                     x_0 = 0;
@@ -67,11 +73,14 @@ void BitmapComponent::Draw(const Screen* screen)
         {
             if (override_color)
             {
-                for (int32_t y = ss_pos.y; y < end.y; y++)
+                RGBA adjusted = color;
+                for (int32_t y = ss_pos.y + draw_dimensions.ymin; y < end.y; y += scale)
                 {
-                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    for (int32_t x = end.x - 1 + draw_dimensions.xmin; x >= ss_pos.x; x -= scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        adjusted.alpha = pixel_map(y_0, x_0).alpha;
+                        display->FillRectangle(x, y, scale, scale, adjusted);
+                            
                         x_0++;
                     }
                     x_0 = 0;
@@ -80,11 +89,11 @@ void BitmapComponent::Draw(const Screen* screen)
             }
             else
             {
-                for (int32_t y = ss_pos.y; y < end.y; y++)
+                for (int32_t y = ss_pos.y + draw_dimensions.ymin; y < end.y; y += scale)
                 {
-                    for (int32_t x = end.x - 1; x >= ss_pos.x; x--)
+                    for (int32_t x = end.x - 1 + draw_dimensions.xmin; x >= ss_pos.x; x -= scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        display->FillRectangle(x, y, scale, scale, pixel_map(y_0, x_0));
                         x_0++;
                     }
                     x_0 = 0;
@@ -99,11 +108,14 @@ void BitmapComponent::Draw(const Screen* screen)
         {
             if (override_color)
             {
-                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
+                RGBA adjusted = color;
+                for (int32_t y = end.y - 1 + draw_dimensions.ymin; y >= ss_pos.y; y -= scale)
                 {
-                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    for (int32_t x = ss_pos.x + draw_dimensions.xmin; x < end.x; x += scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        adjusted.alpha = pixel_map(y_0, x_0).alpha;
+                        display->FillRectangle(x, y, scale, scale, adjusted);
+                            
                         x_0++;
                     }
                     x_0 = 0;
@@ -112,11 +124,11 @@ void BitmapComponent::Draw(const Screen* screen)
             }
             else
             {
-                for (int32_t y = end.y - 1; y >= ss_pos.y; y--)
+                for (int32_t y = end.y - 1 + draw_dimensions.ymin; y >= ss_pos.y; y -= scale)
                 {
-                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    for (int32_t x = ss_pos.x + draw_dimensions.xmin; x < end.x; x += scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        display->FillRectangle(x, y, scale, scale, pixel_map(y_0, x_0));
                         x_0++;
                     }
                     x_0 = 0;
@@ -128,11 +140,14 @@ void BitmapComponent::Draw(const Screen* screen)
         {
             if (override_color)
             {
-                for (int32_t y = ss_pos.y; y < end.y; y++)
+                RGBA adjusted = color;
+                for (int32_t y = ss_pos.y + draw_dimensions.ymin; y < end.y; y += scale)
                 {
-                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    for (int32_t x = ss_pos.x + draw_dimensions.xmin; x < end.x; x += scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, color);
+                        adjusted.alpha = pixel_map(y_0, x_0).alpha;
+                        display->FillRectangle(x, y, scale, scale, adjusted);
+                            
                         x_0++;
                     }
                     x_0 = 0;
@@ -141,11 +156,11 @@ void BitmapComponent::Draw(const Screen* screen)
             }
             else
             {
-                for (int32_t y = ss_pos.y; y < end.y; y++)
+                for (int32_t y = ss_pos.y + draw_dimensions.ymin; y < end.y; y += scale)
                 {
-                    for (int32_t x = ss_pos.x; x < end.x; x++)
+                    for (int32_t x = ss_pos.x + draw_dimensions.xmin; x < end.x; x += scale)
                     {
-                        display->DrawPixel(x + draw_dimensions.xmin, y + draw_dimensions.ymin, pixel_map(y_0, x_0));
+                        display->FillRectangle(x, y, scale, scale, pixel_map(y_0, x_0));
                         x_0++;
                     }
                     x_0 = 0;

@@ -355,3 +355,11 @@ void DisplayInterface::FillRectangle(AABBi32 dimensions, RGBA color)
         for (int32_t y = dimensions.ymin; y <= dimensions.ymax; y++)
             DrawPixel(x, y, color);
 }
+
+void DisplayInterface::FillRectangle(int32_t x_0, int32_t y_0, int32_t len_x, int32_t len_y, RGBA color)
+{
+    int32_t end_x = x_0 + len_x, end_y = y_0 + len_y;
+    for (int32_t x = x_0; x < end_x; x++)
+        for (int32_t y = y_0; y < end_y; y++)
+            DrawPixel(x, y, color);
+}

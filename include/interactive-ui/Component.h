@@ -36,15 +36,16 @@ public:
     bool set_to_end_pos_on_end = true;
     bool set_to_end_scale_on_end = true;
 
-    const FunctionLUT<float>& easing_func;
+    const FunctionLUT<float>* easing_func;
 
     typedef void(*AnimationStateCallback)(const MovementAnimation*);
 
     AnimationStateCallback on_animation_begin = nullptr;
+    AnimationStateCallback on_animation_update = nullptr;
     AnimationStateCallback on_animation_end = nullptr;
 
-    MovementAnimation(const Component* component, const FunctionLUT<float>& easing_func);
-    MovementAnimation();
+    MovementAnimation(const Component* component, const FunctionLUT<float>& easing_func = easing::lut_linear);
+    MovementAnimation(const FunctionLUT<float>& easing_func = easing::lut_linear);
 
     inline Vec2i32 GetTransposeDelta() const
     {

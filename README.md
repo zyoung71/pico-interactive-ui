@@ -240,4 +240,145 @@ int main()
 By default, the `ControlAction::BACK` control automatically pops the screen off the stack if the stack size is greater than one. If you want to pop the screen off the stack in another manner, either use `manager.QueueControl(BACK)`, or more effectively and more efficient, `manager.PopScreen()`.
 
 ## 6. Animations
-WIP --- the rest will be written down soon
+Animations for moving and scaling components is supported by using the `MovementAnimation` struct. Upon creating an object of this struct, many members can be changed to tweak how the animation behaves. There are also two constructors: an easing function (which defaults to being linear) and the same but with a `const Component*` input. This one sets the position to the component's origin and its begin scale to the component's draw dimensions. The constructors do not do anything more than what you can tweak yourself with the struct's member variables.
+
+Note that most of these settings are not required. Most commonly, you will be changing the end position `end_pos`, duration `duration` and type `type`. If using the default constructor, setting the start position `start_pos`, and easing function look-up-table `easing_func` should be done. By default, scaling is disabled and needs to be enabled with setting `scale = true`.
+```c++
+MyComponent comp; // some valid component
+
+// constructs the animation struct with predetermined positioning and scaling, along with easing
+MovementAnimation anim = MovementAnimation(&comp, easing::lut_quad_out);
+
+anim.duration = 3.f; // 3 second duration
+anim.start_pos = Vec2i32{16, 16}; // setting where it begins. this was already set with the constructor
+anim.end_pos = Vec2i32{32, 32}; // setting where it will end
+anim.type = MovementAnimation::ENDLESS; // changing the behavior to never end and repeat back at the starting position
+anim.start_scale = AABBi32{0, 0, 0, 0}; // setting the beginning draw dimensions of the animation. this was already set in the constructor
+anim.end_scale = AABBi32{0, 0, 10, 10}; // setting the end draw dimensions of the animation
+
+// the following are used to update the original
+// start and end properties during the play of
+// the animation. if something is set to a valid
+// pointer, it will set the corresponding value
+// to the reference's value. this is useful for
+// things like tracking. if a component needs to
+// move to another component but that other component
+// is moving already, it needs to keep a reference to its new position
+anim.start_pos_reference = &comp;
+anim.end_pos_reference = nullptr;
+anim.start_scale_reference = &comp;
+anim.end_scale_reference = nullptr;
+
+anim.transpose = true; // allow moving
+anim.scale = true; // allow scaling
+anim.easing_func = &easing::lut_linear; // easing function of animation. this was already set in the constructor
+
+// callbacks for the animation. note it takes
+// a parameter input of a MovementAnimation,
+// that being a copy of the original with
+// real-time changed values
+// note: these are all optional
+anim.on_animation.begin = [](const MovementAnimation* a){
+    /* your code */
+};
+anim.on_animation_update = [](const MovementAnimation* a){
+    /* your code */
+};
+anim.on_animation_end = [](const MovementAnimation* a){
+    /* your code */
+};
+
+// Finally, move the component
+comp.Move(anim, /*reversed = */false, /*enable_callbacks = */true);
+```
+
+## 7. Custom component creation
+Of course since C++ has polymorphism, we can create our own objects. How the component is drawn, updated, enters and exits a screen, and so on can be overridden.
+
+### MyComponent.h
+```c++
+#pragma once
+#include <interactive-ui/Component.h>
+
+class MyComponent : public Component
+{
+public:
+    // bare minimum constructor. all
+    // values here are passed into the
+    // Component constructor
+    MyComponent(ScreenManager* manager, const Vec2i32& origin, int32_t z_layer, Screen* initial_screen = nullptr);
+
+    // optional constructor for percentage positioning
+    MyComponent(ScreenManager* manager, const Vec2f& screen_percentage, int32_t z_layer, Screen* initial_screen);
+    // the initial screen CANNOT be nullptr
+
+    void Draw(const Screen* screen) override; // how your component is drawn
+    void Update(float dt, const Screen* screen) override; // what happens every update
+
+    void OnEnterScreen(const Screen* screen) override; // what happens when your component enters the screen
+    void OnExitScreen(const Screen* screen) override; // what happens when your component exits the screen
+    void Align() override; // how your component aligns with its draw dimensions
+
+    // more functions can be overridden, but
+    // these are the common ones
+};
+```
+### MyComponent.cpp
+It is still smart to split up non-inlined functions into its own .cpp file.
+```c++
+MyComponent::MyComponent(ScreenManager* manager, const Vec2i32& origin, int32_t z_layer, Screen* initial_screen)
+    : Component(manager, origin, z_layer, initial_screen)
+{
+}
+
+MyComponent::MyComponent(ScreenManager* manager, const Vec2f& screen_percentage, int32_t z_layer, Screen* initial_screen)
+    : Component(manager, screen_percentage, z_layer, initial_screen)
+{
+}
+
+void MyComponent::Draw(const Screen* screen)
+{
+    // translates the component position to screen
+    // coordinates
+    Vec2i32 screenspace_position = screen->ToScreenCoords(origin_position);
+
+    // draws a red circle of radius 10
+    display->DrawCircle(screenspace_position, 10, colors::RED);
+
+    // if your component extends from a class that
+    // also is responsible for drawing, make sure
+    // to call the superclass's implementation
+    // if you intend to still draw it. in this case,
+    // the original component class doesn't have
+    // an implementation so this will be omitted
+    // when compiling to machine code
+    Component::Draw(screen);
+}
+
+void MyComponent::Update(float dt, const Screen* screen)
+{
+    /* your code */
+
+    // the superclass implementation should ALWAYS
+    // be called at the end of this function
+    Component::Update(dt, screen);
+}
+
+void MyComponent::OnEnterScreen(const Screen* screen)
+{
+    /* your code */
+}
+
+void MyComponent::OnExitScreen(const Screen* screen)
+{
+    /* your code */
+}
+
+void MyComponent::Align()
+{
+    /* your code */
+
+    // this should be called as well
+    Component::Align();
+}
+```

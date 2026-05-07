@@ -1,8 +1,9 @@
 #pragma once
 
 #include "../SelectableComponent.h"
+#include "../iface/IScalable.h"
 
-class TextComponent : public SelectableComponent
+class TextComponent : public SelectableComponent, public IScalable<uint32_t>
 {
 protected:
     Vec2i32 message_pixel_dimensions;
@@ -25,8 +26,20 @@ public:
     virtual void Draw(const Screen* screen) override;
     virtual void Align() override;
 
-    void SetText(const char* text);
-    void SetFontScale(uint32_t scale);
+    inline void SetText(const char* text)
+    {
+        this->text = text;
+        Align();
+    }
+    inline void SetScale(uint32_t scale) override
+    {
+        font_scale = scale;
+        Align();
+    }
+    inline uint32_t GetScale() const override
+    {
+        return font_scale;
+    }
 
     /**
      * NOTE: These functions are aimed to align text dependent on draw dimenions.
@@ -34,10 +47,28 @@ public:
      * the actual dimensions of the text. If you are looking to adjust around the
      * origin position, please use the SetAlignment family of functions.
      */
-    void SetTextVerticalAlignment(AlignmentVertical align_v);
-    void SetTextHorizontalAlignment(AlignmentHorizontal align_h);
-    void SetTextAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h);
-    void SetTextAlignment(AlignmentHorizontal align_h, AlignmentVertical align_v);
+    inline void SetTextVerticalAlignment(AlignmentVertical align_v)
+    {
+        text_vertical_alignment = align_v;
+        Align();
+    }
+    inline void SetTextHorizontalAlignment(AlignmentHorizontal align_h)
+    {
+        text_horizontal_alignment = align_h;
+        Align();
+    }
+    inline void SetTextAlignment(AlignmentVertical align_v, AlignmentHorizontal align_h)
+    {
+        text_vertical_alignment = align_v;
+        text_horizontal_alignment = align_h;
+        Align();
+    }
+    inline void SetTextAlignment(AlignmentHorizontal align_h, AlignmentVertical align_v)
+    {
+        text_vertical_alignment = align_v;
+        text_horizontal_alignment = align_h;
+        Align();        
+    }
 
     inline AlignmentVertical GetTextVerticalAlignment() const
     {
@@ -50,10 +81,6 @@ public:
     inline const char* GetText() const
     {
         return text;
-    }
-    inline uint32_t GetFontScale() const
-    {
-        return font_scale;
     }
     inline Vec2i32 GetMessagePixelDimensions() const
     {

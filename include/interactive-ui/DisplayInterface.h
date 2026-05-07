@@ -67,5 +67,6 @@ public:
 
     void FillRectangle(Vec2i32 pos, Vec2i32 size, RGBA color);
     void FillRectangle(AABBi32 dimensions, RGBA color);
+    void FillRectangle(int32_t x_0, int32_t y_0, int32_t len_x, int32_t len_y, RGBA color);
 
 };
