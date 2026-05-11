@@ -37,6 +37,8 @@ public:
 
     virtual void DrawPixel(Vec2i32 pos, RGBA color) = 0;
     virtual void DrawPixel(int32_t x, int32_t y, RGBA color) = 0;
+    virtual RGBA GetPixel(Vec2i32 pos) const = 0;
+    virtual RGBA GetPixel(int32_t x, int32_t y) const = 0;
     
     void DrawCharacter(Vec2i32 pos, char c, const Font& font, uint32_t scale, RGBA color);
     void DrawText(Vec2i32 pos, const char* text, const Font& font, uint32_t scale, RGBA color);

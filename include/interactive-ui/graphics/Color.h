@@ -50,9 +50,9 @@ namespace graphics
         
         struct
         {
-            float hue;
-            float saturation;
             float brightness;
+            float saturation;
+            float hue;
         };
 
         constexpr static inline HSV HSV_unchecked(Vec3f v)
@@ -70,7 +70,7 @@ namespace graphics
         }
 
         constexpr inline HSV() : v(0.f, 0.f, 0.f) {}
-        constexpr inline HSV(float hue, float saturation, float brightness) : v(std::fmodf(hue, 360.f), std::fmodf(saturation, 360.f), std::fmodf(brightness, 360.f)) {}
+        constexpr inline HSV(float hue, float saturation, float brightness) : v(std::fmod(hue, 360.f), std::fmod(saturation, 360.f), std::fmod(brightness, 360.f)) {}
         constexpr inline HSV(Vec3f vhsv) : v(vhsv.x, vhsv.y, vhsv.z) {}
 
         constexpr RGBA ToRGB() const;
@@ -78,7 +78,7 @@ namespace graphics
         constexpr inline HSV& ShiftHue(float degrees)
         {
             hue += degrees;
-            hue = std::fmodf(hue, 360.f);
+            hue = std::fmod(hue, 360.f);
             return *this;
         }
     };

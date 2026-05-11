@@ -179,11 +179,11 @@ Screen counter_screen(&manager, display.GetDimensions());
 
 TextBoxComponent button_counter(&manager, Vec2f{0.5f, 0.33f}, Vec2i32{20, 20}, "Click Me", &fonts::default_font, 0, &main_screen);
 
-TextBoxComponent button_goto(&manager, Vec2f{0.5, 0.66f}, Veci32{20, 15}, 0, &main_screen);
+TextBoxComponent button_goto(&manager, Vec2f{0.5, 0.66f}, Vec2i32{40, 15}, "Go to counter", &fonts::default_font, 0, &main_screen);
 
 char count_buff[32];
 uint32_t count = 0;
-TextComponent counter(&manager, Vec2i32{0.5f, 0.5f}, count_buff, &fonts::default_font, 0, &counter_screen);
+TextComponent counter(&manager, Vec2f{0.5f, 0.5f}, count_buff, &fonts::default_font, 0, &counter_screen);
 
 int main()
 {
@@ -205,7 +205,7 @@ int main()
 
     // counter button action --- every select, counter increments
     std::ignore = button_counter.AddAction([](const Event* ev, void*){
-        ComponentSelectEvent* event = static_cast<ComponentSelectEvent*>(ev);
+        const ComponentSelectEvent* event = static_cast<const ComponentSelectEvent*>(ev);
 
         if (event->GetControl() == SELECT0)
         {
@@ -215,7 +215,7 @@ int main()
     });
     // goto button action --- every select, goes to the counter screen
     std::ignore = button_goto.AddAction([](const Event* ev, void*){
-        ComponentSelectEvent* event = static_cast<ComponentSelectEvent*>(ev);
+        const ComponentSelectEvent* event = static_cast<const ComponentSelectEvent*>(ev);
 
         if (event->GetControl() == SELECT0)
         {
@@ -232,12 +232,13 @@ int main()
 
     while (1)
     {
+        Event::HandleEvents(); // necessary if not using CBF
         manager.Update();
     }
 }
 ```
 
-By default, the `ControlAction::BACK` control automatically pops the screen off the stack if the stack size is greater than one. If you want to pop the screen off the stack in another manner, either use `manager.QueueControl(BACK)`, or more effectively and more efficient, `manager.PopScreen()`.
+By default, the `ControlAction::BACK` control automatically pops the screen off the stack if the stack size is greater than one. If you want to pop the screen off the stack in another manner, either use `manager.QueueControl(BACK)` if you want to mimmic an actual button press, or more effectively and more efficient for automatic scenarios, `manager.PopScreen()`.
 
 ## 6. Animations
 Animations for moving and scaling components is supported by using the `MovementAnimation` struct. Upon creating an object of this struct, many members can be changed to tweak how the animation behaves. There are also two constructors: an easing function (which defaults to being linear) and the same but with a `const Component*` input. This one sets the position to the component's origin and its begin scale to the component's draw dimensions. The constructors do not do anything more than what you can tweak yourself with the struct's member variables.
