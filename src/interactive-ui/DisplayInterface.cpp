@@ -192,22 +192,32 @@ void DisplayInterface::DrawEllipse(Vec2i32 center_pos, Vec2i32 radius, RGBA colo
 
 void DisplayInterface::DrawRectangle(Vec2i32 pos, Vec2i32 size, RGBA color)
 {
-    int32_t len_x = pos.x + size.x - 1;
-    int32_t len_y = pos.y + size.y - 1;
-    DrawHorizontalLineX1X2(pos.x, len_x, pos.y, color);
-    DrawHorizontalLineX1X2(pos.x, len_x, len_y, color);
-    DrawVerticalLineY1Y2(pos.y, len_y, pos.x, color);
-    DrawVerticalLineY1Y2(pos.y, len_y, len_x, color);
+    int32_t xf = pos.x + size.x - 1;
+    int32_t yf = pos.y + size.y - 3; // - (1 + 3) for both size offset and avoid drawing corner pixels
+    DrawHorizontalLineX1X2(pos.x, xf, pos.y, color);
+    DrawHorizontalLineX1X2(pos.x, xf, yf, color);
+    DrawVerticalLineY1Y2(pos.y + 1, yf, pos.x, color);
+    DrawVerticalLineY1Y2(pos.y + 1, yf, xf, color);
 }
 
 void DisplayInterface::DrawRectangle(AABBi32 dimensions, RGBA color)
 {
-    int32_t len_x = dimensions.xmin + dimensions.xmax;
-    int32_t len_y = dimensions.ymin + dimensions.ymax - 2; // sub 2 to avoid drawing corner pixels twice
-    DrawHorizontalLineX1X2(dimensions.xmin, len_x, dimensions.ymin, color);
-    DrawHorizontalLineX1X2(dimensions.xmin, len_x, len_y, color);
-    DrawVerticalLineY1Y2(dimensions.ymin + 1, len_y, dimensions.xmin, color);
-    DrawVerticalLineY1Y2(dimensions.ymin + 1, len_y, len_x, color);
+    int32_t xf = dimensions.xmin + dimensions.xmax;
+    int32_t yf = dimensions.ymin + dimensions.ymax - 2; // sub 2 to avoid drawing corner pixels twice
+    DrawHorizontalLineX1X2(dimensions.xmin, xf, dimensions.ymin, color);
+    DrawHorizontalLineX1X2(dimensions.xmin, xf, yf, color);
+    DrawVerticalLineY1Y2(dimensions.ymin + 1, yf, dimensions.xmin, color);
+    DrawVerticalLineY1Y2(dimensions.ymin + 1, yf, xf, color);
+}
+
+void DisplayInterface::DrawRectangle(int32_t x_0, int32_t y_0, int32_t len_x, int32_t len_y, RGBA color)
+{
+    int32_t xf = x_0 + len_x - 1;
+    int32_t yf = y_0 + len_y - 1;
+    DrawHorizontalLineX1X2(x_0, xf, y_0, color);
+    DrawHorizontalLineX1X2(x_0, xf, yf, color);
+    DrawVerticalLineY1Y2(y_0 + 1, yf, x_0, color);
+    DrawVerticalLineY1Y2(y_0 + 1, yf, xf, color);
 }
 
 void DisplayInterface::DrawRoundedRectangle(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color)

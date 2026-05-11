@@ -9,13 +9,6 @@ using graphics::RGBA;
 using graphics::HSV;
 namespace colors = graphics::colors;
 
-enum TextScrollRepitition
-{
-    ONCE,
-    ENDLESS,
-    REVERSING
-};
-
 class ScreenManager;
 
 class DisplayInterface
@@ -57,6 +50,7 @@ public:
 
     void DrawRectangle(Vec2i32 pos, Vec2i32 size, RGBA color);
     void DrawRectangle(AABBi32 dimensions, RGBA color);
+    void DrawRectangle(int32_t x_0, int32_t y_0, int32_t len_x, int32_t len_y, RGBA color);
 
     void DrawRoundedRectangle(Vec2i32 pos, Vec2i32 size, Vec2i32 radius, RGBA color);
     void DrawRoundedRectangle(AABBi32 dimensions, Vec2i32 radius, RGBA color);
