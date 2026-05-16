@@ -44,7 +44,7 @@ public:
     const AABBi32 dimensions;
     Vec2i32 origin_point{0, 0};
     CoordinateSpaceHorizontal cspace_h = LEFT_TO_RIGHT;
-    CoordinateSpaceVertcial cspace_v = BOTTOM_TO_TOP;
+    CoordinateSpaceVertcial cspace_v = TOP_TO_BOTTOM;
     float animation_hover_duration = 0.2f;
     const FunctionLUT<float>* easing_func = &easing::lut_quad_out;
 
