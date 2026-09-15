@@ -30,8 +30,8 @@ void TextComponent::UpdateTextDimensions()
         iter += line_len + 1;
         lines++;
     }
-    message_pixel_dimensions.x = font_scale * static_cast<int32_t>(segment_max * font->char_width + (segment_max - 1) * font->char_spacing);
-    message_pixel_dimensions.y = font_scale * static_cast<int32_t>(font->char_height * lines + font->char_spacing * (lines - 1));
+    message_pixel_dimensions.x = font_scale.x * static_cast<int32_t>(segment_max * font->char_width + (segment_max - 1) * font->char_spacing);
+    message_pixel_dimensions.y = font_scale.y * static_cast<int32_t>(font->char_height * lines + font->char_spacing * (lines - 1));
 }
 
 TextComponent::TextComponent(ScreenManager* manager, const Vec2i32& origin, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)

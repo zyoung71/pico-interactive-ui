@@ -4,7 +4,6 @@
 
 #include <math/AABB.h>
 #include <math/Easing.h>
-#include "ControlAction.h"
 
 #include "ScreenManager.h"
 #include "iface/HoverMixin.h"

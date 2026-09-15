@@ -1,10 +1,8 @@
 #include <interactive-ui/ScreenManager.h>
 #include <interactive-ui/graphics/Rasterization.h>
 
-void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint32_t scale, RGBA color)
+void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, Vec2i32 scale, RGBA color)
 {
-    const Vec2i32 scale_vec(scale);
-
     if (c < font.ascii_begin || c > font.ascii_end)
         return;
 
@@ -23,16 +21,16 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, uint
                     break;
 
                 if (line & 1)
-                    FillRectangle(Vec2i32{(pos.x + width * (int32_t)scale), pos.y + y * (int32_t)scale}, scale_vec, color);
+                    FillRectangle(Vec2i32{pos.x + width * scale.x, pos.y + y * scale.y}, scale, color);
             }
             idx++;
         }
     }
 }
 
-void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font, uint32_t scale, RGBA color)
+void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font, Vec2i32 scale, RGBA color)
 {
-    for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_spacing) * scale)
+    for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_spacing) * scale.x)
     {
         pos.x = x_n;
         DrawCharacter(pos, *(text++), font, scale, color);

@@ -3,13 +3,13 @@
 #include "../SelectableComponent.h"
 #include "../iface/IScalable.h"
 
-class TextComponent : public SelectableComponent, public IScalable<uint32_t>
+class TextComponent : public SelectableComponent, public IScalable<const Vec2i32&>
 {
 protected:
     Vec2i32 message_pixel_dimensions;
     Vec2i32 text_base_offset; // the offset from the min of the draw dimensions
     const char* text;
-    uint32_t font_scale = 1;
+    Vec2i32 font_scale{1, 1};
     AlignmentVertical text_vertical_alignment;
     AlignmentHorizontal text_horizontal_alignment;
     
@@ -31,12 +31,12 @@ public:
         this->text = text;
         Align();
     }
-    inline void SetScale(uint32_t scale) override
+    inline void SetScale(const Vec2i32& scale) override
     {
         font_scale = scale;
         Align();
     }
-    inline uint32_t GetScale() const override
+    inline const Vec2i32& GetScale() const override
     {
         return font_scale;
     }

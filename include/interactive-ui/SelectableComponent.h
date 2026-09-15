@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Component.h"
+#include "ControlAction.h"
 
 #include <event/Event.h>
 
