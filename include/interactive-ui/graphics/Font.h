@@ -36,7 +36,7 @@ struct Font
 
 struct FontOrder
 {
-    bool operator()(const Font& f1, const Font& f2)
+    bool operator()(const Font& f1, const Font& f2) const
     {
         return f1.character_begin < f2.character_begin;
     }
@@ -152,5 +152,5 @@ namespace fonts
     // 4th: beginning character of UTF encoding range
     // 5th: ending character of UTF encoding range
     constexpr Font default_font = Font::BuildFont<8, 5, 1, ' ', '~'>(default_font_data); // take original font data only
-
+    const FontGroup default_font_group = {default_font};
 }
