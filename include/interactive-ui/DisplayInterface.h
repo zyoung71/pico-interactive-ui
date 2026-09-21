@@ -7,6 +7,7 @@
 
 using graphics::RGBA;
 using graphics::HSV;
+
 namespace colors = graphics::colors;
 
 class ScreenManager;
@@ -33,8 +34,10 @@ public:
     virtual RGBA GetPixel(Vec2i32 pos) const = 0;
     virtual RGBA GetPixel(int32_t x, int32_t y) const = 0;
     
-    void DrawCharacter(Vec2i32 pos, char c, const Font& font, Vec2i32 scale, RGBA color);
+    void DrawCharacter(Vec2i32 pos, char32_t c, const Font& font, Vec2i32 scale, RGBA color);
+    //void DrawCharacter(Vec2i32 pos, char32_t c, const FontGroup& font_group, Vec2i32 scale, RGBA color);
     void DrawText(Vec2i32 pos, const char* text, const Font& font, Vec2i32 scale, RGBA color);
+    void DrawText(Vec2i32 pos, const char* text, const FontGroup& font_group, Vec2i32 scale, RGBA color);
 
     void DrawHorizontalLine(Vec2i32 pos_begin, int32_t length, RGBA color);
     void DrawHorizontalLineX1X2(int32_t x1, int32_t x2, int32_t y, RGBA color);

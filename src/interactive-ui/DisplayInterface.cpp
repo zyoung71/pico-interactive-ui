@@ -1,15 +1,26 @@
+#include "interactive-ui/DisplayInterface.h"
+#include "interactive-ui/graphics/Font.h"
 #include <interactive-ui/ScreenManager.h>
 #include <interactive-ui/graphics/Rasterization.h>
 
-void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, Vec2i32 scale, RGBA color)
+#include <util/Chars.h>
+
+void DisplayInterface::DrawCharacter(Vec2i32 pos, char32_t c, const Font& font, Vec2i32 scale, RGBA color)
 {
-    if (c < font.ascii_begin || c > font.ascii_end)
+    // unknown unicode
+    if (c == 0xFFFD)
+    {
+        // creates box
+        return DrawRectangle(pos, Vec2i32{font.char_width * scale.x, font.char_height * scale.y}, color);
+    }
+
+    if (c < font.character_begin || c > font.character_end)
         return;
 
     uint32_t ppl = (font.char_height >> 3) + ((font.char_height & 7) > 0);
     for (int32_t width = 0; width < font.char_width; width++)
     {
-        uint32_t idx = (c - font.ascii_begin) * font.char_width * ppl + width * ppl;
+        uint32_t idx = (c - font.character_begin) * font.char_width * ppl + width * ppl;
         for (int32_t lp = 0; lp < ppl; lp++)
         {
             uint8_t line = font.char_bitmap[idx];
@@ -28,12 +39,73 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char c, const Font& font, Vec2
     }
 }
 
+//void DisplayInterface::DrawCharacter(Vec2i32 pos, char32_t c, const FontGroup& font_group, Vec2i32 scale, RGBA color)
+//{
+//    for (const Font& font : font_group)
+//    {
+//        if (c >= font.character_begin && c <= font.character_end) // found
+//        {
+//            uint32_t ppl = (font.char_height >> 3) + ((font.char_height & 7) > 0);
+//            for (int32_t width = 0; width < font.char_width; width++)
+//            {
+//                uint32_t idx = (c - font.character_begin) * font.char_width * ppl + width * ppl;
+//                for (int32_t lp = 0; lp < ppl; lp++)
+//                {
+//                    uint8_t line = font.char_bitmap[idx];
+//                    int32_t y;
+//                    for (int32_t j = 0; j < 8; j++, line >>= 1)
+//                    {
+//                        y = (lp << 3) + j;
+//                        if (y >= font.char_height)
+//                            break;
+//                    
+//                        if (line & 1)
+//                            FillRectangle(Vec2i32{pos.x + width * scale.x, pos.y + y * scale.y}, scale, color);
+//                    }
+//                    idx++;
+//                }
+//            }
+//            return; // already drawn
+//        }
+//    }
+//}
+
 void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font, Vec2i32 scale, RGBA color)
 {
     for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_spacing) * scale.x)
     {
         pos.x = x_n;
-        DrawCharacter(pos, *(text++), font, scale, color);
+
+        size_t bytes_used;
+        char32_t codepoint = utf8_decode(text, &bytes_used); 
+        text += bytes_used;
+
+        DrawCharacter(pos, codepoint, font, scale, color);
+    }
+}
+
+void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const FontGroup& font_group, Vec2i32 scale, RGBA color)
+{
+    const Font* selected_font = &fonts::default_font;
+    for (int32_t x_n = pos.x; *text; x_n += (selected_font->char_width + selected_font->char_spacing) * scale.x)
+    {
+        pos.x = x_n;
+        
+        size_t bytes_used;
+        char32_t codepoint = utf8_decode(text, &bytes_used);
+        text += bytes_used;
+
+        for (const Font& f : font_group) // find character
+        {
+            // if in range
+            if ((uint32_t)codepoint >= f.character_begin && codepoint <= f.character_end)
+            {
+                selected_font = &f;
+                break;
+            }
+        }
+
+        DrawCharacter(pos, codepoint, *selected_font, scale, color);
     }
 }
 
@@ -78,7 +150,7 @@ void DisplayInterface::DrawLine(Vec2i32 pos_begin, Vec2i32 pos_end, RGBA color)
     for (int32_t x = pos_begin.x; x <= pos_end.x; x++)
     {
         y = slope * static_cast<float>(x - pos_begin.x) + (float)pos_begin.y;
-        DrawPixel(Vec2i32{x, (int32_t)y}, color);
+        DrawPixel(x, (int32_t)y, color);
     }
 }
 

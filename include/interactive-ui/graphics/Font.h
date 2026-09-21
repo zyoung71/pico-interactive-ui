@@ -10,30 +10,40 @@ struct Font
     const uint8_t char_height;
     const uint8_t char_width;
     const uint8_t char_spacing;
+
     const ArrayView<uint8_t> char_bitmap;
+    
+    const char32_t character_begin;
+    const char32_t character_end;
 
-    const uint8_t ascii_begin;
-    const uint8_t ascii_end;
-
-    consteval Font(uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t ascii_begin, uint8_t ascii_end, const uint8_t* char_bmp_data, size_t bmp_data_size)
-        : char_height(char_height), char_width(char_width), char_spacing(char_spacing), ascii_begin(ascii_begin), ascii_end(ascii_end), char_bitmap(make_array_view(char_bmp_data, bmp_data_size))
+    consteval Font(uint8_t char_height, uint8_t char_width, uint8_t char_spacing, char32_t character_begin, char32_t character_end, const uint8_t* char_bmp_data, size_t bmp_data_size)
+        : char_height(char_height), char_width(char_width), char_spacing(char_spacing), character_begin(character_begin), character_end(character_end), char_bitmap(make_array_view(char_bmp_data, bmp_data_size))
     {
     }
 
-    // ASCII 32 = (space) character
-    // ASCII 126 = (~) character
-    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t ascii_begin = ' ', uint8_t ascii_end = '~'>
-    static consteval Font BuildFont(const uint8_t data[char_width * (ascii_end - ascii_begin)])
+    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, char32_t character_begin, char32_t character_end>
+    static consteval Font BuildFont(const uint8_t data[char_width * (character_end - character_begin)])
     {
-        return Font(char_height, char_width, char_spacing, ascii_begin, ascii_end, data, char_width * (ascii_end - ascii_begin));
+        return Font(char_height, char_width, char_spacing, character_begin, character_end, data, char_width * (character_end - character_begin));
     }
 
-    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t ascii_begin = ' ', uint8_t ascii_end = '~'>
-    static consteval Font BuildFont(const uint8_t data[ascii_end - ascii_begin][char_width])
+    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t character_begin, uint8_t character_end>
+    static consteval Font BuildFont(const uint8_t data[character_end - character_begin][char_width])
     {
-        return Font(char_height, char_width, char_spacing, ascii_begin, ascii_end, data, char_width * (ascii_end - ascii_begin));
+        return Font(char_height, char_width, char_spacing, character_begin, character_end, data, char_width * (character_end - character_begin));
     }
 };
+
+struct FontOrder
+{
+    bool operator()(const Font& f1, const Font& f2)
+    {
+        return f1.character_begin < f2.character_begin;
+    }
+};
+
+#include <set>
+using FontGroup = std::set<Font, FontOrder>;
 
 namespace fonts
 {
@@ -135,6 +145,12 @@ namespace fonts
         0x02, 0x01, 0x02, 0x04, 0x02,
     };
 
-    constexpr Font default_font = Font::BuildFont<8, 5, 1>(default_font_data); // take original font data only
+    // template parameters:
+    // 1st: height of character in pixels
+    // 2nd: width of character in pixels
+    // 3rd: amount of pixels to space the characters apart
+    // 4th: beginning character of UTF encoding range
+    // 5th: ending character of UTF encoding range
+    constexpr Font default_font = Font::BuildFont<8, 5, 1, ' ', '~'>(default_font_data); // take original font data only
 
 }
