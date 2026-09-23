@@ -56,9 +56,6 @@ void TextComponent::UpdateTextDimensions()
     message_pixel_dimensions.x *= font_scale.x;
     message_pixel_dimensions.y *= font_scale.y;
 
-    for (int i = 0; i < 100; i++)
-    printf("dims: <%i, %i>\n", message_pixel_dimensions.x, message_pixel_dimensions.y);
-
 /* old algorithm using one font */
 
     // const size_t msg_len = strlen(text);
