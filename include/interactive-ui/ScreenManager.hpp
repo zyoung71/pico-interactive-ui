@@ -7,8 +7,8 @@
 #include <pico/time.h>
 #include <pico/util/queue.h>
 
-#include "DisplayInterface.h"
-#include "iface/CursorMixin.h"
+#include "DisplayInterface.hpp"
+#include "iface/CursorMixin.hpp"
 
 class Screen;
 

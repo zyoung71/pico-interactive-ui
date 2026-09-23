@@ -1,9 +1,9 @@
-#include <interactive-ui/components/ProgressBarComponent.h>
+#include <interactive-ui/components/ProgressBarComponent.hpp>
 
 #include <cstring>
 
-ProgressBarComponent::ProgressBarComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const Font* font, int32_t z_layer, Screen* initial_screen)
-    : TextBoxComponent(manager, origin, box_dimensions, nullptr, font, z_layer, initial_screen)
+ProgressBarComponent::ProgressBarComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& box_dimensions, const FontGroup* font_group, int32_t z_layer, Screen* initial_screen)
+    : TextBoxComponent(manager, origin, box_dimensions, nullptr, font_group, z_layer, initial_screen)
 {
     text = new char[5 + decimal_places];
 }

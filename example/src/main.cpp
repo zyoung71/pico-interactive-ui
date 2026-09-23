@@ -1,8 +1,8 @@
 #include <pico/stdio.h>
 
-#include <interactive-ui/ScreenManager.h>
-#include <interactive-ui/components/TextComponent.h>
-#include <interactive-ui/components/FunctionComponent.h>
+#include <interactive-ui/ScreenManager.hpp>
+#include <interactive-ui/components/TextComponent.hpp>
+#include <interactive-ui/components/FunctionComponent.hpp>
 
 static constexpr Vec2i32 screen_dimensions = Vec2i32(128, 64);
 

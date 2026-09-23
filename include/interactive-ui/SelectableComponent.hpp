@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Component.h"
-#include "ControlAction.h"
+#include "Component.hpp"
+#include "ControlAction.hpp"
 
-#include <event/Event.h>
+#include <event/Event.hpp>
 
 class ComponentSelectEvent : public Event
 {

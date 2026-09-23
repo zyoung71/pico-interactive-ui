@@ -1,4 +1,4 @@
-#include <interactive-ui/iface/PhysicsMixin.h>
+#include <interactive-ui/iface/PhysicsMixin.hpp>
 
 void PhysicsMixin::Update(float dt)
 {

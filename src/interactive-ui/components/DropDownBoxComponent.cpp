@@ -1,8 +1,8 @@
-#include <interactive-ui/components/DropDownBoxComponent.h>
+#include <interactive-ui/components/DropDownBoxComponent.hpp>
 
-DropDownBoxComponent::DropDownBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& main_box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen)
+DropDownBoxComponent::DropDownBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& main_box_dimensions, const char* text, const FontGroup* font_group, int32_t z_layer, Screen* initial_screen)
     : Component(manager, origin, z_layer, initial_screen),
-    main_box(manager, origin, main_box_dimensions, text, font, z_layer, initial_screen),
+    main_box(manager, origin, main_box_dimensions, text, font_group, z_layer, initial_screen),
     arrow_box(manager, origin + Vec2i32{main_box_dimensions.x, 0}, Vec2i32{7, main_box_dimensions.y}, z_layer, initial_screen),
     arrow(manager, arrow_box.GetOriginPosition() + main_box.GetPadding(), bitmap_dropdown_arrow, z_layer, initial_screen),
     options(manager, origin, z_layer, initial_screen)

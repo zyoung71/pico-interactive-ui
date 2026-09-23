@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../DisplayInterface.h"
-#include <util/Types.h>
+#include "../DisplayInterface.hpp"
 
 namespace graphics
 {

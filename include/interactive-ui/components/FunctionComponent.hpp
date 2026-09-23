@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../SelectableComponent.h"
-#include "../iface/IThickness.h"
+#include "../SelectableComponent.hpp"
+#include "../iface/IThickness.hpp"
 
 class FunctionComponent : public SelectableComponent, public IThickness<uint32_t>
 {

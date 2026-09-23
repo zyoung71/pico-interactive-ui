@@ -1,8 +1,7 @@
-#include <interactive-ui/ScreenManager.h>
-#include <interactive-ui/Screen.h>
-#include <interactive-ui/Component.h>
-
-#include <interactive-ui/components/PixelBufferComponent.h>
+#include <interactive-ui/ScreenManager.hpp>
+#include <interactive-ui/Screen.hpp>
+#include <interactive-ui/Component.hpp>
+#include <interactive-ui/components/PixelBufferComponent.hpp>
 
 static constexpr Pixel cursor_unhover_data[] = {
     {{2, 0}, 1},
@@ -50,7 +49,7 @@ public:
         ClearPixels();
         SetPixels(cursor_unhover);
     }
-    inline Component* GetComponent() const
+    inline Component* GetComponent() const override
     {
         return (Component*)this;
     }

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../ComponentPack.h"
-#include "TextComponent.h"
-#include "PaddingComponent.h"
-#include "BitmapComponent.h"
+#include "../ComponentPack.hpp"
+#include "TextComponent.hpp"
+#include "PaddingComponent.hpp"
+#include "BitmapComponent.hpp"
 
 constexpr RGBA data_dropdown_arrow[4][7] = {
     {1, 1, 1, 1, 1, 1, 1},
@@ -28,7 +28,7 @@ private:
     bool expanded;
 
 public:
-    DropDownBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& main_box_dimensions, const char* text, const Font* font, int32_t z_layer, Screen* initial_screen = nullptr);
+    DropDownBoxComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& main_box_dimensions, const char* text, const FontGroup* font_group, int32_t z_layer, Screen* initial_screen = nullptr);
 
     inline ComponentPack& GetOptionPack()
     {

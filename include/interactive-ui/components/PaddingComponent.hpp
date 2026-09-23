@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Component.h"
-#include "../iface/IThickness.h"
+#include "../Component.hpp"
+#include "../iface/IThickness.hpp"
 
 // Design breaks and separators.
 class PaddingComponent : public Component, public IThickness<uint32_t>

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../SelectableComponent.h"
-#include "../iface/IScalable.h"
+#include "../SelectableComponent.hpp"
+#include "../iface/IScalable.hpp"
 
-#include <util/ArrayView.h>
+#include <util/ArrayView.hpp>
 
 class BitmapComponent : public SelectableComponent, public IScalable<uint32_t>
 {

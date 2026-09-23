@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Screen.h"
-#include <math/AABB.h>
+#include "Screen.hpp"
+#include <math/AABB.hpp>
 
 class Component;
 

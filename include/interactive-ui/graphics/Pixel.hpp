@@ -1,7 +1,7 @@
 #pragma once
 
-#include <math/Vec2.h>
-#include "Color.h"
+#include <math/Vec2.hpp>
+#include "Color.hpp"
 
 struct Pixel
 {

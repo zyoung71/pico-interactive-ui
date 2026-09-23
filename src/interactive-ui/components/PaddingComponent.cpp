@@ -1,4 +1,4 @@
-#include <interactive-ui/components/PaddingComponent.h>
+#include <interactive-ui/components/PaddingComponent.hpp>
 
 PaddingComponent::PaddingComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& size, int32_t z_layer, Screen* initial_screen)
     : Component(manager, origin, z_layer, initial_screen), fill_color(color)

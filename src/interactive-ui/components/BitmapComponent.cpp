@@ -1,4 +1,4 @@
-#include <interactive-ui/components/BitmapComponent.h>
+#include <interactive-ui/components/BitmapComponent.hpp>
 
 BitmapComponent::BitmapComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, RGBA* pixels, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen), pixel_map(make_array_view(pixels, dimensions.y, dimensions.x))

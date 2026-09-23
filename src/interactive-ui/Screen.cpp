@@ -1,7 +1,7 @@
-#include <interactive-ui/Screen.h>
-#include <interactive-ui/components/PaddingComponent.h>
-#include <interactive-ui/SelectableComponent.h>
-#include <interactive-ui/ScreenManager.h>
+#include <interactive-ui/Screen.hpp>
+#include <interactive-ui/components/PaddingComponent.hpp>
+#include <interactive-ui/SelectableComponent.hpp>
+#include <interactive-ui/ScreenManager.hpp>
 
 #include <algorithm>
 

@@ -1,4 +1,4 @@
-#include <interactive-ui/components/PixelBufferComponent.h>
+#include <interactive-ui/components/PixelBufferComponent.hpp>
 
 PixelBufferComponent::PixelBufferComponent(ScreenManager* manager, const Vec2i32& origin, const Vec2i32& dimensions, int32_t z_layer, Screen* initial_screen)
     : SelectableComponent(manager, origin, z_layer, initial_screen)

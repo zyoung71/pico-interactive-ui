@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include <math/Vec2.h>
-#include "IComponentSupplier.h"
+#include <math/Vec2.hpp>
+#include "IComponentSupplier.hpp"
 
 struct CollisionManifold
 {

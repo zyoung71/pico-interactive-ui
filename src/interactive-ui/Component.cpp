@@ -1,5 +1,4 @@
-#include <interactive-ui/Component.h>
-#include <interactive-ui/components/PaddingComponent.h>
+#include <interactive-ui/Component.hpp>
 #include <cstring>
 
 MovementAnimation::MovementAnimation(const Component* component, const FunctionLUT<float>& easing_func)

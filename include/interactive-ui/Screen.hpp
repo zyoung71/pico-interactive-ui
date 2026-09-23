@@ -2,11 +2,11 @@
 
 #include <vector>
 
-#include <math/AABB.h>
-#include <math/Easing.h>
+#include <math/AABB.hpp>
+#include <math/Easing.hpp>
 
-#include "ScreenManager.h"
-#include "iface/HoverMixin.h"
+#include "ScreenManager.hpp"
+#include "iface/HoverMixin.hpp"
 
 class Component;
 class SelectableComponent;

@@ -1,4 +1,4 @@
-#include <interactive-ui/components/FunctionComponent.h>
+#include <interactive-ui/components/FunctionComponent.hpp>
 
 void FunctionComponent::RedoFunctionLUT()
 {

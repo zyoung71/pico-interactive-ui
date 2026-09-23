@@ -1,4 +1,4 @@
-#include <interactive-ui/graphics/Rasterization.h>
+#include <interactive-ui/graphics/Rasterization.hpp>
 #include <utility>
 
 namespace graphics

@@ -1,7 +1,7 @@
-#include "interactive-ui/DisplayInterface.h"
-#include "interactive-ui/graphics/Font.h"
-#include <interactive-ui/ScreenManager.h>
-#include <interactive-ui/graphics/Rasterization.h>
+#include "interactive-ui/DisplayInterface.hpp"
+#include "interactive-ui/graphics/Font.hpp"
+#include <interactive-ui/ScreenManager.hpp>
+#include <interactive-ui/graphics/Rasterization.hpp>
 
 #include <util/Chars.h>
 
@@ -72,7 +72,7 @@ void DisplayInterface::DrawCharacter(Vec2i32 pos, char32_t c, const Font& font, 
 
 void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font, Vec2i32 scale, RGBA color)
 {
-    for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_spacing) * scale.x)
+    for (int32_t x_n = pos.x; *text; x_n += (font.char_width + font.char_spacing_x) * scale.x)
     {
         pos.x = x_n;
 
@@ -87,7 +87,7 @@ void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const Font& font,
 void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const FontGroup& font_group, Vec2i32 scale, RGBA color)
 {
     const Font* selected_font = &fonts::default_font;
-    for (int32_t x_n = pos.x; *text; x_n += (selected_font->char_width + selected_font->char_spacing) * scale.x)
+    for (int32_t x_n = pos.x; *text; x_n += (selected_font->char_width + selected_font->char_spacing_x) * scale.x)
     {
         pos.x = x_n;
         
@@ -98,7 +98,7 @@ void DisplayInterface::DrawText(Vec2i32 pos, const char* text, const FontGroup& 
         for (const Font& f : font_group) // find character
         {
             // if in range
-            if ((uint32_t)codepoint >= f.character_begin && codepoint <= f.character_end)
+            if (codepoint >= f.character_begin && codepoint <= f.character_end)
             {
                 selected_font = &f;
                 break;

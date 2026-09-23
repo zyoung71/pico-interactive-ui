@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../SelectableComponent.h"
-#include "../graphics/Pixel.h"
+#include "../SelectableComponent.hpp"
+#include "../graphics/Pixel.hpp"
 
 /**
  * Colors in specific pixels based on the vector positions given. Unlike BitmapComponent,

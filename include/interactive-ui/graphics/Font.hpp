@@ -1,49 +1,59 @@
 #pragma once
 
-#include <util/ArrayView.h>
+#include <util/ArrayView.hpp>
+#include <math/Vec2.hpp>
 #include <cstdint>
 
 // oh lord
 
+struct Font;
+
+struct FontOrder
+{
+    bool operator()(const Font& f1, const Font& f2) const;
+};
+
+#include <set>
+using FontGroup = std::set<Font, FontOrder>;
+
 struct Font
 {
+    static const Font* FindFont(char32_t codepoint, const FontGroup& font_group);
+
     const uint8_t char_height;
     const uint8_t char_width;
-    const uint8_t char_spacing;
+    union
+    {
+        struct
+        {
+            const uint8_t char_spacing_x;
+            const uint8_t char_spacing_y;
+        };
+        const Vec2u8 char_spacing;
+    };
 
     const ArrayView<uint8_t> char_bitmap;
     
     const char32_t character_begin;
     const char32_t character_end;
 
-    consteval Font(uint8_t char_height, uint8_t char_width, uint8_t char_spacing, char32_t character_begin, char32_t character_end, const uint8_t* char_bmp_data, size_t bmp_data_size)
-        : char_height(char_height), char_width(char_width), char_spacing(char_spacing), character_begin(character_begin), character_end(character_end), char_bitmap(make_array_view(char_bmp_data, bmp_data_size))
+    consteval Font(uint8_t char_height, uint8_t char_width, uint8_t char_spacing_x, uint8_t char_spacing_y, char32_t character_begin, char32_t character_end, const uint8_t* char_bmp_data, size_t bmp_data_size)
+        : char_height(char_height), char_width(char_width), char_spacing_x(char_spacing_x), char_spacing_y(char_spacing_y), character_begin(character_begin), character_end(character_end), char_bitmap(make_array_view(char_bmp_data, bmp_data_size))
     {
     }
 
-    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, char32_t character_begin, char32_t character_end>
+    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing_x, uint8_t char_spacing_y, char32_t character_begin, char32_t character_end>
     static consteval Font BuildFont(const uint8_t data[char_width * (character_end - character_begin)])
     {
-        return Font(char_height, char_width, char_spacing, character_begin, character_end, data, char_width * (character_end - character_begin));
+        return Font(char_height, char_width, char_spacing_x, char_spacing_y, character_begin, character_end, data, char_width * (character_end - character_begin));
     }
 
-    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing, uint8_t character_begin, uint8_t character_end>
+    template<uint8_t char_height, uint8_t char_width, uint8_t char_spacing_x, uint8_t char_spacing_y, char32_t character_begin, char32_t character_end>
     static consteval Font BuildFont(const uint8_t data[character_end - character_begin][char_width])
     {
-        return Font(char_height, char_width, char_spacing, character_begin, character_end, data, char_width * (character_end - character_begin));
+        return Font(char_height, char_width, char_spacing_x, char_spacing_y, character_begin, character_end, data, char_width * (character_end - character_begin));
     }
 };
-
-struct FontOrder
-{
-    bool operator()(const Font& f1, const Font& f2) const
-    {
-        return f1.character_begin < f2.character_begin;
-    }
-};
-
-#include <set>
-using FontGroup = std::set<Font, FontOrder>;
 
 namespace fonts
 {
@@ -148,9 +158,10 @@ namespace fonts
     // template parameters:
     // 1st: height of character in pixels
     // 2nd: width of character in pixels
-    // 3rd: amount of pixels to space the characters apart
-    // 4th: beginning character of UTF encoding range
-    // 5th: ending character of UTF encoding range
-    constexpr Font default_font = Font::BuildFont<8, 5, 1, ' ', '~'>(default_font_data); // take original font data only
+    // 3rd: amount of pixels to space the characters apart horizontally
+    // 4th: amount of pixels to space the characters apart vertically
+    // 5th: beginning character of UTF encoding range
+    // 6th: ending character of UTF encoding range
+    constexpr Font default_font = Font::BuildFont<8, 5, 1, 1, ' ', '~'>(default_font_data); // take original font data only
     const FontGroup default_font_group = {default_font};
 }

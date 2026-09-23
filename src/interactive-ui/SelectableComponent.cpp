@@ -1,7 +1,5 @@
-#include <interactive-ui/SelectableComponent.h>
-#include <interactive-ui/components/PaddingComponent.h>
-
-#include <cstring>
+#include <interactive-ui/SelectableComponent.hpp>
+#include <interactive-ui/components/PaddingComponent.hpp>
 
 ComponentSelectEvent::ComponentSelectEvent(EventSource* source, uint64_t control)
     : Event(source), control(control)

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IComponentSupplier.h"
-#include <math/Vec2.h>
-#include <math/AABB.h>
+#include "IComponentSupplier.hpp"
+#include <math/Vec2.hpp>
+#include <math/AABB.hpp>
 
 class HoverMixin : public IComponentSupplier
 {

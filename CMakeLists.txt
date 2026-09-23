@@ -15,6 +15,7 @@ if (NOT TARGET pico-interactive-ui)
         src/interactive-ui/components/FunctionComponent.cpp
         src/interactive-ui/components/ProgressBarComponent.cpp
         src/interactive-ui/graphics/Rasterization.cpp
+        src/interactive-ui/graphics/Font.cpp
     )
 
     add_subdirectory(lib/pico-math)

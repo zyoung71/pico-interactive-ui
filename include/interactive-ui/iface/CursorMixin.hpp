@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hardware/GPIODevice.h>
-#include "../iface/IComponentSupplier.h"
+#include <hardware/GPIODevice.hpp>
+#include "../iface/IComponentSupplier.hpp"
 
 class CursorMixin : public IComponentSupplier
 {

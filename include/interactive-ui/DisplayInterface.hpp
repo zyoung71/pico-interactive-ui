@@ -1,9 +1,9 @@
 #pragma once
 
-#include <math/AABB.h>
+#include <math/AABB.hpp>
 
-#include "graphics/Font.h"
-#include "graphics/Color.h"
+#include "graphics/Font.hpp"
+#include "graphics/Color.hpp"
 
 using graphics::RGBA;
 using graphics::HSV;
