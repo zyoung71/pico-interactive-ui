@@ -14,6 +14,8 @@ void TextComponent::UpdateTextDimensions()
 
     size_t line_width_max = 0;
     size_t line_height_max = 0;
+    message_pixel_dimensions.x = 0;
+    message_pixel_dimensions.y = 0;
 
     const Font* selected_font = &fonts::default_font;
     const char* str_iter = text;
@@ -25,7 +27,7 @@ void TextComponent::UpdateTextDimensions()
 
         if (codepoint == '\n' || !*str_iter) // if new line or last character in string
         {
-            message_pixel_dimensions.y += line_height_max + selected_font->char_spacing_y;
+            message_pixel_dimensions.y += line_height_max;
             line_width_max = 0;
             line_height_max = 0;
             continue;
@@ -39,10 +41,10 @@ void TextComponent::UpdateTextDimensions()
                 selected_font = &f;
                 line_width_max += f.char_width + f.char_spacing_x;
 
-                if (f.char_height > line_height_max)
-                    line_height_max = f.char_height;
+                if ((f.char_height + f.char_spacing_y) > line_height_max)
+                    line_height_max = f.char_height + f.char_spacing_y;
 
-                if (line_width_max >= message_pixel_dimensions.x)
+                if (line_width_max > message_pixel_dimensions.x)
                     message_pixel_dimensions.x = line_width_max;
 
                 break;
@@ -51,8 +53,11 @@ void TextComponent::UpdateTextDimensions()
         
     }
     message_pixel_dimensions -= (Vec2i32)selected_font->char_spacing; // subtract extra spacing at end
-    message_pixel_dimensions *= font_scale;
+    message_pixel_dimensions.x *= font_scale.x;
+    message_pixel_dimensions.y *= font_scale.y;
 
+    for (int i = 0; i < 100; i++)
+    printf("dims: <%i, %i>\n", message_pixel_dimensions.x, message_pixel_dimensions.y);
 
 /* old algorithm using one font */
 
@@ -108,9 +113,11 @@ void TextComponent::Draw(const Screen* screen)
 
     const size_t len = strlen(text) + 1;
     char vbuff[len];
+    vbuff[len - 1] = '\0'; // failsafe
 
-    size_t track = 0;
-    size_t line = 0;
+    size_t track = 0; // the offset of the string to draw
+    size_t span = 0; // the end point offset of each draw iteration
+    size_t line = 0; // vertical line count
     size_t segment_pixel_length = 0;
     size_t char_vertical_max = 0;
 
@@ -144,10 +151,10 @@ void TextComponent::Draw(const Screen* screen)
     {
         size_t chars_used;
         char32_t codepoint = utf8_decode(str_iter, &chars_used);
-        
-        memcpy(vbuff + track, &codepoint, chars_used);
 
-        size_t span = track + chars_used;
+        memcpy(vbuff + span, &codepoint, chars_used);
+
+        span += chars_used;
 
         if (codepoint != '\n' && (*str_iter) != '\0') // if not new line and not last character of string
         {
@@ -156,10 +163,13 @@ void TextComponent::Draw(const Screen* screen)
                 if (codepoint >= f.character_begin && codepoint <= f.character_end)
                 {
                     selected_font = &f;
+                    //printf("font data: %ix%i, %c<x<%c\n", f.char_width, f.char_height, f.character_begin, f.character_end);
                     segment_pixel_length += f.char_width + f.char_spacing_x;
     
                     if (char_vertical_max < f.char_height + f.char_spacing_y)
                         char_vertical_max = f.char_height + f.char_spacing_y;
+
+                    break;
                 }
             }
         }
@@ -187,10 +197,11 @@ void TextComponent::Draw(const Screen* screen)
             segment_pixel_length = 0;
             char_vertical_max = 0;
 
+            //printf("line str: %s\ttrack: %i\tspan: %i\n", vbuff + track, track, span);
             display->DrawText(screen->ToScreenCoords(origin_position) + draw_dimensions.min + text_offset, vbuff + track, *font_group, font_scale, color);
+            track = span;
         }
 
-        track = span;
         str_iter += chars_used;
     }
 
