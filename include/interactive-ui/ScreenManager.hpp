@@ -35,6 +35,9 @@ private:
     bool enable_cursor = false;
 
 public:
+    bool enable_utf8 = false;
+
+public:
     ScreenManager(DisplayInterface* const display);
     ~ScreenManager();
 
