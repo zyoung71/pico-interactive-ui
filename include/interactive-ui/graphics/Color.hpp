@@ -26,6 +26,11 @@ namespace graphics
             return rgba;
         }
 
+        constexpr inline uint16_t ToRGB565() const
+        {
+            return ((red & 0xF8) << 8) | ((green & 0xFC) << 3) | (blue >> 3);
+        }
+
         constexpr inline RGBA() : rgba(0) {}
         constexpr inline RGBA(uint32_t rgba) : rgba(rgba) {}
         constexpr inline RGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : RGBA((r << 24) | (g << 16) | (b << 8) | (a << 0)) {}
